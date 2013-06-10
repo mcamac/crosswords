@@ -1,13 +1,15 @@
 import sys
 
-from bjord.player import Player
-
 import tornado
 import tornado.websocket
 import tornado.httpserver
 import tornado.ioloop
 import tornado.template
+import tornado.autoreload
+import random, string
+import uuid
 
+import json
 import re
 import os
 import traceback
@@ -17,49 +19,12 @@ loader = tornado.template.Loader(os.path.join(os.path.join(os.path.realpath(__fi
 
 users = {}
 rooms = {'lobby' : set()}
+sockets = {}
 
 class BaseHandler(tornado.web.RequestHandler):
 	def get_current_user(self):
 		return self.get_secure_cookie("user")
 
-class LoginHandler(BaseHandler):
-	def get(self):
-		self.write('<html><body><form action="/login" method="post">'
-				   'Name: <input type="text" name="name">'
-				   '<input type="submit" value="Sign in">'
-				   '</form></body></html>')
-	def post(self):
-		self.set_secure_cookie("user", self.get_argument("name"))
-		if not users.has_key(self.get_argument('name')):
-			users[self.get_argument('name')] = {}
-		self.redirect("/")
-
-class LogoutHandler(BaseHandler):
-	def get(self):
-		self.set_secure_cookie("user", "")
-		self.redirect('/')
-
-class LobbyHandler(BaseHandler):
-	@tornado.web.authenticated
-	def get(self):
-		# kick old user
-		if self.get_current_user() not in users:
-			self.redirect('/logout')
-			return
-		print users
-		print self.get_current_user()
-		username = self.get_current_user()
-		player = Player(username)
-		users[username] = player
-		users[username].room = 'lobby'
-		rooms['lobby'].add(username)
-		print rooms['lobby']
-
-		application.add_handlers(r'.*$',
-			[(self.request.uri + 'sub',
-				PlayerWebSocket)])
-
-		self.write(loader.load('lobby.html').generate(user=self.get_current_user()))
 
 class NewGameHandler(BaseHandler):
 	@tornado.web.authenticated
@@ -70,18 +35,10 @@ class NewGameHandler(BaseHandler):
 		self.write('new game')
 
 class GameHandler(BaseHandler):
-	@tornado.web.authenticated
 	def get(self, id):
 		print 'Game %s' % id
-		username = self.get_current_user()
 
-		print 'Coming from room:', users[username].room, rooms[users[username].room], rooms
-		if username in rooms[users[username].room]:
-			rooms[users[username].room].remove(username)
-		rooms[id].add(username)
-
-		users[username].room = id
-		self.write(loader.load('game.html').generate(user=username,id=id))
+		self.write(loader.load('game.html').generate(id=id))
 
 		
 
@@ -92,23 +49,44 @@ class PlayerWebSocket(tornado.websocket.WebSocketHandler):
 		super(PlayerWebSocket, self).__init__(*args, **kwargs)
 
 	def open(self):
-		username = self.get_secure_cookie("user")
-		users[username].socket = self
-		print "Opening:", username
+		print 'herp'
+		self.id = uuid.uuid4()
+		sockets[self.id] = self
+		self.name = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(5))
+		print 'Opening', self.name
 		self.clients.append(self)
-		
 
+		for id in sockets:
+			message = {
+				'type': 'room chat message',
+				'content': self.name + ' joined.'
+			}
+			sockets[id].write_message(json.dumps(message))
+		
 	def on_close(self):
-		username = self.get_secure_cookie("user")
-		print 'Closing:', username
-		self.clients.remove(self)
+		print 'Closing:', self.name, self.id
+		del sockets[self.id]
+
+		for id in sockets:
+			message = {
+				'type': 'room chat message',
+				'content': self.name + ' left.'
+			}
+			sockets[id].write_message(json.dumps(message))
 
 	def on_message(self, message):
-		username = self.get_secure_cookie("user")
-		roommates = [users[name].socket for name in rooms[users[username].room]]
-		print username, message, users[username].room, roommates
-		for client in roommates:
-			client.write_message('%s %s' % (username, message))
+		print self.name, json.loads(message)
+		message = json.loads(message)
+		# username = self.get_secure_cookie("user")
+		# roommates = [users[name].socket for name in rooms[users[username].room]]
+		# print username, message, users[username].room, roommates
+		# for client in roommates:
+		# 	client.write_message('%s %s' % (username, message))
+
+		if message['type'] == 'client chat message':
+			message['name'] = self.name	
+			for id in sockets:
+				sockets[id].write_message(json.dumps(message))
 
 
 
@@ -116,19 +94,22 @@ class PlayerWebSocket(tornado.websocket.WebSocketHandler):
 settings = {
 	'debug' : True,
 	'static_path'  : os.path.join(os.path.realpath(__file__ + '/../'), 'static'),
+	'template_path'  : os.path.join(os.path.realpath(__file__ + '/../'), 'templates'),
 	'cookie_secret' : "Ol7xSC1zQ09SXnESNi3L",
 	'login_url' : '/login'
 }
 
 application = tornado.web.Application(**settings)
-application.add_handlers('.*$',[(r'/', LobbyHandler),
-								(r'/login', LoginHandler),
-								(r'/logout', LogoutHandler),
+application.add_handlers('.*$',[#(r'/', LobbyHandler),
 								(r'/new', NewGameHandler),
 								(r'/play/(?P<id>[^\/]+)', GameHandler),
 								(r'/play/[^\/]+/sub', PlayerWebSocket)])
 
 if __name__ == '__main__':
+	for (path, dirs, files) in os.walk(settings["template_path"]):
+		for item in files:
+			tornado.autoreload.watch(os.path.join(path, item))
+
 	http_server = tornado.httpserver.HTTPServer(application)
 	http_server.listen(5557)
 	tornado.ioloop.IOLoop.instance().start()

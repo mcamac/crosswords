@@ -1,17 +1,52 @@
 <html>
 <head>
 
-<script type="text/javascript">
-	var ws = new WebSocket('ws://' + location.hostname + ':' + location.port + location.pathname + '/sub');
+<script src="/static/js/raphael-min.js" type="text/javascript"></script>
+<script src="/static/js/vendor/zepto.js" type="text/javascript"></script>
+<link rel="stylesheet" href="/static/css/foundation.css">
 
-	ws.onmessage = function(msg) {
-		console.log(msg);
-	}
-</script>
+<link rel="stylesheet" href="/static/css/room.css">
 
 </head>
 <body>
-Hello {{ user }}, game {{ id }}
+
+<nav class='top-bar'>
+	<ul class="title-area">
+		<li class="name">
+			<h1><a href='#'>Crosswords with Friends</a></h1> 
+		</li>
+	</ul>
+
+</nav>
+
+<div class="row game-area">
+	<div class="large-2 columns">
+		Hello foo, game {{ id }}
+
+		<div id='chat_box'></div>
+
+		<input type="text" id='chat_input'/>
+	</div>
+	<div class="large-7  columns">
+		<h5> Game Title </h5>
+		
+		<div id="crossword_canvas"></div>
+	</div>
+	
+
+	<div class="large-3 columns clue-area">
+		<h5>Across</h5>
+		<ul id='across_clues'>
+			<li>1 Foo</li>
+			<li>2 Double-platinum Steely Dan album</li>
+		</ul>
+
+		<h5>Down</h5>
+	</div>
+</div>
+
+<script src="/static/js/room.js" type="text/javascript"></script>
+
 </body>
 
 <p id=players>

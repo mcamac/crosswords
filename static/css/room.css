@@ -1,0 +1,47 @@
+@font-face {
+	src: url('/static/fonts/SourceSansPro-Regular.ttf');
+	font-family: 'Source Sans';
+}
+
+@font-face {
+	src: url('/static/fonts/SourceSansPro-Italic.ttf');
+	font-family: 'Source Sans';
+	font-style: italic;
+}
+
+@font-face {
+	src: url('/static/fonts/SourceSansPro-Bold.ttf');
+	font-family: 'Source Sans';
+	font-weight: bold;
+}
+
+@font-face {
+	src: url('/static/fonts/SourceSansPro-BoldItalic.ttf');
+	font-family: 'Source Sans';
+	font-weight: bold;
+	font-style: italic;
+}
+
+#chat_box {
+	height: 515px;
+	font-size: 0.8em;
+	font-family: 'Source Sans', sans-serif;
+}
+
+#chat_box p {
+	margin: 0px;
+}
+
+.game-area {
+	margin-left: 0px;
+	max-width: 1200px;
+}
+
+.clue-area {
+	font-family: 'Source Sans', 'Helvetica Neue', sans-serif;
+}
+
+
+#across_clues li, #down_clues li {
+	font-size: 0.8em;
+}
