@@ -1,0 +1,20 @@
+<html>
+<head>
+
+<script type="text/javascript">
+	var ws = new WebSocket('ws://' + location.hostname + ':' + location.port + location.pathname + '/sub');
+
+	ws.onmessage = function(msg) {
+		console.log(msg);
+	}
+</script>
+
+</head>
+<body>
+Hello {{ user }}, game {{ id }}
+</body>
+
+<p id=players>
+</p>
+
+</html>
