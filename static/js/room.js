@@ -10,20 +10,32 @@ ws.onmessage = function(msg) {
 		$('#chat_box').append('<p>'+
 			'<b>' + data.name + '</b>' + ': ' + data.content+
 			'</p>');
+
+		var $el = $('#chat_box');
+		var el = $el[0]; /* Actual DOM element */
+
+		/* Scroll to bottom */
+		el.scrollTop = el.scrollHeight - $el.height();
 	}
 	if(data.type == 'room chat message') {
 		console.log(data.name + ': ' + data.content);
 		$('#chat_box').append('<p>'+
 			'<i>'+ data.content+ '</i>' +
 			'</p>');
+
+
 	}
 }
 
-var paper = Raphael("crossword_canvas", 542, 542);
-paper.rect(0, 0, 540, 540);
-
 
 Zepto(function($){
+
+	var grid_lines = [];
+	var size = 540;
+
+	var paper = Raphael("crossword_canvas", size + 2, size + 2);
+	paper.rect(0, 0, size, size);
+
 	$('#chat_input').on('keyup', function(e) {
 		if (e.keyCode == 13) {
 			ws.send(JSON.stringify({

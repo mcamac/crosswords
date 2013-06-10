@@ -23,9 +23,20 @@
 }
 
 #chat_box {
-	height: 515px;
+	height: 590px;
 	font-size: 0.8em;
 	font-family: 'Source Sans', sans-serif;
+	overflow: scroll;
+	background-color: #EEE;
+}
+
+.crossword-column {
+	/*width: 550px;*/
+}
+
+#crossword_canvas {
+	margin: 0 auto;
+	width: 542px;
 }
 
 #chat_box p {
@@ -33,7 +44,7 @@
 }
 
 .game-area {
-	margin-left: 0px;
+	margin: -15px 0px 0px 0px;
 	max-width: 1200px;
 }
 
@@ -41,7 +52,28 @@
 	font-family: 'Source Sans', 'Helvetica Neue', sans-serif;
 }
 
+.clue-list {
+	margin-left: 0;
+	height: 200px;
+}
 
-#across_clues li, #down_clues li {
+
+.clue-list li {
 	font-size: 0.8em;
+	list-style-type: none;
+}
+
+.clue-list li .num {
+	width: 25px;
+	text-align: right;
+	font-weight: bold;
+	display: inline-block;
+	padding-right: 10px;
+	vertical-align: top;
+}
+
+.clue-list li .clue-text {
+	display: inline-block;
+	white-space: pre-wrap;
+	width: 200px;
 }
