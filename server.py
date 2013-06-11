@@ -18,11 +18,20 @@ import traceback
 loader = tornado.template.Loader(os.path.join(os.path.join(os.path.realpath(__file__) + '/../'), 'templates'))
 
 users = {}
-rooms = {'lobby' : set()}
+rooms = {}
 sockets = {}
 
 class Puzzle:
     pass
+
+class Room:
+    def __init__(self):
+        self.clients = set()
+        self.puzzle = Puzzle()
+
+    def broadcast(self, message):
+        for id in self.clients:
+            sockets[id].write_message(message)
 
 # parse puz files
 # TODO: refactor this
@@ -82,25 +91,22 @@ class BaseHandler(tornado.web.RequestHandler):
     def get_current_user(self):
         return self.get_secure_cookie("user")
 
-
-class NewGameHandler(BaseHandler):
-    @tornado.web.authenticated
-    def get(self):
-        rooms[5] = set()
-        rooms[4] = set()
-        print rooms
-        self.write('new game')
-
 class GameHandler(BaseHandler):
     def get(self, id):
         print 'Game %s' % id
 
         self.write(loader.load('game.html').generate(id=id))
 
-
 class UploadHandler(tornado.web.RequestHandler):
     def post(self, room_name):
-        print room_name, self.request.files[0]
+        raw_puzzle = self.request.files['puzzle'][0]['body']
+
+        message = {}
+        message['content'] = parse(raw_puzzle)
+        message['type'] = 'new puzzle'
+
+        rooms[room_name].broadcast(json.dumps(message))
+        
         self.write('Success!')
         
 
@@ -119,8 +125,8 @@ class PlayerWebSocket(tornado.websocket.WebSocketHandler):
         print 'Opening', self.name
 
         if room not in rooms:
-            rooms[room] = set()
-        rooms[room].add(self.id)
+            rooms[room] = Room()
+        rooms[room].clients.add(self.id)
         print rooms
 
 
@@ -142,7 +148,7 @@ class PlayerWebSocket(tornado.websocket.WebSocketHandler):
             }
             sockets[id].write_message(json.dumps(message))
 
-        rooms[self.room].remove(self.id)
+        rooms[self.room].clients.remove(self.id)
 
     def on_message(self, message):
         print self.name, json.loads(message)
@@ -172,7 +178,6 @@ settings = {
 application = tornado.web.Application(**settings)
 application.add_handlers('.*$',
     [#(r'/', LobbyHandler),
-    (r'/new', NewGameHandler),
     (r'/play/(?P<id>[^\/]+)', GameHandler),
     (r'/play/(?P<room>[^\/]+)/sub', PlayerWebSocket),
     (r'/uploads\/(\w+)', UploadHandler),])
