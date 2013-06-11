@@ -36,10 +36,10 @@
           <li><a href="#">Check all squares</a></li>
           <li><a href="#">Regular Mode</a></li>
           <li class="divider"></li>
-          <li><a href="#">Dropdown Level 1d</a></li>
         </ul>
       </li>
       <li class="divider"></li>
+      <li><a href="#" data-reveal-id="help_modal">Help</a></li>
     </ul>
 </section>
 
@@ -47,7 +47,9 @@
 
 <div class="row game-area">
 	<div class="large-3 columns">
-
+		<h6> Room Members </h6>
+		<div id='members_box'></div>
+		<h6> Chat </h6>
 		<div id='chat_box'></div>
 
 		<input type="text" id='chat_input'/>
@@ -115,15 +117,25 @@
 				<div class="clue-text">2 Double-platinum Steely Dan album dddddd ddddddd d dddd</div>
 			</li>
 		</ul>
+		<div id="room_options">
+			<h6> Room Options </h6>
+			<input type="checkbox" value="foo">Master Mode</input>
+			<input type="checkbox" value="foo">Competitive Mode</input>
+		</div>
 	</div>
 </div>
 
 <div id="browse_modal" class="reveal-modal medium">
-  <h2>Awesome. I have it.</h2>
-  <p class="lead">Your couch.  It is mine.</p>
+  <h4>Browse Puzzles</h4>
   <p>Im a cool paragraph that lives inside of an even cooler modal. Wins</p>
+  <h5> Upload a Puzzle </h5>
   <a class="close-reveal-modal">&#215;</a>
-  <input id="fileupload" type="file" name="puzzle" data-url="/uploads/K41" multiple>
+  <input id="fileupload" type="file" name="puzzle" data-url="/uploads/{{room.id}}" multiple>
+</div>
+
+<div id="help_modal" class="reveal-modal medium">
+  <h4>Help</h4>
+  <p> To change your username, type <pre>/username new_username</pre> in chat.</p>
 </div>
 
 <script src="/static/js/room.js" type="text/javascript"></script>
