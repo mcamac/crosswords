@@ -1,6 +1,12 @@
 $ ->
 	ws = new WebSocket("ws://#{location.hostname}:#{location.port}#{location.pathname}/sub")
 
+	# # send localstorage username, if exists
+	# if localStorage.username
+	# 	ws.send JSON.stringify {
+	# 		type: 'change username'
+	# 		content: localStorage.username
+	# 	}
 
 	ws.onmessage = (msg) ->
 		data = JSON.parse msg.data
@@ -40,6 +46,7 @@ $ ->
 			sendChatMessage $(@).val()
 			$(@).val ''
 
+	# Room members box
 
 	# Crossword SVG variables
 	grid_lines = []

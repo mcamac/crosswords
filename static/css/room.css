@@ -22,12 +22,21 @@
 	font-style: italic;
 }
 
+
+.top-bar {
+	background-color: rgb(148, 18, 18);
+}
+
+#members_box {
+	height: 80px;
+}
+
 #chat_box {
-	height: 590px;
+	height: 440px;
 	font-size: 0.8em;
 	font-family: 'Source Sans', sans-serif;
 	overflow: scroll;
-	background-color: #EEE;
+	background-color: #fafafa;
 }
 
 .crossword-column {
@@ -80,4 +89,8 @@
 	display: inline-block;
 	white-space: pre-wrap;
 	width: 200px;
+}
+
+#room_options {
+	margin-top: 20px;
 }
