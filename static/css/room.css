@@ -53,8 +53,12 @@
 }
 
 .clue-list {
-	margin-left: 0;
+	margin: 7px 0 5px;
 	height: 200px;
+	overflow: auto;
+	padding: 3px 0px;
+	border-top: 1px solid #AAA;
+	border-bottom: 1px solid #AAA;
 }
 
 
