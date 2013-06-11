@@ -106,7 +106,7 @@ class UploadHandler(tornado.web.RequestHandler):
         message['type'] = 'new puzzle'
 
         rooms[room_name].broadcast(json.dumps(message))
-        
+
         self.write('Success!')
         
 
@@ -130,24 +130,24 @@ class PlayerWebSocket(tornado.websocket.WebSocketHandler):
         print rooms
 
 
-        for id in sockets:
-            message = {
-                'type': 'room chat message',
-                'content': self.name + ' joined.'
-            }
-            sockets[id].write_message(json.dumps(message))
+        message = {
+            'type': 'room chat message',
+            'content': self.name + ' joined.'
+        }
+        rooms[self.room].broadcast(json.dumps(message))
         
     def on_close(self):
         print 'Closing:', self.name, self.id
         del sockets[self.id]
 
-        for id in sockets:
-            message = {
-                'type': 'room chat message',
-                'content': self.name + ' left.'
-            }
-            sockets[id].write_message(json.dumps(message))
+        # notify the room that the player has left
+        message = {
+            'type': 'room chat message',
+            'content': self.name + ' left.'
+        }
+        rooms[self.room].broadcast(json.dumps(message))
 
+        # leave the room
         rooms[self.room].clients.remove(self.id)
 
     def on_message(self, message):
