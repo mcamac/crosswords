@@ -97,6 +97,11 @@ class GameHandler(BaseHandler):
 
         self.write(loader.load('game.html').generate(id=id))
 
+
+class UploadHandler(tornado.web.RequestHandler):
+    def post(self, room_name):
+        print room_name, self.request.files[0]
+        self.write('Success!')
         
 
 class PlayerWebSocket(tornado.websocket.WebSocketHandler):
@@ -165,10 +170,12 @@ settings = {
 }
 
 application = tornado.web.Application(**settings)
-application.add_handlers('.*$',[#(r'/', LobbyHandler),
-                                (r'/new', NewGameHandler),
-                                (r'/play/(?P<id>[^\/]+)', GameHandler),
-                                (r'/play/(?P<room>[^\/]+)/sub', PlayerWebSocket)])
+application.add_handlers('.*$',
+    [#(r'/', LobbyHandler),
+    (r'/new', NewGameHandler),
+    (r'/play/(?P<id>[^\/]+)', GameHandler),
+    (r'/play/(?P<room>[^\/]+)/sub', PlayerWebSocket),
+    (r'/uploads\/(\w+)', UploadHandler),])
 
 if __name__ == '__main__':
     for (path, dirs, files) in os.walk(settings["template_path"]):

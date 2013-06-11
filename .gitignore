@@ -1,5 +1,4 @@
 *.DS_Store
 robots.txt
 static/js/room.js
-*.js
-static/js/room.js
+static/js/oldroom.js

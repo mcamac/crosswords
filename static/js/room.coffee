@@ -27,7 +27,7 @@ $ ->
 	$('#chat_input').on 'keyup', (e) ->
 		if e.keyCode == 13
 			sendChatMessage $(@).val()
-			$(@).val()
+			$(@).val ''
 
 
 	# Crossword SVG variables
@@ -77,6 +77,7 @@ $ ->
 		dataType: 'json'
 		add: (e, data) ->
 			console.log data
+			data.submit()
 		done: (e, data) ->
 			console.log 'done'
 	}
