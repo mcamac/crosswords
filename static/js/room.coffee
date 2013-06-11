@@ -17,11 +17,22 @@ $ ->
 		if data.type == 'room chat message'
 			$('#chat_box').append "<p><i>#{data.content}</i></p>"
 
+		if data.type == 'new puzzle'
+			make_puzzle data.content
+
 	sendChatMessage = (message) ->
 		ws.send JSON.stringify {
 			type: 'client chat message'
 			content: message
 		}
+
+	make_puzzle = (contents) ->
+		$('#across_clues').empty()
+		$('#down_clues').empty()
+		for num, clue of contents.clues.across
+			$('#across_clues').append "<li><div class=\"num\"> #{num} </div> <div class=\"clue-text\"> #{clue} </div></li>"
+		for num, clue of contents.clues.down
+			$('#down_clues').append "<li><div class=\"num\"> #{num} </div> <div class=\"clue-text\"> #{clue} </div></li>"
 
 	# Chat functions
 	$('#chat_input').on 'keyup', (e) ->
