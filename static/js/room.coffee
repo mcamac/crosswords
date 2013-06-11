@@ -1,4 +1,4 @@
-Zepto(($) ->
+$ ->
 	ws = new WebSocket("ws://#{location.hostname}:#{location.port}#{location.pathname}/sub")
 
 
@@ -67,8 +67,19 @@ Zepto(($) ->
 	# Draw and format puzzle numbers
 	for i in [0..puzzle_size-1]
 		for j in [0..puzzle_size-1]
-			paper.text(square_size * j + 2, square_size * i + 9, i * j)
+			paper.text(square_size * j + 2, square_size * i + 8, i * j)
 				 .attr {
 				 	'text-anchor': 'start'
 				 }
-)
+
+	# Handle uploads
+	$('#fileupload').fileupload {
+		dataType: 'json'
+		add: (e, data) ->
+			console.log data
+		done: (e, data) ->
+			console.log 'done'
+	}
+
+	$('#upload_button').click (e) ->
+		e.preventDefault()
