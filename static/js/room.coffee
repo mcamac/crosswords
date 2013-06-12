@@ -53,13 +53,14 @@ $ ->
 	cj = 0
 
 	clues = {
-		down: {}
-		across: {}
+		A: {}
+		D: {}
 	}
 
 	square_highlight = null
 	across_highlight = null
 	down_highlight = null
+
 
 	cursors = []
 
@@ -99,8 +100,10 @@ $ ->
 
 		letters[i][j] = paper.text((j + 0.5) * square_size, (i + 0.55) * square_size, char)
 							 .attr(
-							 	'font-size': 18
+							 	'font-size': 20
 							 	'text-anchor': 'middle'
+							 	'font-family': 'Source Sans'
+							 	'font-weight': 'normal'
 							 )
 	valid = (p, i, j) ->
 		if i < 0 or j < 0 or i >= puzzle_size or j >= puzzle_size or p[i][j] == '_'
@@ -111,6 +114,7 @@ $ ->
 		return i >= 0 and j >= 0 and i < puzzle_size and j < puzzle_size
 
 	get_clue_number = (p, i, j, d) ->
+		console.log p,i,j
 		if not valid(p, i, j)
 			return -1
 
@@ -120,12 +124,13 @@ $ ->
 		if d == 'D'
 			while valid p, i - 1, j
 				i--
-		console.log i, j
+
 		return numbers[i][j]
 
 	flip_dir = ->
 		dir = if dir == 'D' then 'A' else 'D'
 		rehighlight()
+		update_current_clue()
 
 	next_square = (i, j, oi, oj) ->
 		tryi = i + oi
@@ -172,6 +177,12 @@ $ ->
 	key 'down', go_down
 
 	key 'space', flip_dir
+
+	key 'backspace', (e) ->
+		e.preventDefault()
+		set_square_value ci, cj, ''
+		if dir == 'A' then go_left() else go_up()
+
 		
 	rehighlight = ->
 		console.log square_highlight		
@@ -186,7 +197,7 @@ $ ->
 			width: square_size * (acr_ej - acr_sj + 1)
 			x: acr_sj * square_size + 0.5
 			y: ci * square_size + 0.5
-			fill: if dir == 'A' then '#3f3' else '#eee'
+			fill: if dir == 'A' then '#4f7ec4' else '#eee'
 		}
 
 		down_si = ci
@@ -199,7 +210,7 @@ $ ->
 			height: square_size * (down_ei - down_si + 1)
 			x: cj * square_size + 0.5
 			y: down_si * square_size + 0.5
-			fill: if dir == 'D' then '#3f3' else '#eee'
+			fill: if dir == 'D' then '#4f7ec4' else '#eee'
 		}
 
 		square_highlight.attr {
@@ -215,6 +226,14 @@ $ ->
 		console.log 'set',ci,cj
 		rehighlight()
 
+		# change current clue
+		update_current_clue()
+
+	update_current_clue = ->
+		number = get_clue_number(p, ci, cj, dir)
+		clue = clues[dir][number]
+		console.log clue, number, dir
+		$('#current_clue').html("#{number}#{dir} - #{clue}")
 
 	make_puzzle = (contents) ->
 
@@ -230,6 +249,8 @@ $ ->
 		puzzle_size = puzzle.height
 		square_size = grid_size / (1.0 * puzzle_size)
 
+		clues['A'] = puzzle.clues.across
+		clues['D'] = puzzle.clues.down
 		reset_puzzle()
 		
 		for num, clue of contents.clues.across
@@ -286,6 +307,8 @@ $ ->
 			if ei == ci and ej == cj
 				flip_dir()
 			set_cursor ei, ej
+
+		set_cursor 0, 0
 
 
 	# Chat functions
