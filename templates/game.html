@@ -8,7 +8,7 @@
 <script src="/static/js/jquery.ui.widget.js"></script>
 <script src="/static/js/jquery.iframe-transport.js"></script>
 <script src="/static/js/jquery.fileupload.js"></script>
-
+<script src="/static/js/keymaster.min.js"></script>
 
 
 
@@ -55,7 +55,7 @@
 		<input type="text" id='chat_input'/>
 	</div>
 	<div class="large-6 crossword-column columns">
-		<h5> Room {{id}} - Game Title </h5>
+		<h5> Room {{id}} - <span id="puzzle_title">Game Title</span> </h5>
 		<p> Current clue </p>
 		<div id="crossword_canvas"></div>
 	</div>

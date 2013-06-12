@@ -32,6 +32,45 @@ $ ->
 			content: message
 		}
 
+	# Crossword SVG variables
+	grid_lines = []
+	grid_size = 540
+
+	number_text = []
+	numbers = {}
+
+	puzzle_size = 15
+
+	background = null
+
+	p = {}
+
+	square_size = grid_size / (1.0 * puzzle_size)
+
+	letters = {}
+
+	ci = 0
+	cj = 0
+
+	clues = {
+		down: {}
+		across: {}
+	}
+
+	square_highlight = null
+	across_highlight = null
+	down_highlight = null
+
+	cursors = []
+
+	black_squares = {}
+
+	paper = Raphael "crossword_canvas", grid_size + 2, grid_size + 2
+
+	USER = 0
+	dir = 'A'
+
+	## UI Code
 	blacken_square = (i, j) ->
 		if black_squares[i][j]
 			black_squares[i][j].remove()
@@ -52,10 +91,139 @@ $ ->
 			return true
 		return false
 
+	set_square_value = (i, j, char) ->
+		if letters[i][j]
+			letters[i][j].remove()
+
+		char = char.toUpperCase()
+
+		letters[i][j] = paper.text((j + 0.5) * square_size, (i + 0.55) * square_size, char)
+							 .attr(
+							 	'font-size': 18
+							 	'text-anchor': 'middle'
+							 )
+	valid = (p, i, j) ->
+		if i < 0 or j < 0 or i >= puzzle_size or j >= puzzle_size or p[i][j] == '_'
+			return false
+		return true
+
+	on_board = (i, j) ->
+		return i >= 0 and j >= 0 and i < puzzle_size and j < puzzle_size
+
+	get_clue_number = (p, i, j, d) ->
+		if not valid(p, i, j)
+			return -1
+
+		if d == 'A'
+			while valid p, i, j - 1
+				j--
+		if d == 'D'
+			while valid p, i - 1, j
+				i--
+		console.log i, j
+		return numbers[i][j]
+
+	flip_dir = ->
+		dir = if dir == 'D' then 'A' else 'D'
+		rehighlight()
+
+	next_square = (i, j, oi, oj) ->
+		tryi = i + oi
+		tryj = j + oj
+		while not valid(p, tryi, tryj) and on_board(tryi, tryj)
+			tryi += oi
+			tryj += oj
+
+		if on_board(tryi, tryj)
+			return [tryi, tryj]
+		return [i, j]
+
+
+	# keyboard shortcuts
+	alpha = 'abcdefghijklmnopqrstuvwxyz'
+	for letter in alpha
+		key letter, (e) ->
+			set_square_value ci, cj, String.fromCharCode(e.keyCode)
+			if dir == 'A'
+				go_right()
+			else
+				go_down()
+
+	go_left = ->
+		ns = next_square ci, cj, 0, -1
+		set_cursor ns[0], ns[1]
+
+	go_right = ->
+		ns = next_square ci, cj, 0, 1
+		set_cursor ns[0], ns[1]
+
+	go_up = ->
+		ns = next_square ci, cj, -1, 0
+		set_cursor ns[0], ns[1]
+
+	go_down = ->
+		ns = next_square ci, cj, 1, 0
+		set_cursor ns[0], ns[1]
+
+
+	key 'left', go_left
+	key 'up', go_up
+	key 'right', go_right
+	key 'down', go_down
+
+	key 'space', flip_dir
+		
+	rehighlight = ->
+		console.log square_highlight		
+
+		acr_sj = cj
+		acr_ej = cj
+		while valid(p, ci, acr_sj - 1)
+			acr_sj--
+		while valid(p, ci, acr_ej + 1)
+			acr_ej++
+		across_highlight.attr {
+			width: square_size * (acr_ej - acr_sj + 1)
+			x: acr_sj * square_size + 0.5
+			y: ci * square_size + 0.5
+			fill: if dir == 'A' then '#3f3' else '#eee'
+		}
+
+		down_si = ci
+		down_ei = ci
+		while valid(p, down_si - 1, cj)
+			down_si--
+		while valid(p, down_ei + 1, cj)
+			down_ei++
+		down_highlight.attr {
+			height: square_size * (down_ei - down_si + 1)
+			x: cj * square_size + 0.5
+			y: down_si * square_size + 0.5
+			fill: if dir == 'D' then '#3f3' else '#eee'
+		}
+
+		square_highlight.attr {
+			x: cj * square_size + 0.5
+			y: ci * square_size + 0.5
+		}
+
+	set_cursor = (i, j) ->
+		if p[i][j] == '_'
+			return
+		ci = i
+		cj = j
+		console.log 'set',ci,cj
+		rehighlight()
+
+
 	make_puzzle = (contents) ->
 
 		puzzle = contents
 		p = puzzle.puzzle
+
+		
+
+		$('#puzzle_title').html puzzle.title
 
 		console.log JSON.stringify contents
 
@@ -91,15 +259,34 @@ $ ->
 		for i in [0..puzzle_size-1]
 			for j in [0..puzzle_size-1]
 				if has_number p,i,j 
-					# console.log "#{i} #{j} #{p[i][j]}"
-					numbers.push paper.text(
+					console.log "#{i} #{j} #{current_number}"
+					number_text.push paper.text(
 						square_size * j + 2, 
 						square_size * i + 8, 
 						current_number)
 						 .attr {
 						 	'text-anchor': 'start'
 						 }
+					numbers[i][j] = current_number
 					current_number += 1
+
+		if background
+			background.remove()
+
+		background = paper.rect(0, 0, grid_size, grid_size)
+					  .attr {
+					  	stroke: 'none'
+					  	fill: '#000'
+					  	opacity: 0.0
+					  }
+
+		background.click (e) ->
+			ei = Math.floor e.layerY / square_size
+			ej = Math.floor e.layerX / square_size
+			if ei == ci and ej == cj
+				flip_dir()
+			set_cursor ei, ej
+
 
 	# Chat functions
 	$('#chat_input').on 'keyup', (e) ->
@@ -109,42 +296,57 @@ $ ->
 
 	# Room members box
 
-	# Crossword SVG variables
-	grid_lines = []
-	grid_size = 540
-
-	numbers = []
-
-	puzzle_size = 15
-
-	p = {}
-
-	square_size = grid_size / (1.0 * puzzle_size)
-
-	letters = {}
-
-	clues = {
-		down: {}
-		across: {}
-	}
-
-	cursors = []
-
-	black_squares = {}
-
-	paper = Raphael "crossword_canvas", grid_size + 2, grid_size + 2
-	# background = paper.rect 0, 0, grid_size, grid_size
+	
 
 	reset_puzzle = ->
 		# Initialize black squares
 		for i in [0..puzzle_size - 1]
 			black_squares[i] = {}
+			letters[i] = {}
+			numbers[i] = {}
 			for j in [0..puzzle_size - 1]
 				black_squares[i][j] = null
+				letters[i][j] = null
+				numbers[i][j] = null
 
 		
 		
+
+		if across_highlight
+			across_highlight.remove()
+		across_highlight = paper.rect(-50,
+									  -50,
+									  square_size,
+									  square_size)
+								.attr {
+									fill: '#233'
+									stroke: 'none'
+									opacity: 0.7
+								}
 		
+		if down_highlight
+			down_highlight.remove()
+		down_highlight = paper.rect(-50,
+									  -50,
+									  square_size,
+									  square_size)
+								.attr {
+									fill: '#233'
+									stroke: 'none'
+									opacity: 0.7
+								}
+
+		if square_highlight
+			square_highlight.remove()
+		square_highlight = paper.rect(-50,
+									  -50,
+									  square_size,
+									  square_size)
+								.attr {
+									fill: '#852'
+									stroke: 'none'
+									opacity: 0.9
+								}
 
 		$('#across_clues').empty()
 		$('#down_clues').empty()

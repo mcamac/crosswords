@@ -46,6 +46,8 @@
 #crossword_canvas {
 	margin: 0 auto;
 	width: 542px;
+	-moz-user-select: none;
+	-webkit-user-select: none;
 }
 
 #chat_box p {
