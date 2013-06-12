@@ -32,13 +32,74 @@ $ ->
 			content: message
 		}
 
+	blacken_square = (i, j) ->
+		if black_squares[i][j]
+			black_squares[i][j].remove()
+
+		black_squares[i][j] = 
+			paper.rect(j * square_size+0.5, i * square_size+0.5, square_size, square_size)
+				 .attr(
+				 	fill: '#333'
+				 )
+
+	has_number = (p, i, j) ->
+		# console.log p[i][j]
+		if p[i][j] == '_'
+			return false
+		if i == 0 or j == 0
+			return true
+		if p[i-1][j] == '_' or p[i][j-1] == '_'
+			return true
+		return false
+
 	make_puzzle = (contents) ->
-		$('#across_clues').empty()
-		$('#down_clues').empty()
+
+		puzzle = contents
+		p = puzzle.puzzle
+
+		console.log JSON.stringify contents
+
+		puzzle_size = puzzle.height
+		square_size = grid_size / (1.0 * puzzle_size)
+
+		reset_puzzle()
+		
 		for num, clue of contents.clues.across
 			$('#across_clues').append "<li><div class=\"num\"> #{num} </div> <div class=\"clue-text\"> #{clue} </div></li>"
 		for num, clue of contents.clues.down
 			$('#down_clues').append "<li><div class=\"num\"> #{num} </div> <div class=\"clue-text\"> #{clue} </div></li>"
+
+		for i in [0..puzzle_size-1]
+			for j in [0..puzzle_size-1]
+				if puzzle.puzzle[i][j] == '_'
+					blacken_square i, j
+
+		# Draw and format grid lines
+		for offset in [0..puzzle_size]
+			pxoff = square_size * offset + 0.5
+			grid_lines.push paper.path "M#{pxoff},0.5v#{grid_size}"
+			grid_lines.push paper.path "M0.5,#{pxoff}h#{grid_size}"
+
+		for line in grid_lines
+			line.attr {
+				stroke: '#ddd'
+				'stroke-width': 1
+			}
+
+		# Draw and format puzzle numbers
+		current_number = 1
+		for i in [0..puzzle_size-1]
+			for j in [0..puzzle_size-1]
+				if has_number p,i,j 
+					# console.log "#{i} #{j} #{p[i][j]}"
+					numbers.push paper.text(
+						square_size * j + 2, 
+						square_size * i + 8, 
+						current_number)
+						 .attr {
+						 	'text-anchor': 'start'
+						 }
+					current_number += 1
 
 	# Chat functions
 	$('#chat_input').on 'keyup', (e) ->
@@ -56,6 +117,8 @@ $ ->
 
 	puzzle_size = 15
 
+	p = {}
+
 	square_size = grid_size / (1.0 * puzzle_size)
 
 	letters = {}
@@ -67,28 +130,24 @@ $ ->
 
 	cursors = []
 
+	black_squares = {}
+
 	paper = Raphael "crossword_canvas", grid_size + 2, grid_size + 2
 	# background = paper.rect 0, 0, grid_size, grid_size
 
-	# Draw and format grid lines
-	for offset in [0..puzzle_size]
-		pxoff = square_size * offset + 0.5
-		grid_lines.push paper.path "M#{pxoff},0.5v#{grid_size}"
-		grid_lines.push paper.path "M0.5,#{pxoff}h#{grid_size}"
+	reset_puzzle = ->
+		# Initialize black squares
+		for i in [0..puzzle_size - 1]
+			black_squares[i] = {}
+			for j in [0..puzzle_size - 1]
+				black_squares[i][j] = null
 
-	for line in grid_lines
-		line.attr {
-			stroke: '#ddd'
-			'stroke-width': 1
-		}
-	
-	# Draw and format puzzle numbers
-	for i in [0..puzzle_size-1]
-		for j in [0..puzzle_size-1]
-			paper.text(square_size * j + 2, square_size * i + 8, i * j)
-				 .attr {
-				 	'text-anchor': 'start'
-				 }
+		
+		
+		
+
+		$('#across_clues').empty()
+		$('#down_clues').empty()
 
 	# Handle uploads
 	$('#fileupload').fileupload {
@@ -102,3 +161,6 @@ $ ->
 
 	$('#upload_button').click (e) ->
 		e.preventDefault()
+
+	$.getJSON '/static/puzzle.json', (data) ->
+		make_puzzle data

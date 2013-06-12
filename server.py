@@ -95,6 +95,7 @@ def parse(s):
     data['title'] = title
     data['author'] = author
     data['puzzle'] = [''.join(x).replace('.','_') for x in p]
+    # data['puzzle'] = [''.join([x[i] for x in data['puzzle']]) for i in range(len(data['puzzle'][0]))]
     data['clues'] = clues
 
     return data
