@@ -31,6 +31,7 @@ class Room:
     def __init__(self):
         self.clients = set()
         self.puzzle = Puzzle()
+        self.grid = [['' for j in range(15)] for i in range(15)]
         self.id = uuid.uuid4()
         room_hash[str(self.id)] = self
 
@@ -44,6 +45,14 @@ class Room:
             'content': content
         }
         self.broadcast(json.dumps(message))
+
+    def print_grid(self):
+        for i in range(self.puzzle['height']):
+            print ''.join([self.grid[i][j] if self.grid[i][j] != '' else ' ' 
+                           for j in range(self.puzzle['width'])])
+
+    def get_errors(self):
+        pass
 
 # parse puz files
 # TODO: refactor this
@@ -123,8 +132,16 @@ class UploadHandler(tornado.web.RequestHandler):
             message = {}
             message['content'] = room.puzzle
             message['type'] = 'new puzzle'
+
+            # set up room grid
+            room.grid = {}
+            for i in range(room.puzzle['height']):
+                room.grid[i] = {}
+                for j in range(room.puzzle['width']):
+                    room.grid[i][j] = ''
             
             room.broadcast(json.dumps(message))
+            room.room_chat('Puzzle changed to %s.' % room.puzzle['title'])
             self.write('Success!')
         else:
             self.write('Failure...')
@@ -205,6 +222,12 @@ class PlayerWebSocket(tornado.websocket.WebSocketHandler):
                     message['content'] = 'Invalid command.'
                     self.send(message)
 
+        if message['type'] == 'change square':
+            # update state of puzzle
+            data = message['content']
+            rooms[self.room].grid[data['i']][data['j']] = data['char']
+            rooms[self.room].broadcast(json.dumps(message))
+            rooms[self.room].print_grid()
 
 
 ################### Tornado server settings ####################

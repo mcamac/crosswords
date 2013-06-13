@@ -26,6 +26,9 @@ $ ->
 		if data.type == 'new puzzle'
 			make_puzzle data.content
 
+		if data.type == 'change square'
+			set_square_value data.content.i, data.content.j, data.content.char, false
+
 	sendChatMessage = (message) ->
 		ws.send JSON.stringify {
 			type: 'client chat message'
@@ -92,7 +95,7 @@ $ ->
 			return true
 		return false
 
-	set_square_value = (i, j, char) ->
+	set_square_value = (i, j, char, broadcast) ->
 		if letters[i][j]
 			letters[i][j].remove()
 
@@ -103,8 +106,21 @@ $ ->
 							 	'font-size': 20
 							 	'text-anchor': 'middle'
 							 	'font-family': 'Source Sans'
-							 	'font-weight': 'normal'
+							 	'font-
+							 	weight': 'normal'
 							 )
+			
+
+	send_set_square_value = (i, j, char) ->
+		ws.send JSON.stringify {
+			type: 'change square'
+			content: {
+				i: i
+				j: j
+				char: char
+			}
+		}
+
 	valid = (p, i, j) ->
 		if i < 0 or j < 0 or i >= puzzle_size or j >= puzzle_size or p[i][j] == '_'
 			return false
@@ -148,7 +164,7 @@ $ ->
 	alpha = 'abcdefghijklmnopqrstuvwxyz'
 	for letter in alpha
 		key letter, (e) ->
-			set_square_value ci, cj, String.fromCharCode(e.keyCode)
+			send_set_square_value ci, cj, String.fromCharCode(e.keyCode)
 			if dir == 'A'
 				go_right()
 			else
@@ -180,7 +196,7 @@ $ ->
 
 	key 'backspace', (e) ->
 		e.preventDefault()
-		set_square_value ci, cj, ''
+		send_set_square_value ci, cj, ''
 		if dir == 'A' then go_left() else go_up()
 
 		
@@ -322,6 +338,12 @@ $ ->
 	
 
 	reset_puzzle = ->
+		# Clear black squares
+		for i in [0..puzzle_size-1]
+			for j in [0..puzzle_size-1]
+				if black_squares[i] and black_squares[i][j]
+					black_squares[i][j].remove()
+
 		# Initialize black squares
 		for i in [0..puzzle_size - 1]
 			black_squares[i] = {}
@@ -332,7 +354,10 @@ $ ->
 				letters[i][j] = null
 				numbers[i][j] = null
 
-		
+		# clear numbers
+		for text in number_text
+			text.remove()
+		number_text = []
 		
 
 		if across_highlight
