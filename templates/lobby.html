@@ -1,17 +1,79 @@
 <html>
 <head>
+	<script src="/static/js/vendor/jquery.js" type="text/javascript"></script>
 
-<script type="text/javascript">
-	var ws = new WebSocket('ws://' + location.hostname + ':' + location.port + location.pathname + 'sub');
-
-	ws.onmessage = function(msg) {
-		console.log(msg);
+	<script src="/static/js/jquery-ui.min.js"></script>
+	<script src="/static/js/jquery.pulse.min.js" type="text/javascript"></script>
+	<script type="text/javascript">
+	Array.prototype.choice = function() {
+		return this[Math.floor(Math.random()*this.length)];
 	}
-</script>
 
+
+	var adverbs = ['awkwardly', 'boozily', 'complacently', 'deviously',
+	'energetically', 'facetiously', 'gracefully'];
+	var gerunds = ['ambling', 'bleating', 'cooking', 'defacing',
+	'engaging', 'finagling', 'groveling'];
+	var animals = ['albatross', 'bison', 'caterpillar', 'duck',
+	'emu', 'flamingo', 'gnu'];
+	function room_name() {
+		return adverbs.choice() + '-' + gerunds.choice() + '-' + animals.choice();
+	}
+	$(document).ready(function() {
+		$("#room_input").val(room_name());
+		$("#room_button").click(function(e){
+			// alert('hi');
+			console.log(window);
+			e.preventDefault();
+			var room_name = $('#room_input').val()
+			var clean_room_name = room_name.replace(/[^a-z\-]/g, "");
+			if (room_name != clean_room_name && room_name != '') {
+				console.log(clean_room_name);
+				$('h2').pulse({color: 'red'},5000);
+			} else {
+				window.location = 'play/' + room_name;
+			}
+			
+		});
+	});
+
+	
+	</script>
+
+	<link rel="stylesheet" href="/static/css/foundation.css">
 </head>
-<body>
-Hello asdf
+<div class="row" style="padding-top:100px">
+	<div class="large-12 large-centered columns">
+		<h2 style="text-align:center"> Crosswords with Friends, Buddies, Pals, and Guys </h2>
+	</div>
+</div>
+
+<div class="row">
+	<div class="row collapse">
+		<div class="large-8 large-centered columns">
+			<div class="small-10 columns">
+				<input id="room_input" type="text" placeholder="Room Name">
+			</div>
+			<div class="small-2 columns">
+				<a id="room_button" href="#" class="button prefix">Go to Room</a>
+			</div>
+		</div>
+	</div>
+</div>
 </body>
 
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-33953736-1']);
+  _gaq.push(['_setDomainName', 'mcamac.com']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
 </html>

@@ -10,18 +10,20 @@ $ ->
 
 	ws.onmessage = (msg) ->
 		data = JSON.parse msg.data
-		console.log data
+		# console.log data
 
 		if data.type == 'client chat message'
-			console.log (data.name + ':' + data.content)
+			# console.log (data.name + ':' + data.content)
 			$('#chat_box').append "<p><b>#{data.name}</b>: #{data.content}</p>"
 
 			# scroll to bottom of chatbox
-			el = $('#chat_box')[0]
-			el.scrollTop = el.scrollHeight - $(el).height
+			$('#chat_box').scrollTop $('#chat_box')[0].scrollHeight
 
 		if data.type == 'room chat message'
 			$('#chat_box').append "<p><i>#{data.content}</i></p>"
+
+			# scroll to bottom of chatbox
+			$('#chat_box').scrollTop $('#chat_box')[0].scrollHeight
 
 		if data.type == 'new puzzle'
 			make_puzzle data.content
@@ -55,7 +57,7 @@ $ ->
 	grid_lines = []
 	grid_size = 540
 
-	number_text = []
+	number_text = {}
 	numbers = {}
 	numbers_rev = {}
 
@@ -103,7 +105,7 @@ $ ->
 				 )
 
 	has_number = (p, i, j) ->
-		# console.log p[i][j]
+		# # console.log p[i][j]
 		if p[i][j] == '_'
 			return false
 		if i == 0 or j == 0
@@ -134,7 +136,7 @@ $ ->
 		if letters[i][j]
 			letters[i][j].remove()
 
-		console.log letters[i][j], i, j, char
+		# console.log letters[i][j], i, j, char
 		char = char.toUpperCase()
 
 		letters[i][j] = paper.text((j + 0.5) * square_size, (i + 0.55) * square_size, char)
@@ -166,7 +168,7 @@ $ ->
 		return i >= 0 and j >= 0 and i < puzzle_size and j < puzzle_size
 
 	get_clue_number = (p, i, j, d) ->
-		console.log p,i,j
+		# console.log p,i,j
 		if not valid(p, i, j)
 			return -1
 
@@ -199,8 +201,8 @@ $ ->
 
 
 	# keyboard shortcuts
-	alpha = 'abcdefghijklmnopqrstuvwxyz'
-	for letter in alpha
+	alphanum = 'abcdefghijklmnopqrstuvwxyz0123456789'
+	for letter in alphanum
 		key letter, (e) ->
 			send_set_square_value ci, cj, String.fromCharCode(e.keyCode)
 			if dir == 'A'
@@ -239,7 +241,7 @@ $ ->
 
 		
 	rehighlight = ->
-		console.log square_highlight		
+		# console.log square_highlight		
 
 		acr_sj = cj
 		acr_ej = cj
@@ -275,14 +277,20 @@ $ ->
 		if letters[ci][cj]
 			letters[ci][cj].attr 'fill', 'white'
 
+		if numbers[ci][cj]
+			number_text[ci][cj].attr 'fill', 'white'
+
 	set_cursor = (i, j) ->
 		if p[i][j] == '_'
 			return
 		if letters[ci][cj]
 			letters[ci][cj].attr 'fill', 'black'
+
+		if number_text[ci][cj]
+			number_text[ci][cj].attr 'fill', 'black'
 		ci = i
 		cj = j
-		console.log 'set',ci,cj
+		# console.log 'set',ci,cj
 		rehighlight()
 
 		# change current clue
@@ -299,7 +307,7 @@ $ ->
 		$("##{dir}_clues").scrollTo ".li-clue[data-clue-id=#{dir}#{number}]", 75
 		$("##{other_dir dir}_clues").scrollTo ".li-clue[data-clue-id=#{other_dir dir}#{other_number}]", 75
 		
-		console.log clue, number, dir
+		# console.log clue, number, dir
 
 		clue = clues[dir][number]
 		$('#current_clue').html("#{number}#{dir} - #{clue}")
@@ -313,7 +321,7 @@ $ ->
 
 		$('#puzzle_title').html puzzle.title
 
-		console.log JSON.stringify contents
+		# console.log JSON.stringify contents
 
 		puzzle_size = puzzle.height
 		square_size = grid_size / (1.0 * puzzle_size)
@@ -357,8 +365,8 @@ $ ->
 		for i in [0..puzzle_size-1]
 			for j in [0..puzzle_size-1]
 				if has_number p,i,j 
-					console.log "#{i} #{j} #{current_number}"
-					number_text.push paper.text(
+					# console.log "#{i} #{j} #{current_number}"
+					number_text[i][j] = paper.text(
 						square_size * j + 2, 
 						square_size * i + 8, 
 						current_number)
@@ -387,7 +395,10 @@ $ ->
 				flip_dir()
 			set_cursor ei, ej
 
-		set_cursor 0, 0
+		fj = 0
+		while p[0][fj] == '_'
+			fj++
+		set_cursor 0, fj
 
 
 	# Chat functions
@@ -401,29 +412,33 @@ $ ->
 	
 
 	reset_puzzle = ->
+		# clear gridlines
+		for line in grid_lines
+			line.remove()
+
 		# Clear black squares
-		for i in [0..puzzle_size-1]
-			for j in [0..puzzle_size-1]
+		for i,_ of letters
+			for j, _ of letters[i]
 				if black_squares[i] and black_squares[i][j]
 					black_squares[i][j].remove()
 				if letters[i] and letters[i][j]
 					set_square_value i,j,'',false
+				if number_text[i] and number_text[i][j]
+					number_text[i][j].remove()
 
 		# Initialize black squares
 		for i in [0..puzzle_size - 1]
 			black_squares[i] = {}
 			letters[i] = {}
 			numbers[i] = {}
+			number_text[i] = {}
 			for j in [0..puzzle_size - 1]
 				black_squares[i][j] = null
 				letters[i][j] = null
 				numbers[i][j] = null
-				
+				number_text[i][j] = null
 
 		# clear numbers
-		for text in number_text
-			text.remove()
-		number_text = []
 		numbers_rev = {}
 		
 
@@ -470,10 +485,10 @@ $ ->
 	$('#fileupload').fileupload {
 		dataType: 'json'
 		add: (e, data) ->
-			console.log data
+			# console.log data
 			data.submit()
 		done: (e, data) ->
-			console.log 'done'
+			# console.log 'done'
 	}
 
 	$('#upload_button').click (e) ->
