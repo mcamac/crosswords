@@ -24,7 +24,7 @@
 <nav class='top-bar'>
 	<ul class="title-area">
 		<li class="name">
-			<h1><a href='#'>Crosswords with Friends</a></h1> 
+			<h1><a href='#'>Crosswords with Friends, Buddies, Pals, and Guys</a></h1> 
 		</li>
 	</ul>
 	<section class="top-bar-section">
@@ -58,7 +58,7 @@
 		<input type="text" id='chat_input'/>
 	</div>
 	<div class="large-6 crossword-column columns">
-		<h5> Room {{id}} - <span id="puzzle_title"></span> </h5>
+		<h5> <span id="puzzle_title"></span> </h5>
 		<p id="current_clue"> Current clue </p>
 		<div id="crossword_canvas"></div>
 	</div>
@@ -108,7 +108,8 @@
 
 <div id="help_modal" class="reveal-modal medium">
   <h4>Help</h4>
-  <p> To change your username, type <pre>/username new_username</pre> in chat.</p>
+  <p>If you're looking for .puz files, check out <a href="http://www.brendanemmettquigley.com/">Brendan Emmett Quigley's site</a>.</p>
+  <p>The grid will turn green when the puzzle is complete.</p>
 </div>
 
 <script src="/static/js/room.js" type="text/javascript"></script>
@@ -118,7 +119,20 @@
 </script>
 </body>
 
-<p id=players>
-</p>
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-33953736-1']);
+  _gaq.push(['_setDomainName', 'mcamac.com']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
 
 </html>
