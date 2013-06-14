@@ -4,10 +4,15 @@ TODOs
 
 Top Tier Priority
 -----------------
-* Tab/Enter (more general key-configs)
+* Better grid movement (Tab/Enter, etc.)
 * Competitive mode
+  - Live cursors
+* Percent completion (total, by user)
 
 
 Middle Tier Priority
 --------------------
-* Diagramless support
+* Diagramless support and other crossword-like puzzles
+* Customizable key-configs (maybe in JSON à la Sublime Text settings)
+* Stop SVG library from sending a ton of inline CSS
+* Branding
