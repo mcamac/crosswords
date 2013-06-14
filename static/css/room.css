@@ -96,3 +96,11 @@
 #room_options {
 	margin-top: 20px;
 }
+
+.active {
+	background-color: #6aaccd;
+}
+
+.semi-active {
+	background-color: #dddddd;
+}

@@ -26,8 +26,21 @@ $ ->
 		if data.type == 'new puzzle'
 			make_puzzle data.content
 
+		if data.type == 'existing puzzle'
+			make_puzzle data.content.puzzle
+			fill_existing_letters data.content.grid
+			if data.content.complete
+				greenBG()
+
 		if data.type == 'change square'
 			set_square_value data.content.i, data.content.j, data.content.char, false
+
+		if data.type == 'room members'
+			data.content.sort()
+			$('#members_box').html data.content.join(', ')
+
+		if data.type == 'puzzle finished'
+			greenBG()
 
 	sendChatMessage = (message) ->
 		ws.send JSON.stringify {
@@ -35,12 +48,16 @@ $ ->
 			content: message
 		}
 
+	greenBG = ->
+		background.attr 'opacity', 0.2
+
 	# Crossword SVG variables
 	grid_lines = []
 	grid_size = 540
 
 	number_text = []
 	numbers = {}
+	numbers_rev = {}
 
 	puzzle_size = 15
 
@@ -95,10 +112,29 @@ $ ->
 			return true
 		return false
 
+	new_letter = (i, j, char) ->
+		paper.text((j + 0.5) * square_size, (i + 0.55) * square_size, char)
+			 .attr(
+			 	'font-size': 20
+			 	'text-anchor': 'middle'
+			 	'font-family': 'Source Sans'
+			 	'font-
+			 	weight': 'normal'
+			 )
+
+	fill_existing_letters = (grid) ->
+		for i in [0..puzzle_size-1]
+			for j in [0..puzzle_size-1]
+				if letters[i][j]
+					letters[i][j].remove()
+				letters[i][j] = new_letter i, j, grid[i][j]
+
+
 	set_square_value = (i, j, char, broadcast) ->
 		if letters[i][j]
 			letters[i][j].remove()
 
+		console.log letters[i][j], i, j, char
 		char = char.toUpperCase()
 
 		letters[i][j] = paper.text((j + 0.5) * square_size, (i + 0.55) * square_size, char)
@@ -143,8 +179,10 @@ $ ->
 
 		return numbers[i][j]
 
+	other_dir = (d) ->
+		if d == 'D' then 'A' else 'D'
 	flip_dir = ->
-		dir = if dir == 'D' then 'A' else 'D'
+		dir = other_dir dir
 		rehighlight()
 		update_current_clue()
 
@@ -213,7 +251,7 @@ $ ->
 			width: square_size * (acr_ej - acr_sj + 1)
 			x: acr_sj * square_size + 0.5
 			y: ci * square_size + 0.5
-			fill: if dir == 'A' then '#4f7ec4' else '#eee'
+			fill: if dir == 'A' then '#4f7ec4' else '#ddd'
 		}
 
 		down_si = ci
@@ -226,7 +264,7 @@ $ ->
 			height: square_size * (down_ei - down_si + 1)
 			x: cj * square_size + 0.5
 			y: down_si * square_size + 0.5
-			fill: if dir == 'D' then '#4f7ec4' else '#eee'
+			fill: if dir == 'D' then '#4f7ec4' else '#ddd'
 		}
 
 		square_highlight.attr {
@@ -234,9 +272,14 @@ $ ->
 			y: ci * square_size + 0.5
 		}
 
+		if letters[ci][cj]
+			letters[ci][cj].attr 'fill', 'white'
+
 	set_cursor = (i, j) ->
 		if p[i][j] == '_'
 			return
+		if letters[ci][cj]
+			letters[ci][cj].attr 'fill', 'black'
 		ci = i
 		cj = j
 		console.log 'set',ci,cj
@@ -247,8 +290,18 @@ $ ->
 
 	update_current_clue = ->
 		number = get_clue_number(p, ci, cj, dir)
-		clue = clues[dir][number]
+		other_number = get_clue_number(p, ci, cj, other_dir dir)
+
+		$('.li-clue').removeClass 'active'
+		$('.li-clue').removeClass 'semi-active'
+		$(".li-clue[data-clue-id=#{dir}#{number}]").addClass 'active'
+		$(".li-clue[data-clue-id=#{other_dir dir}#{other_number}]").addClass 'semi-active'
+		$("##{dir}_clues").scrollTo ".li-clue[data-clue-id=#{dir}#{number}]", 75
+		$("##{other_dir dir}_clues").scrollTo ".li-clue[data-clue-id=#{other_dir dir}#{other_number}]", 75
+		
 		console.log clue, number, dir
+
+		clue = clues[dir][number]
 		$('#current_clue').html("#{number}#{dir} - #{clue}")
 
 	make_puzzle = (contents) ->
@@ -270,9 +323,17 @@ $ ->
 		reset_puzzle()
 		
 		for num, clue of contents.clues.across
-			$('#across_clues').append "<li><div class=\"num\"> #{num} </div> <div class=\"clue-text\"> #{clue} </div></li>"
+			$('#A_clues').append "<li class='li-clue' data-clue-id=A#{num}><div class=\"num\"> #{num} </div> <div class=\"clue-text\"> #{clue} </div></li>"
 		for num, clue of contents.clues.down
-			$('#down_clues').append "<li><div class=\"num\"> #{num} </div> <div class=\"clue-text\"> #{clue} </div></li>"
+			$('#D_clues').append "<li class='li-clue' data-clue-id=D#{num}><div class=\"num\"> #{num} </div> <div class=\"clue-text\"> #{clue} </div></li>"
+
+		# set up events for clicking
+		$('.li-clue').on 'click', (e) ->
+			clue_id = $(this).data('clue-id')
+			ns = numbers_rev[clue_id]
+			if clue_id[0] != dir
+				flip_dir()
+			set_cursor ns[0], ns[1]
 
 		for i in [0..puzzle_size-1]
 			for j in [0..puzzle_size-1]
@@ -305,6 +366,8 @@ $ ->
 						 	'text-anchor': 'start'
 						 }
 					numbers[i][j] = current_number
+					numbers_rev['A'+current_number] = [i, j]
+					numbers_rev['D'+current_number] = [i, j]
 					current_number += 1
 
 		if background
@@ -313,7 +376,7 @@ $ ->
 		background = paper.rect(0, 0, grid_size, grid_size)
 					  .attr {
 					  	stroke: 'none'
-					  	fill: '#000'
+					  	fill: '#62cb62'
 					  	opacity: 0.0
 					  }
 
@@ -343,6 +406,8 @@ $ ->
 			for j in [0..puzzle_size-1]
 				if black_squares[i] and black_squares[i][j]
 					black_squares[i][j].remove()
+				if letters[i] and letters[i][j]
+					set_square_value i,j,'',false
 
 		# Initialize black squares
 		for i in [0..puzzle_size - 1]
@@ -353,11 +418,13 @@ $ ->
 				black_squares[i][j] = null
 				letters[i][j] = null
 				numbers[i][j] = null
+				
 
 		# clear numbers
 		for text in number_text
 			text.remove()
 		number_text = []
+		numbers_rev = {}
 		
 
 		if across_highlight
@@ -369,7 +436,7 @@ $ ->
 								.attr {
 									fill: '#233'
 									stroke: 'none'
-									opacity: 0.7
+									opacity: 0.5
 								}
 		
 		if down_highlight
@@ -381,7 +448,7 @@ $ ->
 								.attr {
 									fill: '#233'
 									stroke: 'none'
-									opacity: 0.7
+									opacity: 0.5
 								}
 
 		if square_highlight
@@ -391,13 +458,13 @@ $ ->
 									  square_size,
 									  square_size)
 								.attr {
-									fill: '#852'
+									fill: '#141d3d'
 									stroke: 'none'
-									opacity: 0.9
+									opacity: 0.7
 								}
 
-		$('#across_clues').empty()
-		$('#down_clues').empty()
+		$('#A_clues').empty()
+		$('#D_clues').empty()
 
 	# Handle uploads
 	$('#fileupload').fileupload {
