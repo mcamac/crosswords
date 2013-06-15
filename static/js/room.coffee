@@ -59,6 +59,7 @@ $ ->
 
 	number_text = {}
 	numbers = {}
+	number_list = []
 	numbers_rev = {}
 
 	puzzle_size = 15
@@ -138,14 +139,14 @@ $ ->
 
 		# console.log letters[i][j], i, j, char
 		char = char.toUpperCase()
-
+		color = if (i == ci) and (j == cj) then 'white' else 'black'
 		letters[i][j] = paper.text((j + 0.5) * square_size, (i + 0.55) * square_size, char)
 							 .attr(
 							 	'font-size': 20
 							 	'text-anchor': 'middle'
 							 	'font-family': 'Source Sans'
-							 	'font-
-							 	weight': 'normal'
+							 	'font-weight': 'normal'
+							 	fill: color
 							 )
 			
 
@@ -181,6 +182,23 @@ $ ->
 
 		return numbers[i][j]
 
+	next_number = (n) ->
+		for i in number_list
+			if i >= n + 1 and $(".li-clue[data-clue-id=#{dir}#{i}]").length > 0
+				return i
+		return 1
+
+	prev_number = (n) ->
+		for i in [number_list.length-1..0]
+			x = number_list[i]
+			if x <= n - 1 and $(".li-clue[data-clue-id=#{dir}#{x}]").length > 0
+				return x
+		return number_list[number_list.length - 1]
+
+	go_to_clue = (clue_id) ->
+		ns = numbers_rev["#{dir+clue_id}"]
+		set_cursor ns[0], ns[1]
+
 	other_dir = (d) ->
 		if d == 'D' then 'A' else 'D'
 	flip_dir = ->
@@ -205,9 +223,9 @@ $ ->
 	for letter in alphanum
 		key letter, (e) ->
 			send_set_square_value ci, cj, String.fromCharCode(e.keyCode)
-			if dir == 'A'
+			if dir == 'A' and valid(p, ci, cj + 1)
 				go_right()
-			else
+			else if dir == 'D' and valid(p, ci + 1, cj)
 				go_down()
 
 	go_left = ->
@@ -239,6 +257,13 @@ $ ->
 		send_set_square_value ci, cj, ''
 		if dir == 'A' then go_left() else go_up()
 
+	key 'tab', (e) ->
+		e.preventDefault()
+		go_to_clue next_number get_clue_number(p, ci, cj, dir) 
+
+	key 'shift+tab', (e) ->
+		e.preventDefault()
+		go_to_clue prev_number get_clue_number(p, ci, cj, dir) 
 		
 	rehighlight = ->
 		# console.log square_highlight		
@@ -283,7 +308,9 @@ $ ->
 	set_cursor = (i, j) ->
 		if p[i][j] == '_'
 			return
-		if letters[ci][cj]
+
+		console.log ci, cj, i, j
+		if letters[ci][cj] and not (ci == i and cj == j)
 			letters[ci][cj].attr 'fill', 'black'
 
 		if number_text[ci][cj]
@@ -374,6 +401,7 @@ $ ->
 						 	'text-anchor': 'start'
 						 }
 					numbers[i][j] = current_number
+					number_list.push(current_number)
 					numbers_rev['A'+current_number] = [i, j]
 					numbers_rev['D'+current_number] = [i, j]
 					current_number += 1
