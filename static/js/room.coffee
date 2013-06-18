@@ -10,7 +10,7 @@ $ ->
 
 	ws.onmessage = (msg) ->
 		data = JSON.parse msg.data
-		# console.log data
+		console.log data
 
 		if data.type == 'client chat message'
 			# console.log (data.name + ':' + data.content)
@@ -39,7 +39,23 @@ $ ->
 
 		if data.type == 'room members'
 			data.content.sort()
-			$('#members_box').html data.content.join(', ')
+			$('#members_box').html $.map(data.content, (row) ->
+				"<div style='background-color: #{row.color};width:14px;height:14px;display:inline-block;'>
+				</div>#{row.name}").join(', ')
+			send_set_cursor ci, cj
+
+			ids = $.map(data.content, (row) -> row.id)
+			console.log ids
+			for id, _ of cursors
+				if $.inArray(id, ids) == -1
+					cursors[id].remove()
+					cursors[id] = undefined
+
+		if data.type == 'want cursors'
+			send_set_cursor ci, cj
+
+		if data.type == 'set cursor'
+			place_cursor data.user.id, data.user.color, data.content[0], data.content[1]
 
 		if data.type == 'puzzle finished'
 			greenBG()
@@ -85,7 +101,7 @@ $ ->
 	down_highlight = null
 
 
-	cursors = []
+	cursors = {}
 
 	black_squares = {}
 
@@ -116,9 +132,10 @@ $ ->
 		return false
 
 	new_letter = (i, j, char) ->
-		paper.text((j + 0.5) * square_size, (i + 0.55) * square_size, char)
+		xoffset = if puzzle_size >= 20 then 0.63 else 0.5
+		paper.text((j + xoffset) * square_size, (i + 0.55) * square_size, char)
 			 .attr(
-			 	'font-size': 20
+			 	'font-size': if puzzle_size >= 20 then 16 else 20
 			 	'text-anchor': 'middle'
 			 	'font-family': 'Source Sans'
 			 	'font-
@@ -140,9 +157,10 @@ $ ->
 		# console.log letters[i][j], i, j, char
 		char = char.toUpperCase()
 		color = if (i == ci) and (j == cj) then 'white' else 'black'
-		letters[i][j] = paper.text((j + 0.5) * square_size, (i + 0.55) * square_size, char)
+		xoffset = if puzzle_size >= 20 then 0.63 else 0.5
+		letters[i][j] = paper.text((j + xoffset) * square_size, (i + 0.55) * square_size, char)
 							 .attr(
-							 	'font-size': 20
+							 	'font-size': if puzzle_size >= 20 then 16 else 20
 							 	'text-anchor': 'middle'
 							 	'font-family': 'Source Sans'
 							 	'font-weight': 'normal'
@@ -201,6 +219,7 @@ $ ->
 
 	other_dir = (d) ->
 		if d == 'D' then 'A' else 'D'
+
 	flip_dir = ->
 		dir = other_dir dir
 		rehighlight()
@@ -217,6 +236,16 @@ $ ->
 			return [tryi, tryj]
 		return [i, j]
 
+	new_player_square = ->
+		paper.rect(-50,
+				  -50,
+				  square_size,
+				  square_size)
+			.attr {
+				fill: '#141d3d'
+				stroke: 'none'
+				opacity: 0.7
+			}
 
 	# keyboard shortcuts
 	alphanum = 'abcdefghijklmnopqrstuvwxyz0123456789'
@@ -309,7 +338,7 @@ $ ->
 		if p[i][j] == '_'
 			return
 
-		console.log ci, cj, i, j
+		# console.log ci, cj, i, j
 		if letters[ci][cj] and not (ci == i and cj == j)
 			letters[ci][cj].attr 'fill', 'black'
 
@@ -322,6 +351,32 @@ $ ->
 
 		# change current clue
 		update_current_clue()
+		send_set_cursor(ci, cj)
+
+	send_set_cursor = (i, j) ->
+		ws.send JSON.stringify {
+			type: 'set cursor'
+			content: [i, j]
+		}
+
+	place_cursor = (pid, color, i, j) ->
+		if not cursors[pid]
+			cursors[pid] = paper.rect(-50, -50,
+								  square_size,
+								  square_size)
+							.attr {
+								fill: '#141d3d'
+								stroke: 'none'
+								opacity: 0.7
+							}
+		else
+			cursors[pid].attr {
+				fill: color
+				x: j * square_size + 0.5
+				y: i * square_size + 0.5
+			}
+		console.log cursors[pid]
+
 
 	update_current_clue = ->
 		number = get_clue_number(p, ci, cj, dir)
@@ -398,6 +453,7 @@ $ ->
 						square_size * i + 8, 
 						current_number)
 						 .attr {
+						 	'font-size': if puzzle_size >= 20 then '8px' else '10px'
 						 	'text-anchor': 'start'
 						 }
 					numbers[i][j] = current_number
@@ -427,6 +483,8 @@ $ ->
 		while p[0][fj] == '_'
 			fj++
 		set_cursor 0, fj
+
+		ws.send JSON.stringify {type: 'want cursors'}
 
 
 	# Chat functions

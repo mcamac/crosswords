@@ -37,6 +37,8 @@ class Room:
         self.complete = False
         self.competitive = True
 
+        self.client_squares = {}
+
         room_hash[str(self.id)] = self
 
     def broadcast(self, message):
@@ -80,12 +82,16 @@ class Room:
             return True
         return False
 
-    def broadcast_memberlist(self):
+    def broadcast_memberlist(self, own_socket_id):
         message = {
             'type': 'room members',
-            'content': [sockets[id].name for id in self.clients]
+            'content': [sockets[id].metadata() for id in self.clients]
         }
         self.broadcast(json.dumps(message))
+
+def random_color():
+    r = lambda: random.randint(0,255)
+    return '#%02X%02X%02X' % (r(),r(),r())
 
 # parse puz files
 # TODO: refactor this
@@ -201,6 +207,7 @@ class PlayerWebSocket(tornado.websocket.WebSocketHandler):
         print room
         self.room = room
         self.id = uuid.uuid4()
+        self.color = random_color()
         sockets[self.id] = self
         self.name = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(5))
         print 'Opening', self.name
@@ -219,7 +226,7 @@ class PlayerWebSocket(tornado.websocket.WebSocketHandler):
             'content': self.name + ' joined.'
         }
         rooms[self.room].broadcast(json.dumps(message))
-        rooms[self.room].broadcast_memberlist()
+        rooms[self.room].broadcast_memberlist(self.id)
 
         # send puzzle, if any
         if rooms[self.room].puzzle is not None:
@@ -231,6 +238,10 @@ class PlayerWebSocket(tornado.websocket.WebSocketHandler):
                 'complete': rooms[self.room].complete
             }
             self.send(message)
+
+    def metadata(self):
+        return {'name': self.name, 'id': str(self.id), 
+            'color': self.color}
         
     def on_close(self):
         print 'Closing:', self.name, self.id
@@ -246,10 +257,15 @@ class PlayerWebSocket(tornado.websocket.WebSocketHandler):
             'content': self.name + ' left.'
         }
         rooms[self.room].broadcast(json.dumps(message))
-        rooms[self.room].broadcast_memberlist()
+        rooms[self.room].broadcast_memberlist(self.id)
 
         del sockets[self.id]
     
+    def broadcast_others(self, message):
+        for id in rooms[self.room].clients:
+            if id != self.id:
+                sockets[id].write_message(json.dumps(message))
+
     # some shorthand
     def send(self, message):
         self.write_message(json.dumps(message))
@@ -276,7 +292,7 @@ class PlayerWebSocket(tornado.websocket.WebSocketHandler):
                         alert = '%s changed their name to %s' % (self.name, new_username)
                         self.name = new_username
                         rooms[self.room].room_chat(alert)
-                        rooms[self.room].broadcast_memberlist()
+                        rooms[self.room].broadcast_memberlist(self.id)
                     else:
                         message['content'] = 'Invalid username.'
                         self.send(message)
@@ -292,6 +308,15 @@ class PlayerWebSocket(tornado.websocket.WebSocketHandler):
             rooms[self.room].print_grid()
             rooms[self.room].check_puzzle()
 
+        if message['type'] == 'set cursor':
+            message['user'] = self.metadata()
+            self.broadcast_others(message)
+
+        if message['type'] == 'want cursors':
+            self.broadcast_others(message)
+
+        if message['type'] == 'toggle option':
+            pass
 
 ################### Tornado server settings ####################
 settings = {
