@@ -93,6 +93,15 @@ def random_color():
     r = lambda: random.randint(0,255)
     return '#%02X%02X%02X' % (r(),r(),r())
 
+color_scheme = [
+    'rgb(63, 61, 153)', 'rgb(153, 61, 113)', 'rgb(153, 139, 61)', 'rgb(61, 153, 86)',
+    'rgb(61, 90, 153)', 'rgb(153, 61, 144)', 'rgb(153, 109, 61)', 'rgb(67, 153, 61)',
+    'rgb(61, 121, 153)', 'rgb(132, 61, 153)', 'rgb(153, 78, 61)', 'rgb(98, 153, 61)',
+    'rgb(61, 151, 153)', 'rgb(101, 61, 153)', 'rgb(153, 61, 75)'
+]
+def next_color_in_scheme(i):
+    return color_scheme[i % len(color_scheme)]
+
 # parse puz files
 # TODO: refactor this
 def parse(s):
@@ -207,7 +216,7 @@ class PlayerWebSocket(tornado.websocket.WebSocketHandler):
         print room
         self.room = room
         self.id = uuid.uuid4()
-        self.color = random_color()
+        self.color = next_color_in_scheme(len(rooms[room].clients))
         sockets[self.id] = self
         self.name = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(5))
         print 'Opening', self.name
