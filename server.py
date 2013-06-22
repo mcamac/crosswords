@@ -14,6 +14,7 @@ import json
 import re
 import os
 import traceback
+from collections import OrderedDict
 
 logger = logging.getLogger(__name__)
 
@@ -29,7 +30,8 @@ class Puzzle:
 
 class Room:
     def __init__(self):
-        self.clients = set()
+        self.clients = OrderedDict()
+        self.clients_exited = set()
         self.puzzle = {"title": "NY Times, Mon, Jun 03, 2013", "puzzle": ["CEDAR_ZION_PHIL", "AMORE_IRAE_RONA", "PIGINAPOKE_EGGY", "ELIE_EON_DASHES", "SEETHRU_OSOLE__", "___TOOTAT_KEANU", "JIHADS_TOW_YVES", "USA_SOWSEAR_ERE", "DEMI_LIE_SOUNDS", "DEFOE_CARHOP___", "__ININK_ATTACHE", "ASSISI_GNU_TAIL", "RITZ_PORKBARREL", "ALEE_ARAL_DEERE", "BODS_TOBE_SEWON"], "author": "John Lampkin / Will Shortz", "height": 15, "width": 15, "clues": {"down": {"1": "Bullfighters wave them", "2": "Writer Zola", "3": "Cowherd's stray", "4": "Short operatic song", "5": "Stimpy's bud", "6": "Like some detachable linings", "7": "What bodybuilders pump", "8": "Wood for a chest", "9": "Essentials", "10": "\"Blue Suede Shoes\" singer", "11": "Ecstatic state, informally", "12": "\"Bus Stop\" playwright", "13": "Puts down, as tile", "18": "Spray can", "23": "Just fine", "25": "Mortar troughs", "26": "Great Plains tribe", "28": "Floundering", "30": "Stereotypical techie", "31": "Applications", "32": "Naomi or Wynonna of country music", "33": "\"Got it!\"", "34": "Clumsy", "36": "Laundry basin", "40": "Lighted part of a candle", "41": "Part of a plant or tooth", "44": "Becomes charged, as the atmosphere", "47": "Stuck, with no way to get down", "49": "Sue Grafton's \"___ for Evidence\"", "51": "Really bug", "53": "Barely bite, as someone's heels", "55": "Rod who was a seven-time A.L. batting champ", "56": "Prefix with -glyphics", "57": "\"The ___ DeGeneres Show\"", "58": "Many an Iraqi", "59": "Corn Belt tower", "60": "Seize", "64": "Spanish gold", "65": "What TV watchers often zap"}, "across": {"1": "Wood for a chest", "6": "Holy Land", "10": "TV's Dr. ___", "14": "Love, Italian-style", "15": "\"Dies ___\" (Latin hymn)", "16": "Gossipy Barrett", "17": "Unseen purchase", "19": "Like custard and meringue", "20": "Writer Wiesel", "21": "Long, long time", "22": "- - -", "24": "Transparent, informally", "26": "\"___ Mio\"", "27": "Greet with a honk", "29": "Reeves of \"The Matrix\"", "32": "Holy wars", "35": "Drag behind, as a trailer", "37": "Designer Saint Laurent", "38": "Made in ___ (garment label)", "39": "You can't make a silk purse out of it, they say", "42": "Before, poetically", "43": "Actress Moore of \"Ghost\"", "45": "Tell a whopper", "46": "Buzz and bleep", "48": "Daniel who wrote \"Robinson Crusoe\"", "50": "Drive-in server", "52": "How to sign a contract", "54": "Ambassador's helper", "58": "Birthplace of St. Francis", "60": "African antelope", "61": "Part that wags", "62": "Big name in crackers", "63": "Like some wasteful government spending", "66": "Toward shelter, nautically", "67": "Asia's diminished ___ Sea", "68": "John ___ (tractor maker)", "69": "Physiques", "70": "Words before and after \"or not\"", "71": "Attach, as a button"}}}
         self.grid = [['' for j in range(15)] for i in range(15)]
         # self.grid = [['', 'A', 'S', 'S', 'E', 'S', '', 'B', 'O', 'A', 'T', '', 'S', 'T', 'E'], ['E', 'M', 'P', 'I', 'R', 'E', '', 'E', 'A', 'V', 'E', '', 'A', 'I', 'D'], ['S', 'T', 'A', 'L', 'E', 'C', 'O', 'F', 'F', 'E', 'E', '', 'L', 'P', 'S'], ['', '', 'M', 'A', 'I', 'T', 'A', 'I', '', '', '', 'T', 'O', 'T', 'E'], ['J', 'A', 'B', 'S', '', '', 'S', 'T', 'E', 'E', 'L', 'W', 'O', 'O', 'L'], ['I', 'D', 'O', '', 'D', 'D', 'T', '', 'B', 'Y', 'L', 'I', 'N', 'E', 'S'], ['G', 'A', 'T', 'E', 'A', 'U', '', 'A', 'R', 'E', 'A', 'S', '', '', ''], ['', '', 'S', 'T', 'Y', 'L', 'E', 'P', 'O', 'I', 'N', 'T', 'S', '', ''], ['', '', '', 'H', 'O', 'U', 'S', 'E', '', 'N', 'O', 'S', 'T', 'R', 'A'], ['P', 'A', 'T', 'E', 'N', 'T', 'S', '', 'F', 'G', 'S', '', 'R', 'U', 'G'], ['S', 'T', 'O', 'L', 'E', 'H', 'O', 'M', 'E', '', '', 'V', 'I', 'B', 'E'], ['A', 'M', 'P', 'S', '', '', '', 'E', 'L', 'O', 'P', 'E', 'D', '', ''], ['L', 'O', 'G', '', 'S', 'T', 'O', 'O', 'L', 'P', 'I', 'G', 'E', 'O', 'N'], ['M', 'S', 'U', '', 'T', 'H', 'A', 'W', '', 'E', 'L', 'A', 'N', 'D', 'S'], ['S', 'T', 'N', '', 'Y', 'U', 'K', 'S', '', 'N', 'E', 'S', 'T', 'E', 'A']]
@@ -42,8 +44,9 @@ class Room:
         room_hash[str(self.id)] = self
 
     def broadcast(self, message):
-        for id in self.clients:
-            sockets[id].write_message(message)
+        for id in self.clients.keys():
+            if id not in self.clients_exited:
+                sockets[id].write_message(message)
 
     def room_chat(self, content):
         message = {
@@ -85,7 +88,7 @@ class Room:
     def broadcast_memberlist(self, own_socket_id):
         message = {
             'type': 'room members',
-            'content': [sockets[id].metadata() for id in self.clients]
+            'content': [sockets[id].metadata() for id in self.clients if id not in self.clients_exited]
         }
         self.broadcast(json.dumps(message))
 
@@ -207,19 +210,29 @@ class UploadHandler(tornado.web.RequestHandler):
         
 
 class PlayerWebSocket(tornado.websocket.WebSocketHandler):
-    clients = []
-
     def __init__(self, *args, **kwargs):
         super(PlayerWebSocket, self).__init__(*args, **kwargs)
 
     def open(self, room):
         print room
         self.room = room
-        self.id = uuid.uuid4()
-        self.color = next_color_in_scheme(len(rooms[room].clients))
-        sockets[self.id] = self
         self.name = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(5))
         print 'Opening', self.name
+
+    def open2(self, username):
+        # look up the uuid in the NSA's huge data center
+        if uuid in rooms[self.room].clients.keys():
+            self.id = uuid
+            self.color = color_scheme[rooms[self.room].clients.keys().index(uuid) % len(color_scheme)]
+        else:
+            self.id = str(uuid.uuid4())
+            self.color = next_color_in_scheme(len(rooms[self.room].clients))
+            self.send({
+                'type': 'new uuid',
+                'uuid': self.id
+                })
+
+        sockets[self.id] = self
 
         message = {
             'type': 'room chat message',
@@ -228,7 +241,7 @@ class PlayerWebSocket(tornado.websocket.WebSocketHandler):
         self.send(message)
 
         # add to room list
-        rooms[room].clients.add(self.id)
+        rooms[self.room].clients[self.id] = self
 
         message = {
             'type': 'room chat message',
@@ -258,7 +271,7 @@ class PlayerWebSocket(tornado.websocket.WebSocketHandler):
         
 
         # leave the room
-        rooms[self.room].clients.remove(self.id)
+        rooms[self.room].clients_exited.add(self.id)
 
         # notify the room that the player has left
         message = {
@@ -272,8 +285,9 @@ class PlayerWebSocket(tornado.websocket.WebSocketHandler):
     
     def broadcast_others(self, message):
         for id in rooms[self.room].clients:
-            if id != self.id:
-                sockets[id].write_message(json.dumps(message))
+            if id not in rooms[self.room].clients_exited:
+                if id != self.id:
+                    sockets[id].write_message(json.dumps(message))
 
     # some shorthand
     def send(self, message):
@@ -287,6 +301,9 @@ class PlayerWebSocket(tornado.websocket.WebSocketHandler):
         # print username, message, users[username].room, roommates
         # for client in roommates:
         #   client.write_message('%s %s' % (username, message))
+
+        if message['type'] == 'recall uuid':
+            self.open2(message['uuid'])
 
         if message['type'] == 'client chat message':
             # like the NSA, read the message to check for commands

@@ -1,6 +1,14 @@
 $ ->
 	ws = new WebSocket("ws://#{location.hostname}:#{location.port}#{location.pathname}/sub")
 
+	# localStorage namespace
+	lsns = 'mcamac:'
+	uuid = localStorage[lsns + 'uuid'] or= null # since JSON.stringify is broken wrt undefined
+	ws.onopen = ->
+		@send JSON.stringify
+			type: 'recall uuid'
+			uuid: uuid
+
 	# # send localstorage username, if exists
 	# if localStorage.username
 	# 	ws.send JSON.stringify {
@@ -11,6 +19,10 @@ $ ->
 	ws.onmessage = (msg) ->
 		data = JSON.parse msg.data
 		console.log data
+
+		if data.type == 'new uuid'
+			console.log(data)
+			localStorage[lsns + 'uuid'] = data.uuid
 
 		if data.type == 'client chat message'
 			# console.log (data.name + ':' + data.content)
