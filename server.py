@@ -15,7 +15,7 @@ import re
 import os
 import traceback
 
-from utils import parse, random_color
+from utils import *
 
 logger = logging.getLogger(__name__)
 
@@ -91,20 +91,8 @@ class Room:
         }
         self.broadcast(json.dumps(message))
 
-color_scheme = [
-    'rgb(63, 61, 153)', 'rgb(153, 61, 113)', 'rgb(153, 139, 61)', 'rgb(61, 153, 86)',
-    'rgb(61, 90, 153)', 'rgb(153, 61, 144)', 'rgb(153, 109, 61)', 'rgb(67, 153, 61)',
-    'rgb(61, 121, 153)', 'rgb(132, 61, 153)', 'rgb(153, 78, 61)', 'rgb(98, 153, 61)',
-    'rgb(61, 151, 153)', 'rgb(101, 61, 153)', 'rgb(153, 61, 75)'
-]
-def next_color_in_scheme(i):
-    return color_scheme[i % len(color_scheme)]
 
-class BaseHandler(tornado.web.RequestHandler):
-    def get_current_user(self):
-        return self.get_secure_cookie("user")
-
-class GameHandler(BaseHandler):
+class GameHandler(tornado.web.RequestHandler):
     def get(self, room_name):
         # create room if necessary
         if room_name not in rooms:
@@ -117,6 +105,7 @@ class GameHandler(BaseHandler):
 class LobbyHandler(tornado.web.RequestHandler):
     def get(self):
         self.write(loader.load('lobby.html').generate())
+
 
 class UploadHandler(tornado.web.RequestHandler):
     def post(self, room_id):
@@ -278,8 +267,6 @@ settings = {
     'cookie_secret' : "Ol7xSC1zQ09SXnESNi3L",
     'login_url' : '/login'
 }
-
-print settings['static_path']
 
 application = tornado.web.Application(**settings)
 application.add_handlers('.*$',
