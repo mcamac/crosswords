@@ -23,6 +23,13 @@
 }
 
 
+/* Overrides font-family: Helvetica; set in foundation.css.
+   Helvetica just isn't my type...
+   ...heh. */
+body, h1, h2, h3, h4, h5, h6 {
+	font-family: 'Source Sans';
+}
+
 .top-bar {
 	background-color: rgb(148, 18, 18);
 }

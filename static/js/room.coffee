@@ -52,8 +52,7 @@ $ ->
 		if data.type == 'room members'
 			data.content.sort()
 			$('#members_box').html $.map(data.content, (row) ->
-				"<div style='background-color: #{row.color};width:14px;height:14px;display:inline-block;'>
-				</div>#{row.name}").join(', ')
+				"<span style='border-bottom: 3px solid #{row.color};'>#{row.name}</span>").join(', ')
 			send_set_cursor ci, cj
 
 			ids = $.map(data.content, (row) -> row.id)
@@ -150,8 +149,7 @@ $ ->
 			 	'font-size': if puzzle_size >= 20 then 16 else 20
 			 	'text-anchor': 'middle'
 			 	'font-family': 'Source Sans'
-			 	'font-
-			 	weight': 'normal'
+			 	'font-weight': 'normal'
 			 )
 
 	fill_existing_letters = (grid) ->
