@@ -15,6 +15,8 @@ import re
 import os
 import traceback
 
+from utils import parse, random_color
+
 logger = logging.getLogger(__name__)
 
 loader = tornado.template.Loader(os.path.join(os.path.join(os.path.realpath(__file__) + '/../'), 'templates'))
@@ -89,64 +91,6 @@ class Room:
         }
         self.broadcast(json.dumps(message))
 
-def random_color():
-    r = lambda: random.randint(0,255)
-    return '#%02X%02X%02X' % (r(),r(),r())
-
-# parse puz files
-# TODO: refactor this
-def parse(s):
-    # ACROSS&DOWN watermark
-    if ''.join(s[2:13]) != 'ACROSS&DOWN':
-        return
-    
-    width, height = ord(s[44]), ord(s[45])
-    # print width, height
-    #print unpack('s',s[46] + s[47])
-    puzzle = s[52:52 + width*height]
-    p = [puzzle[i*width:i*width+width] for i in range(0,height)]
-    a = 52 + 2 * width * height
-    info = ''.join(s[a:]).split('\x00')
-    title = info[0]
-    author = info[1]
-    clue_array = info[3:]
-    # print clue_array
-    clues = {}
-    clues['across'] = {}
-    clues['down'] = {}
-    #print len(clue_array)
-    #print p
-    clue_number = 1
-    i = 0
-    for row in range(height):
-        for col in range(width):
-            #across
-            used = False
-            if p[row][col] == '.': continue
-            if col == 0 or p[row][col-1] == '.':
-                clues['across'][clue_number] = clue_array[i].decode('iso-8859-1').encode('utf-8')
-                i += 1
-                used = True
-            # down clue
-            if row == 0 or p[row-1][col] == '.':
-                clues['down'][clue_number] = clue_array[i].decode('iso-8859-1').encode('utf-8')
-                i += 1
-                used = True
-
-            if used:
-                clue_number += 1
-
-
-    data = {}
-    data['width'] = width
-    data['height'] = height
-    data['title'] = title
-    data['author'] = author
-    data['puzzle'] = [''.join(x).replace('.','_') for x in p]
-    # data['puzzle'] = [''.join([x[i] for x in data['puzzle']]) for i in range(len(data['puzzle'][0]))]
-    data['clues'] = clues
-
-    return data
 
 class BaseHandler(tornado.web.RequestHandler):
     def get_current_user(self):
