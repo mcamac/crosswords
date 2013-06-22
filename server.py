@@ -216,7 +216,8 @@ class PlayerWebSocket(tornado.websocket.WebSocketHandler):
     def open(self, room):
         print room
         self.room = room
-        self.name = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(5))
+        # Generate alphabetic username (not alphanumeric)
+        self.name = ''.join(random.choice(string.ascii_uppercase) for x in range(5))
         print 'Opening', self.name
 
     def open2(self, username):
