@@ -8,6 +8,7 @@ Top Tier Priority
 * Competitive mode
   - Live cursors
 * Percent completion (total, by user)
+* Timer
 
 
 Middle Tier Priority
