@@ -121,6 +121,8 @@ $ ->
 	USER = 0
 	dir = 'A'
 
+	start_time = new Date()
+
 	## UI Code
 	blacken_square = (i, j) ->
 		if black_squares[i][j]
@@ -496,6 +498,8 @@ $ ->
 
 		ws.send JSON.stringify {type: 'want cursors'}
 
+		start_time = new Date()
+
 
 	# Chat functions
 	$('#chat_input').on 'keyup', (e) ->
@@ -592,3 +596,13 @@ $ ->
 
 	$.getJSON '/static/puzzle.json', (data) ->
 		make_puzzle data
+
+	formatSeconds = (n) ->
+		if n < 10 then "0" + n else n
+
+	tickTimer = ->
+		current_time = new Date()
+		seconds = Math.floor((current_time.getTime() - start_time.getTime())/1000)
+		$('#timer').html "#{Math.floor(seconds/60)}:#{formatSeconds(seconds%60)}"
+
+	setInterval tickTimer, 1000
