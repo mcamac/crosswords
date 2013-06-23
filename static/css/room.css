@@ -39,7 +39,7 @@ body, h1, h2, h3, h4, h5, h6 {
 }
 
 .game-area {
-	margin: -15px 0px 0px 0px;
+	margin: -22px 0px 0px 0px;
 	max-width: 1200px;
 }
 
@@ -54,6 +54,20 @@ body, h1, h2, h3, h4, h5, h6 {
 	padding: 3px 0px;
 	border-top: 1px solid #AAA;
 	border-bottom: 1px solid #AAA;
+}
+
+.current-clue-number {
+	font-weight: 900;
+	display: inline-block;
+	width: 3em;
+	padding-right: 1em;
+}
+
+/* SVG */
+.grid-number {
+	font-family: 'Source Sans' !important;
+	font-weight: 300 !important;
+	color: #666 !important;
 }
 
 

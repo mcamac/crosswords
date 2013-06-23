@@ -120,7 +120,9 @@ $ ->
 
 	USER = 0
 	dir = 'A'
-
+	dir_arrows =
+		A: '▶' # ▷
+		D: '▼' # ▽
 	start_time = new Date()
 
 	## UI Code
@@ -404,7 +406,7 @@ $ ->
 		# console.log clue, number, dir
 
 		clue = clues[dir][number]
-		$('#current_clue').html("#{number}#{dir} - #{clue}")
+		$('#current_clue').html("<strong class='current-clue-number'> " + dir_arrows[dir] + " #{number}</strong> #{clue}")
 
 	make_puzzle = (contents) ->
 
@@ -465,9 +467,10 @@ $ ->
 						square_size * i + 8, 
 						current_number)
 						 .attr {
-						 	'font-size': if puzzle_size >= 20 then '8px' else '10px'
+						 	'font-size': if puzzle_size >= 20 then '9px' else '11px'
 						 	'text-anchor': 'start'
 						 }
+					number_text[i][j].node.className.baseVal += ' grid-number'
 					numbers[i][j] = current_number
 					number_list.push(current_number)
 					numbers_rev['A'+current_number] = [i, j]
