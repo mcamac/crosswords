@@ -1,27 +1,4 @@
-@font-face {
-	src: url('/static/fonts/SourceSansPro-Regular.ttf');
-	font-family: 'Source Sans';
-}
-
-@font-face {
-	src: url('/static/fonts/SourceSansPro-Italic.ttf');
-	font-family: 'Source Sans';
-	font-style: italic;
-}
-
-@font-face {
-	src: url('/static/fonts/SourceSansPro-Bold.ttf');
-	font-family: 'Source Sans';
-	font-weight: bold;
-}
-
-@font-face {
-	src: url('/static/fonts/SourceSansPro-BoldItalic.ttf');
-	font-family: 'Source Sans';
-	font-weight: bold;
-	font-style: italic;
-}
-
+@import url('fonts.css');
 
 /* Overrides font-family: Helvetica; set in foundation.css.
    Helvetica just isn't my type...
