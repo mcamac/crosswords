@@ -91,6 +91,15 @@ class Room:
             return True
         return False
 
+    def grid_owner_colors(self):
+        return [[self.clients[j].color if j is not None else None for j in i] for i in self.grid_owners]
+
+    def count_owner_percentages(self):
+        owner_counts = {}
+        for owner in self.grid_owners.flat:
+            owner_counts[owner] += 1
+        return owner_counts
+
     def broadcast_memberlist(self, own_socket_id):
         message = {
             'type': 'room members',
@@ -198,7 +207,7 @@ class PlayerWebSocket(tornado.websocket.WebSocketHandler):
             message['content'] = {
                 'puzzle': rooms[self.room].puzzle,
                 'grid': rooms[self.room].grid,
-                'player_squares': rooms[self.room].grid_owners,
+                'player_squares': rooms[self.room].grid_owner_colors(),
                 'complete': rooms[self.room].complete,
                 'start_time': rooms[self.room].start_time
             }
@@ -273,9 +282,9 @@ class PlayerWebSocket(tornado.websocket.WebSocketHandler):
             # update state of puzzle
             data = message['content']
             if rooms[self.room].grid[data['i']][data['j']] != data['char']:
-                rooms[self.room].grid_owners[data['i']][data['j']] = self.color
+                rooms[self.room].grid_owners[data['i']][data['j']] = self.id
             rooms[self.room].grid[data['i']][data['j']] = data['char']
-            message['color'] = rooms[self.room].grid_owners[data['i']][data['j']]
+            message['color'] = rooms[self.room].grid_owner_colors()[data['i']][data['j']]
             rooms[self.room].broadcast(json.dumps(message))
             rooms[self.room].print_grid()
             rooms[self.room].check_puzzle()
