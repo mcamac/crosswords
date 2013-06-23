@@ -59,7 +59,7 @@ body, h1, h2, h3, h4, h5, h6 {
 .current-clue-number {
 	font-weight: 900;
 	display: inline-block;
-	width: 3em;
+	width: 4em;
 	padding-right: 1em;
 }
 
