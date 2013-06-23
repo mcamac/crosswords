@@ -283,6 +283,8 @@ class PlayerWebSocket(tornado.websocket.WebSocketHandler):
             data = message['content']
             if rooms[self.room].grid[data['i']][data['j']] != data['char']:
                 rooms[self.room].grid_owners[data['i']][data['j']] = self.id
+            if data['char'] == '':
+                rooms[self.room].grid_owners[data['i']][data['j']] = None
             rooms[self.room].grid[data['i']][data['j']] = data['char']
             message['color'] = rooms[self.room].grid_owner_colors()[data['i']][data['j']]
             rooms[self.room].broadcast(json.dumps(message))
