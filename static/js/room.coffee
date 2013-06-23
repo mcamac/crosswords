@@ -156,8 +156,13 @@ $ ->
 			player_squares[i][j].remove()
 
 		xoffset = if puzzle_size >= 20 then 0.33 else 0.2
+
+		X = 1 + ~~(j * square_size + square_size * xoffset)
+		Y = 1 + ~~(i * square_size + 7 * square_size / 8)
+		W = ~~(square_size * 0.6)
+		H = ~~(square_size / 8)
 		player_squares[i][j] = 
-			paper.rect(j * square_size+0.5 + square_size*xoffset,  i * square_size+0.5 + (7*square_size)/8, square_size * 0.6, 1.0 * square_size/8)
+			paper.rect(X, Y, W, H)
 				 .attr(
 				 	fill: color
 				 	# opacity: 0.4
@@ -182,7 +187,7 @@ $ ->
 			 	'font-size': if puzzle_size >= 20 then 16 else 20
 			 	'text-anchor': 'middle'
 			 	'font-family': 'Source Sans'
-			 	'font-weight': 'normal'
+			 	'font-weight': '600'
 			 )
 
 	fill_existing_letters = (grid) ->
@@ -212,7 +217,7 @@ $ ->
 							 	'font-size': if puzzle_size >= 20 then 16 else 20
 							 	'text-anchor': 'middle'
 							 	'font-family': 'Source Sans'
-							 	'font-weight': 'normal'
+							 	'font-weight': '600'
 							 	fill: color
 							 )
 			
