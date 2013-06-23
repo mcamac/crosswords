@@ -16,6 +16,9 @@ $ ->
 	# 		content: localStorage.username
 	# 	}
 
+	start_time = new Date()
+
+
 	ws.onmessage = (msg) ->
 		data = JSON.parse msg.data
 		console.log data
@@ -39,15 +42,26 @@ $ ->
 
 		if data.type == 'new puzzle'
 			make_puzzle data.content
+			start_time = new Date data.start_time
 
 		if data.type == 'existing puzzle'
 			make_puzzle data.content.puzzle
 			fill_existing_letters data.content.grid
+			fill_existing_colors data.content.player_squares
+			start_time = new Date data.content.start_time
 			if data.content.complete
 				greenBG()
 
 		if data.type == 'change square'
-			set_square_value data.content.i, data.content.j, data.content.char, false
+			i = data.content.i
+			j = data.content.j
+			char = data.content.char
+			set_square_value i, j, char, false
+			if char != ''
+				set_player_square i, j, data.color
+			else
+				if player_squares[i][j]
+					player_squares[i][j].remove()
 
 		if data.type == 'room members'
 			data.content.sort()
@@ -58,7 +72,7 @@ $ ->
 			ids = $.map(data.content, (row) -> row.id)
 			console.log ids
 			for id, _ of cursors
-				if $.inArray(id, ids) == -1
+				if $.inArray(id, ids) == -1 and cursors[id]
 					cursors[id].remove()
 					cursors[id] = undefined
 
@@ -115,13 +129,12 @@ $ ->
 	cursors = {}
 
 	black_squares = {}
+	player_squares = {}
 
 	paper = Raphael "crossword_canvas", grid_size + 2, grid_size + 2
 
 	USER = 0
 	dir = 'A'
-
-	start_time = new Date()
 
 	## UI Code
 	blacken_square = (i, j) ->
@@ -133,6 +146,20 @@ $ ->
 				 .attr(
 				 	fill: '#333'
 				 )
+
+	set_player_square = (i, j, color) ->
+		if player_squares[i][j]
+			player_squares[i][j].remove()
+
+		xoffset = if puzzle_size >= 20 then 0.33 else 0.2
+		player_squares[i][j] = 
+			paper.rect(j * square_size+0.5 + square_size*xoffset,  i * square_size+0.5 + (7*square_size)/8, square_size * 0.6, 1.0 * square_size/8)
+				 .attr(
+				 	fill: color
+				 	# opacity: 0.4
+				 	stroke: 'none'
+				 )
+		player_squares[i][j].toFront()
 
 	has_number = (p, i, j) ->
 		# # console.log p[i][j]
@@ -161,6 +188,12 @@ $ ->
 					letters[i][j].remove()
 				letters[i][j] = new_letter i, j, grid[i][j]
 
+	fill_existing_colors = (grid_colors) ->
+		for i in [0..puzzle_size-1]
+			for j in [0..puzzle_size-1]
+				if player_squares[i][j]
+					player_squares[i][j].remove()
+				set_player_square i, j, grid_colors[i][j]
 
 	set_square_value = (i, j, char, broadcast) ->
 		if letters[i][j]
@@ -307,7 +340,9 @@ $ ->
 		go_to_clue prev_number get_clue_number(p, ci, cj, dir) 
 		
 	rehighlight = ->
-		# console.log square_highlight		
+		# console.log square_highlight	
+
+		ACTIVE_COLOR = '#46b'	
 
 		acr_sj = cj
 		acr_ej = cj
@@ -319,7 +354,7 @@ $ ->
 			width: square_size * (acr_ej - acr_sj + 1)
 			x: acr_sj * square_size + 0.5
 			y: ci * square_size + 0.5
-			fill: if dir == 'A' then '#4f7ec4' else '#ddd'
+			fill: if dir == 'A' then ACTIVE_COLOR else '#ddd'
 		}
 
 		down_si = ci
@@ -332,7 +367,7 @@ $ ->
 			height: square_size * (down_ei - down_si + 1)
 			x: cj * square_size + 0.5
 			y: down_si * square_size + 0.5
-			fill: if dir == 'D' then '#4f7ec4' else '#ddd'
+			fill: if dir == 'D' then ACTIVE_COLOR else '#ddd'
 		}
 
 		square_highlight.attr {
@@ -525,6 +560,8 @@ $ ->
 					set_square_value i,j,'',false
 				if number_text[i] and number_text[i][j]
 					number_text[i][j].remove()
+				if player_squares[i] and player_squares[i][j]
+					player_squares[i][j].remove()
 
 		# Initialize black squares
 		for i in [0..puzzle_size - 1]
@@ -532,11 +569,13 @@ $ ->
 			letters[i] = {}
 			numbers[i] = {}
 			number_text[i] = {}
+			player_squares[i] = {}
 			for j in [0..puzzle_size - 1]
 				black_squares[i][j] = null
 				letters[i][j] = null
 				numbers[i][j] = null
 				number_text[i][j] = null
+				player_squares[i][j] = null
 
 		# clear numbers
 		numbers_rev = {}
@@ -573,9 +612,9 @@ $ ->
 									  square_size,
 									  square_size)
 								.attr {
-									fill: '#141d3d'
+									fill: '#3d68b8'
 									stroke: 'none'
-									opacity: 0.7
+									opacity: 1
 								}
 
 		$('#A_clues').empty()
@@ -594,15 +633,15 @@ $ ->
 	$('#upload_button').click (e) ->
 		e.preventDefault()
 
-	$.getJSON '/static/puzzle.json', (data) ->
-		make_puzzle data
+	# $.getJSON '/static/puzzle.json', (data) ->
+	# 	make_puzzle data
 
 	formatSeconds = (n) ->
 		if n < 10 then "0" + n else n
 
 	tickTimer = ->
 		current_time = new Date()
-		seconds = Math.floor((current_time.getTime() - start_time.getTime())/1000)
+		seconds = Math.floor((current_time.getTime() - start_time)/1000)
 		$('#timer').html "#{Math.floor(seconds/60)}:#{formatSeconds(seconds%60)}"
 
 	setInterval tickTimer, 1000
