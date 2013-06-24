@@ -103,6 +103,8 @@ class Room:
         for row in self.grid_owners:
             for owner in row:
                 if owner is not None:
+                    if owner not in owner_counts:
+                        owner_counts[owner] = 0
                     owner_counts[owner] += 1
 
         scores = []
