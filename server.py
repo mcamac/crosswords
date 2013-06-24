@@ -100,9 +100,10 @@ class Room:
 
     def count_owner_percentages(self):
         owner_counts = {}
-        for owner in self.grid_owners.flat:
-            if owner is not None:
-                owner_counts[owner] += 1
+        for row in self.grid_owners:
+            for owner in row:
+                if owner is not None:
+                    owner_counts[owner] += 1
 
         scores = []
         for id in owner_counts:
