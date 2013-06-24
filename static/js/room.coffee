@@ -126,6 +126,7 @@ $ ->
 	square_highlight = null
 	across_highlight = null
 	down_highlight = null
+	STROKE_WIDTH = 5
 
 
 	cursors = {}
@@ -163,11 +164,15 @@ $ ->
 		Y = 1 + ~~(i * square_size + 7 * square_size / 8)
 		W = ~~(square_size * 0.6)
 		H = ~~(square_size / 8)
+		X = 1 + ~~(j * square_size)
+		Y = 1 + ~~(i * square_size)
+		W = -1 + square_size
+		H = -1 + square_size
 		player_squares[i][j] = 
 			paper.rect(X, Y, W, H)
 				 .attr(
 				 	fill: color
-				 	# opacity: 0.4
+				 	opacity: 0.4
 				 	stroke: 'none'
 				 )
 		player_squares[i][j].toFront()
@@ -212,7 +217,7 @@ $ ->
 
 		# console.log letters[i][j], i, j, char
 		char = char.toUpperCase()
-		color = if (i == ci) and (j == cj) then 'white' else 'black'
+		#color = if (i == ci) and (j == cj) then 'white' else 'black'
 		xoffset = if puzzle_size >= 20 then 0.63 else 0.5
 		letters[i][j] = paper.text((j + xoffset) * square_size, (i + 0.55) * square_size, char)
 							 .attr(
@@ -220,7 +225,7 @@ $ ->
 							 	'text-anchor': 'middle'
 							 	'font-family': 'Source Sans'
 							 	'font-weight': '600'
-							 	fill: color
+							 	#fill: color
 							 )
 			
 
@@ -349,7 +354,7 @@ $ ->
 	key 'shift+tab', (e) ->
 		e.preventDefault()
 		go_to_clue prev_number get_clue_number(p, ci, cj, dir) 
-		
+
 	rehighlight = ->
 		# console.log square_highlight	
 
@@ -362,10 +367,10 @@ $ ->
 		while valid(p, ci, acr_ej + 1)
 			acr_ej++
 		across_highlight.attr {
-			width: square_size * (acr_ej - acr_sj + 1)
-			x: acr_sj * square_size + 0.5
-			y: ci * square_size + 0.5
-			fill: if dir == 'A' then ACTIVE_COLOR else '#ddd'
+			width: ~~(square_size * (acr_ej - acr_sj + 1)) - STROKE_WIDTH - 1
+			x: acr_sj * square_size + 0.5 + (STROKE_WIDTH + 1) / 2
+			y: ci * square_size + 0.5 + (STROKE_WIDTH + 1) / 2
+			stroke: if dir == 'A' then ACTIVE_COLOR else '#ddd'
 		}
 
 		down_si = ci
@@ -375,22 +380,23 @@ $ ->
 		while valid(p, down_ei + 1, cj)
 			down_ei++
 		down_highlight.attr {
-			height: square_size * (down_ei - down_si + 1)
-			x: cj * square_size + 0.5
-			y: down_si * square_size + 0.5
-			fill: if dir == 'D' then ACTIVE_COLOR else '#ddd'
+			height: ~~(square_size * (down_ei - down_si + 1)) - STROKE_WIDTH - 1
+			x: cj * square_size + 0.5 + (STROKE_WIDTH + 1) / 2
+			y: down_si * square_size + 0.5 + (STROKE_WIDTH + 1) / 2
+			stroke: if dir == 'D' then ACTIVE_COLOR else '#ddd'
 		}
 
 		square_highlight.attr {
-			x: cj * square_size + 0.5
-			y: ci * square_size + 0.5
+			x: cj * square_size + 0.5 + (STROKE_WIDTH + 1) / 2
+			y: ci * square_size + 0.5 + (STROKE_WIDTH + 1) / 2
 		}
+		return
 
-		if letters[ci][cj]
-			letters[ci][cj].attr 'fill', 'white'
+		#if letters[ci][cj]
+		#	letters[ci][cj].attr 'fill', 'white'
 
-		if numbers[ci][cj]
-			number_text[ci][cj].attr 'fill', 'white'
+		#if numbers[ci][cj]
+		#	number_text[ci][cj].attr 'fill', 'white'
 
 	set_cursor = (i, j) ->
 		if p[i][j] == '_'
@@ -599,10 +605,12 @@ $ ->
 		across_highlight = paper.rect(-50,
 									  -50,
 									  square_size,
-									  square_size)
+									  square_size - STROKE_WIDTH - 1)
 								.attr {
-									fill: '#233'
-									stroke: 'none'
+									stroke: '#233'
+									'stroke-width': STROKE_WIDTH
+									#'stroke-dasharray': '.'
+									fill: 'none'
 									opacity: 0.5
 								}
 		
@@ -610,11 +618,13 @@ $ ->
 			down_highlight.remove()
 		down_highlight = paper.rect(-50,
 									  -50,
-									  square_size,
+									  square_size - STROKE_WIDTH - 1,
 									  square_size)
 								.attr {
-									fill: '#233'
-									stroke: 'none'
+									stroke: '#233'
+									'stroke-width': STROKE_WIDTH
+									#'stroke-dasharray': '.'
+									fill: 'none'
 									opacity: 0.5
 								}
 
@@ -622,11 +632,12 @@ $ ->
 			square_highlight.remove()
 		square_highlight = paper.rect(-50,
 									  -50,
-									  square_size,
-									  square_size)
+									  square_size - STROKE_WIDTH - 1,
+									  square_size - STROKE_WIDTH - 1)
 								.attr {
-									fill: '#3d68b8'
-									stroke: 'none'
+									stroke: '#3d68b8'
+									'stroke-width': STROKE_WIDTH
+									fill: 'none'
 									opacity: 1
 								}
 
