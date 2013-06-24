@@ -63,7 +63,7 @@ class Room:
 
     def print_grid(self):
         for i in range(self.puzzle['height']):
-            print ''.join([self.grid[i][j] if self.grid[i][j] != '' else ' ' 
+            print ''.join([self.grid[i][j] if self.grid[i][j] != '' else ' '
                            for j in range(self.puzzle['width'])])
 
     def errors(self):
@@ -150,13 +150,13 @@ class UploadHandler(tornado.web.RequestHandler):
                     room.grid_owners[i][j] = None
 
             room.complete = False
-            
+
             room.broadcast(json.dumps(message))
             room.room_chat('Puzzle changed to %s.' % room.puzzle['title'])
             self.write('Success!')
         else:
             self.write('Failure...')
-        
+
 
 class PlayerWebSocket(tornado.websocket.WebSocketHandler):
     def __init__(self, *args, **kwargs):
@@ -214,13 +214,13 @@ class PlayerWebSocket(tornado.websocket.WebSocketHandler):
             self.send(message)
 
     def metadata(self):
-        return {'name': self.name, 'id': str(self.id), 
+        return {'name': self.name, 'id': str(self.id),
             'color': self.color}
-        
+
     def on_close(self):
         print 'Closing:', self.name, self.id
         print rooms[self.room].clients
-        
+
 
         # leave the room
         rooms[self.room].clients_exited.add(self.id)
@@ -234,7 +234,7 @@ class PlayerWebSocket(tornado.websocket.WebSocketHandler):
         rooms[self.room].broadcast_memberlist(self.id)
 
         del sockets[self.id]
-    
+
     def broadcast_others(self, message):
         for id in rooms[self.room].clients:
             if id not in rooms[self.room].clients_exited:
