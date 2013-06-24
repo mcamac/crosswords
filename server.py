@@ -88,6 +88,10 @@ class Room:
                 'type': 'puzzle finished',
             }
             self.broadcast(json.dumps(message))
+
+            scores = self.count_owner_percentages()
+            standings = ', '.join(['%s: %d squares' % (name, score) for (score, name) in scores])
+            self.room_chat('Standings: '+ standings)
             return True
         return False
 
@@ -97,8 +101,14 @@ class Room:
     def count_owner_percentages(self):
         owner_counts = {}
         for owner in self.grid_owners.flat:
-            owner_counts[owner] += 1
-        return owner_counts
+            if owner is not None:
+                owner_counts[owner] += 1
+
+        scores = []
+        for id in owner_counts:
+            scores.append((owner_counts[id], sockets[id].name))
+
+        return sorted(scores)[::-1]
 
     def broadcast_memberlist(self, own_socket_id):
         message = {
