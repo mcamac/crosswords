@@ -72,7 +72,7 @@ class Room:
             for j in range(self.puzzle['width']):
                 if self.puzzle['puzzle'][i][j] != '_' and self.puzzle['puzzle'][i][j] != self.grid[i][j]:
                     errors.append([i, j])
-        print 'errors', errors
+
         return errors
 
     def finished(self):
@@ -141,13 +141,11 @@ class UploadHandler(tornado.web.RequestHandler):
 
             # set up room grid
             room.grid = {}
-            room.grid_owners = {}
+            room.grid_owners = [[None for j in range(room.puzzle['width'])] for i in range(room.puzzle['height'])]
             for i in range(room.puzzle['height']):
                 room.grid[i] = {}
-                room.grid_owners[i] = {}
                 for j in range(room.puzzle['width']):
                     room.grid[i][j] = ''
-                    room.grid_owners[i][j] = None
 
             room.complete = False
 
