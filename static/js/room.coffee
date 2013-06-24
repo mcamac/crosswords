@@ -17,6 +17,7 @@ $ ->
 	# 	}
 
 	start_time = new Date()
+	timer = undefined
 
 
 	ws.onmessage = (msg) ->
@@ -84,6 +85,7 @@ $ ->
 
 		if data.type == 'puzzle finished'
 			greenBG()
+			clearInterval timer
 
 	sendChatMessage = (message) ->
 		ws.send JSON.stringify {
@@ -544,6 +546,7 @@ $ ->
 		ws.send JSON.stringify {type: 'want cursors'}
 
 		start_time = new Date()
+		timer = setInterval tickTimer, 1000
 
 
 	# Chat functions
@@ -654,4 +657,4 @@ $ ->
 		seconds = Math.floor((current_time.getTime() - start_time)/1000)
 		$('#timer').html "#{Math.floor(seconds/60)}:#{formatSeconds(seconds%60)}"
 
-	setInterval tickTimer, 1000
+	
