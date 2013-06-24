@@ -109,7 +109,8 @@ class Room:
 
         scores = []
         for id in owner_counts:
-            scores.append((owner_counts[id], sockets[id].name))
+            if id in sockets:
+                scores.append((owner_counts[id], sockets[id].name))
 
         return sorted(scores)[::-1]
 
