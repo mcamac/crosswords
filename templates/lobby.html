@@ -35,6 +35,12 @@
 			}
 			
 		});
+
+		$('#room_input').on('keyup', function(e){ 
+			if (e.keyCode == 13) {
+				$('#room_button').trigger('click');
+			}
+ 		});
 	});
 
 	
