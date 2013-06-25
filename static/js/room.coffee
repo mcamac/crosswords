@@ -132,7 +132,11 @@ $ ->
 	square_highlight = null
 	across_highlight = null
 	down_highlight = null
-	STROKE_WIDTH = 5
+	HIGHLIGHT_SQUARE        = 'rgb(61,104,184)'
+	HIGHLIGHT_PARALLEL      = 'rgba(61,104,184,0.55)'
+	HIGHLIGHT_PERPENDICULAR = 'rgba(61,104,184,0.15)'
+	STROKE_WIDTH_PLAYER = 5
+	STROKE_WIDTH_OTHER = 3
 
 
 	cursors = {}
@@ -180,7 +184,7 @@ $ ->
 				 	opacity: 0.4
 				 	stroke: 'none'
 				 )
-		player_squares[i][j].toFront()
+		player_squares[i][j].toBack()
 
 	has_number = (p, i, j) ->
 		# # console.log p[i][j]
@@ -302,17 +306,6 @@ $ ->
 			return [tryi, tryj]
 		return [i, j]
 
-	new_player_square = ->
-		paper.rect(-50,
-				  -50,
-				  square_size,
-				  square_size)
-			.attr {
-				fill: '#141d3d'
-				stroke: 'none'
-				opacity: 0.7
-			}
-
 	# keyboard shortcuts
 	alphanum = 'abcdefghijklmnopqrstuvwxyz0123456789'
 	for letter in alphanum
@@ -368,8 +361,6 @@ $ ->
 	rehighlight = ->
 		# console.log square_highlight	
 
-		ACTIVE_COLOR = '#46b'	
-
 		acr_sj = cj
 		acr_ej = cj
 		while valid(p, ci, acr_sj - 1)
@@ -377,10 +368,10 @@ $ ->
 		while valid(p, ci, acr_ej + 1)
 			acr_ej++
 		across_highlight.attr {
-			width: ~~(square_size * (acr_ej - acr_sj + 1)) - STROKE_WIDTH - 1
-			x: acr_sj * square_size + 0.5 + (STROKE_WIDTH + 1) / 2
-			y: ci * square_size + 0.5 + (STROKE_WIDTH + 1) / 2
-			stroke: if dir == 'A' then ACTIVE_COLOR else '#ddd'
+			width: ~~(square_size * (acr_ej - acr_sj + 1)) - STROKE_WIDTH_PLAYER - 1
+			x: acr_sj * square_size + 0.5 + (STROKE_WIDTH_PLAYER + 1) / 2
+			y: ci * square_size + 0.5 + (STROKE_WIDTH_PLAYER + 1) / 2
+			stroke: if dir == 'A' then HIGHLIGHT_PARALLEL else HIGHLIGHT_PERPENDICULAR
 		}
 
 		down_si = ci
@@ -390,15 +381,15 @@ $ ->
 		while valid(p, down_ei + 1, cj)
 			down_ei++
 		down_highlight.attr {
-			height: ~~(square_size * (down_ei - down_si + 1)) - STROKE_WIDTH - 1
-			x: cj * square_size + 0.5 + (STROKE_WIDTH + 1) / 2
-			y: down_si * square_size + 0.5 + (STROKE_WIDTH + 1) / 2
-			stroke: if dir == 'D' then ACTIVE_COLOR else '#ddd'
+			height: ~~(square_size * (down_ei - down_si + 1)) - STROKE_WIDTH_PLAYER - 1
+			x: cj * square_size + 0.5 + (STROKE_WIDTH_PLAYER + 1) / 2
+			y: down_si * square_size + 0.5 + (STROKE_WIDTH_PLAYER + 1) / 2
+			stroke: if dir == 'D' then HIGHLIGHT_PARALLEL else HIGHLIGHT_PERPENDICULAR
 		}
 
 		square_highlight.attr {
-			x: cj * square_size + 0.5 + (STROKE_WIDTH + 1) / 2
-			y: ci * square_size + 0.5 + (STROKE_WIDTH + 1) / 2
+			x: cj * square_size + 0.5 + (STROKE_WIDTH_PLAYER + 1) / 2
+			y: ci * square_size + 0.5 + (STROKE_WIDTH_PLAYER + 1) / 2
 		}
 		return
 
@@ -436,18 +427,19 @@ $ ->
 	place_cursor = (pid, color, i, j) ->
 		if not cursors[pid]
 			cursors[pid] = paper.rect(-50, -50,
-								  square_size,
-								  square_size)
+								  square_size - STROKE_WIDTH_OTHER - 1,
+								  square_size - STROKE_WIDTH_OTHER - 1)
 							.attr {
-								fill: '#141d3d'
-								stroke: 'none'
+								stroke: color
+								'stroke-width': STROKE_WIDTH_OTHER
+								fill: 'none'
 								opacity: 0.7
 							}
 		else
 			cursors[pid].attr {
-				fill: color
-				x: j * square_size + 0.5
-				y: i * square_size + 0.5
+				stroke: color
+				x: j * square_size + 0.5 + (STROKE_WIDTH_OTHER + 1) / 2
+				y: i * square_size + 0.5 + (STROKE_WIDTH_OTHER + 1) / 2
 			}
 		console.log cursors[pid]
 
@@ -614,38 +606,38 @@ $ ->
 		across_highlight = paper.rect(-50,
 									  -50,
 									  square_size,
-									  square_size - STROKE_WIDTH - 1)
+									  square_size - STROKE_WIDTH_PLAYER - 1)
 								.attr {
-									stroke: '#233'
-									'stroke-width': STROKE_WIDTH
+									stroke: HIGHLIGHT_PARALLEL
+									'stroke-width': STROKE_WIDTH_PLAYER
 									#'stroke-dasharray': '.'
 									fill: 'none'
-									opacity: 0.5
+									#opacity: 0.5
 								}
 		
 		if down_highlight
 			down_highlight.remove()
 		down_highlight = paper.rect(-50,
 									  -50,
-									  square_size - STROKE_WIDTH - 1,
+									  square_size - STROKE_WIDTH_PLAYER - 1,
 									  square_size)
 								.attr {
-									stroke: '#233'
-									'stroke-width': STROKE_WIDTH
+									stroke: HIGHLIGHT_PERPENDICULAR
+									'stroke-width': STROKE_WIDTH_PLAYER
 									#'stroke-dasharray': '.'
 									fill: 'none'
-									opacity: 0.5
+									#opacity: 0.5
 								}
 
 		if square_highlight
 			square_highlight.remove()
 		square_highlight = paper.rect(-50,
 									  -50,
-									  square_size - STROKE_WIDTH - 1,
-									  square_size - STROKE_WIDTH - 1)
+									  square_size - STROKE_WIDTH_PLAYER - 1,
+									  square_size - STROKE_WIDTH_PLAYER - 1)
 								.attr {
-									stroke: '#3d68b8'
-									'stroke-width': STROKE_WIDTH
+									stroke: HIGHLIGHT_SQUARE
+									'stroke-width': STROKE_WIDTH_PLAYER
 									fill: 'none'
 									opacity: 1
 								}
