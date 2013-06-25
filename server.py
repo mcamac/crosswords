@@ -20,6 +20,7 @@ from collections import OrderedDict
 from utils import *
 
 logger = logging.getLogger(__name__)
+current_time = lambda: int(time.time() * 1000)
 
 loader = tornado.template.Loader(os.path.join(os.path.join(os.path.realpath(__file__) + '/../'), 'templates'))
 
@@ -43,7 +44,7 @@ class Room:
         self.complete = False
         self.competitive = True
 
-        self.start_time = int(time.time()*1000)
+        self.start_time = current_time()
 
         self.client_squares = {}
 
@@ -146,7 +147,7 @@ class UploadHandler(tornado.web.RequestHandler):
             room = room_hash[room_id]
             room.puzzle = parse(raw_puzzle)
             print json.dumps(room.puzzle)
-            room.start_time = int(time.time()*1000)
+            room.start_time = current_time()
 
             message = {}
             message['content'] = room.puzzle
@@ -221,7 +222,8 @@ class PlayerWebSocket(tornado.websocket.WebSocketHandler):
                 'grid': rooms[self.room].grid,
                 'player_squares': rooms[self.room].grid_owner_colors(),
                 'complete': rooms[self.room].complete,
-                'start_time': rooms[self.room].start_time
+                'start_time': rooms[self.room].start_time,
+                'current_time': current_time()
             }
             self.send(message)
 
