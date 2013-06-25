@@ -17,6 +17,7 @@ $ ->
 	# 	}
 
 	start_time = new Date()
+	time_delta = 0
 	timer = undefined
 
 
@@ -42,8 +43,10 @@ $ ->
 			$('#chat_box').scrollTop $('#chat_box')[0].scrollHeight
 
 		if data.type == 'new puzzle'
-			make_puzzle data.content
 			start_time = new Date data.start_time
+			time_delta = (new Date()).getTime() - start_time
+
+			make_puzzle data.content
 
 		if data.type == 'existing puzzle'
 			make_puzzle data.content.puzzle
@@ -144,7 +147,6 @@ $ ->
 	dir_arrows =
 		A: '▶' # ▷
 		D: '▼' # ▽
-	start_time = new Date()
 
 	## UI Code
 	blacken_square = (i, j) ->
@@ -339,9 +341,14 @@ $ ->
 
 
 	key 'left', go_left
-	key 'up', go_up
+	key 'up', (e) ->
+		e.preventDefault()
+		go_up()
+
 	key 'right', go_right
-	key 'down', go_down
+	key 'down', (e) ->
+		e.preventDefault()
+		go_down()
 
 	key 'space', flip_dir
 
@@ -554,7 +561,6 @@ $ ->
 
 		ws.send JSON.stringify {type: 'want cursors'}
 
-		start_time = new Date()
 		timer = setInterval tickTimer, 1000
 
 
@@ -668,7 +674,7 @@ $ ->
 
 	tickTimer = ->
 		current_time = new Date()
-		seconds = Math.floor((current_time.getTime() - start_time)/1000)
+		seconds = Math.max(0, Math.floor((current_time.getTime() - start_time + time_delta)/1000))
 		$('#timer').html "#{Math.floor(seconds/60)}:#{formatSeconds(seconds%60)}"
 
 	
