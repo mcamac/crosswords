@@ -87,6 +87,9 @@ $ ->
 			greenBG()
 			clearInterval timer
 
+		if background
+			background.toFront()
+
 	sendChatMessage = (message) ->
 		ws.send JSON.stringify {
 			type: 'client chat message'
