@@ -1,4 +1,9 @@
 $ ->
+	time_ping = undefined
+	time_delta = 0
+	client_start_time = undefined
+	timer = undefined
+
 	ws = new WebSocket("ws://#{location.hostname}:#{location.port}#{location.pathname}/sub")
 
 	# localStorage namespace
@@ -8,6 +13,7 @@ $ ->
 		@send JSON.stringify
 			type: 'recall uuid'
 			uuid: uuid
+		time_ping = +new Date
 
 	# # send localstorage username, if exists
 	# if localStorage.username
@@ -16,17 +22,12 @@ $ ->
 	# 		content: localStorage.username
 	# 	}
 
-	start_time = new Date()
-	time_delta = 0
-	timer = undefined
-
 
 	ws.onmessage = (msg) ->
 		data = JSON.parse msg.data
 		console.log data
 
 		if data.type == 'new uuid'
-			console.log(data)
 			localStorage[lsns + 'uuid'] = data.uuid
 
 		if data.type == 'client chat message'
@@ -43,16 +44,23 @@ $ ->
 			$('#chat_box').scrollTop $('#chat_box')[0].scrollHeight
 
 		if data.type == 'new puzzle'
-			start_time = new Date data.start_time
-			time_delta = (new Date()).getTime() - start_time
-
+			server_start_time = +new Date data.start_time
+			client_start_time = server_start_time + time_delta
 			make_puzzle data.content
 
 		if data.type == 'existing puzzle'
+			time_pong = +new Date
+			time_roundtrip = time_pong - time_ping
+			server_current_time = +new Date data.content.current_time
+			time_delta = new Date - time_roundtrip / 2 - server_current_time
+
+			server_start_time = +new Date data.content.start_time
+			client_start_time = server_start_time + time_delta
+
 			make_puzzle data.content.puzzle
 			fill_existing_letters data.content.grid
 			fill_existing_colors data.content.player_squares
-			start_time = new Date data.content.start_time
+
 			if data.content.complete
 				greenBG()
 
@@ -665,8 +673,8 @@ $ ->
 		if n < 10 then "0" + n else n
 
 	tickTimer = ->
-		current_time = new Date()
-		seconds = Math.max(0, Math.floor((current_time.getTime() - start_time + time_delta)/1000))
+		current_time = +new Date
+		seconds = Math.max 0, ~~((current_time - client_start_time) / 1e3)
 		$('#timer').html "#{Math.floor(seconds/60)}:#{formatSeconds(seconds%60)}"
 
 	
