@@ -31,17 +31,10 @@ $ ->
 			localStorage[lsns + 'uuid'] = data.uuid
 
 		if data.type == 'client chat message'
-			# console.log (data.name + ':' + data.content)
-			$('#chat_box').append "<p><b>#{data.name}</b>: #{data.content}</p>"
-
-			# scroll to bottom of chatbox
-			$('#chat_box').scrollTop $('#chat_box')[0].scrollHeight
+			add_chat_message "<b>#{data.name}</b>: #{data.content}"
 
 		if data.type == 'room chat message'
-			$('#chat_box').append "<p><i>#{data.content}</i></p>"
-
-			# scroll to bottom of chatbox
-			$('#chat_box').scrollTop $('#chat_box')[0].scrollHeight
+			add_chat_message "<i>#{data.content}</i>"
 
 		if data.type == 'new puzzle'
 			server_start_time = +new Date data.start_time
@@ -101,11 +94,17 @@ $ ->
 		if background
 			background.toFront()
 
-	sendChatMessage = (message) ->
+	send_chat_message = (message) ->
 		ws.send JSON.stringify {
 			type: 'client chat message'
 			content: message
 		}
+
+	add_chat_message = (message) ->
+		$('#chat_box').append "<p>#{message}</p>"
+
+		# scroll to bottom of chatbox
+		$('#chat_box').scrollTop $('#chat_box')[0].scrollHeight
 
 	greenBG = ->
 		background.attr 'opacity', 0.2
@@ -567,7 +566,7 @@ $ ->
 	# Chat functions
 	$('#chat_input').on 'keyup', (e) ->
 		if e.keyCode == 13
-			sendChatMessage $(@).val()
+			send_chat_message $(@).val()
 			$(@).val ''
 
 	# Room members box
