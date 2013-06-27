@@ -89,9 +89,9 @@ class Room:
             }
             self.broadcast(json.dumps(message))
 
-            scores = self.count_owner_percentages()
-            standings = ', '.join(['%s: %d squares' % (name, score) for (score, name) in scores])
-            self.room_chat('Standings: '+ standings)
+            scores = self.rank_owner_percentages()
+            standings = ''.join(['<li value="%d">%s: %d squares</li>' % (rank, name, score) for (rank, score, name) in scores])
+            self.room_chat('Standings: <ol>' + standings + '</ol>')
             return True
         return False
 
@@ -100,6 +100,9 @@ class Room:
 
     def count_owner_percentages(self):
         owner_counts = {}
+        for client_id in self.clients:
+            owner_counts[client_id] = 0
+        
         for row in self.grid_owners:
             for owner in row:
                 if owner is not None:
@@ -113,6 +116,18 @@ class Room:
                 scores.append((owner_counts[id], sockets[id].name))
 
         return sorted(scores)[::-1]
+
+    def rank_owner_percentages(self):
+        scores = self.count_owner_percentages()
+
+        ranked = []
+        last = None
+        for i, (score, name) in enumerate(scores):
+            if last != score:
+                rank, last = i + 1, score
+            ranked.append((rank, score, name))
+            
+        return ranked
 
     def broadcast_memberlist(self, own_socket_id):
         message = {
