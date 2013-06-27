@@ -39,7 +39,8 @@ class Room:
         self.puzzle = {"title": "NY Times, Mon, Jun 03, 2013", "puzzle": ["CEDAR_ZION_PHIL", "AMORE_IRAE_RONA", "PIGINAPOKE_EGGY", "ELIE_EON_DASHES", "SEETHRU_OSOLE__", "___TOOTAT_KEANU", "JIHADS_TOW_YVES", "USA_SOWSEAR_ERE", "DEMI_LIE_SOUNDS", "DEFOE_CARHOP___", "__ININK_ATTACHE", "ASSISI_GNU_TAIL", "RITZ_PORKBARREL", "ALEE_ARAL_DEERE", "BODS_TOBE_SEWON"], "author": "John Lampkin / Will Shortz", "height": 15, "width": 15, "clues": {"down": {"1": "Bullfighters wave them", "2": "Writer Zola", "3": "Cowherd's stray", "4": "Short operatic song", "5": "Stimpy's bud", "6": "Like some detachable linings", "7": "What bodybuilders pump", "8": "Wood for a chest", "9": "Essentials", "10": "\"Blue Suede Shoes\" singer", "11": "Ecstatic state, informally", "12": "\"Bus Stop\" playwright", "13": "Puts down, as tile", "18": "Spray can", "23": "Just fine", "25": "Mortar troughs", "26": "Great Plains tribe", "28": "Floundering", "30": "Stereotypical techie", "31": "Applications", "32": "Naomi or Wynonna of country music", "33": "\"Got it!\"", "34": "Clumsy", "36": "Laundry basin", "40": "Lighted part of a candle", "41": "Part of a plant or tooth", "44": "Becomes charged, as the atmosphere", "47": "Stuck, with no way to get down", "49": "Sue Grafton's \"___ for Evidence\"", "51": "Really bug", "53": "Barely bite, as someone's heels", "55": "Rod who was a seven-time A.L. batting champ", "56": "Prefix with -glyphics", "57": "\"The ___ DeGeneres Show\"", "58": "Many an Iraqi", "59": "Corn Belt tower", "60": "Seize", "64": "Spanish gold", "65": "What TV watchers often zap"}, "across": {"1": "Wood for a chest", "6": "Holy Land", "10": "TV's Dr. ___", "14": "Love, Italian-style", "15": "\"Dies ___\" (Latin hymn)", "16": "Gossipy Barrett", "17": "Unseen purchase", "19": "Like custard and meringue", "20": "Writer Wiesel", "21": "Long, long time", "22": "- - -", "24": "Transparent, informally", "26": "\"___ Mio\"", "27": "Greet with a honk", "29": "Reeves of \"The Matrix\"", "32": "Holy wars", "35": "Drag behind, as a trailer", "37": "Designer Saint Laurent", "38": "Made in ___ (garment label)", "39": "You can't make a silk purse out of it, they say", "42": "Before, poetically", "43": "Actress Moore of \"Ghost\"", "45": "Tell a whopper", "46": "Buzz and bleep", "48": "Daniel who wrote \"Robinson Crusoe\"", "50": "Drive-in server", "52": "How to sign a contract", "54": "Ambassador's helper", "58": "Birthplace of St. Francis", "60": "African antelope", "61": "Part that wags", "62": "Big name in crackers", "63": "Like some wasteful government spending", "66": "Toward shelter, nautically", "67": "Asia's diminished ___ Sea", "68": "John ___ (tractor maker)", "69": "Physiques", "70": "Words before and after \"or not\"", "71": "Attach, as a button"}}}
         self.grid = [['' for j in range(15)] for i in range(15)]
         self.grid_owners = [[None for j in range(15)] for i in range(15)]
-        # self.grid = [['', 'A', 'S', 'S', 'E', 'S', '', 'B', 'O', 'A', 'T', '', 'S', 'T', 'E'], ['E', 'M', 'P', 'I', 'R', 'E', '', 'E', 'A', 'V', 'E', '', 'A', 'I', 'D'], ['S', 'T', 'A', 'L', 'E', 'C', 'O', 'F', 'F', 'E', 'E', '', 'L', 'P', 'S'], ['', '', 'M', 'A', 'I', 'T', 'A', 'I', '', '', '', 'T', 'O', 'T', 'E'], ['J', 'A', 'B', 'S', '', '', 'S', 'T', 'E', 'E', 'L', 'W', 'O', 'O', 'L'], ['I', 'D', 'O', '', 'D', 'D', 'T', '', 'B', 'Y', 'L', 'I', 'N', 'E', 'S'], ['G', 'A', 'T', 'E', 'A', 'U', '', 'A', 'R', 'E', 'A', 'S', '', '', ''], ['', '', 'S', 'T', 'Y', 'L', 'E', 'P', 'O', 'I', 'N', 'T', 'S', '', ''], ['', '', '', 'H', 'O', 'U', 'S', 'E', '', 'N', 'O', 'S', 'T', 'R', 'A'], ['P', 'A', 'T', 'E', 'N', 'T', 'S', '', 'F', 'G', 'S', '', 'R', 'U', 'G'], ['S', 'T', 'O', 'L', 'E', 'H', 'O', 'M', 'E', '', '', 'V', 'I', 'B', 'E'], ['A', 'M', 'P', 'S', '', '', '', 'E', 'L', 'O', 'P', 'E', 'D', '', ''], ['L', 'O', 'G', '', 'S', 'T', 'O', 'O', 'L', 'P', 'I', 'G', 'E', 'O', 'N'], ['M', 'S', 'U', '', 'T', 'H', 'A', 'W', '', 'E', 'L', 'A', 'N', 'D', 'S'], ['S', 'T', 'N', '', 'Y', 'U', 'K', 'S', '', 'N', 'E', 'S', 'T', 'E', 'A']]
+        self.grid_changes = {}
+
         self.id = uuid.uuid4()
         self.complete = False
         self.competitive = True
@@ -89,7 +90,7 @@ class Room:
             }
             self.broadcast(json.dumps(message))
 
-            scores = self.rank_owner_percentages()
+            scores = self.rank_grid_owners()
             standings = ''.join(['<li value="%d">%s: %d squares</li>' % (rank, name, score) for (rank, score, name) in scores])
             self.room_chat('Standings: <ol>' + standings + '</ol>')
             return True
@@ -98,7 +99,7 @@ class Room:
     def grid_owner_colors(self):
         return [[self.clients[j].color if j is not None else None for j in i] for i in self.grid_owners]
 
-    def count_owner_percentages(self):
+    def count_grid_owners(self):
         owner_counts = {}
         for client_id in self.clients:
             owner_counts[client_id] = 0
@@ -117,8 +118,8 @@ class Room:
 
         return sorted(scores)[::-1]
 
-    def rank_owner_percentages(self):
-        scores = self.count_owner_percentages()
+    def rank_grid_owners(self):
+        scores = self.count_grid_owners()
 
         ranked = []
         last = None
@@ -128,6 +129,17 @@ class Room:
             ranked.append((rank, score, name))
             
         return ranked
+
+    def grid_change(self, client_id, i, j, new_char):
+        if client_id not in self.grid_changes:
+            self.grid_changes[client_id] = []
+
+        old_char = self.grid[i][j]
+        self.grid[i][j] = new_char
+
+        old_correct = int(self.puzzle['puzzle'][i][j] == old_char)
+        new_correct = int(self.puzzle['puzzle'][i][j] == new_char)
+        self.grid_changes[client_id].append((current_time() - self.start_time, new_correct - old_correct))
 
     def broadcast_memberlist(self, own_socket_id):
         message = {
@@ -309,12 +321,16 @@ class PlayerWebSocket(tornado.websocket.WebSocketHandler):
         if message['type'] == 'change square':
             # update state of puzzle
             data = message['content']
+
+            # Update grid_owners if cell was changed
             if rooms[self.room].grid[data['i']][data['j']] != data['char']:
                 rooms[self.room].grid_owners[data['i']][data['j']] = self.id
             if data['char'] == '':
                 rooms[self.room].grid_owners[data['i']][data['j']] = None
-            rooms[self.room].grid[data['i']][data['j']] = data['char']
+            rooms[self.room].grid_change(self.id, data['i'], data['j'], data['char'])
+
             message['color'] = rooms[self.room].grid_owner_colors()[data['i']][data['j']]
+            message['grid_changes'] = rooms[self.room].grid_changes
             rooms[self.room].broadcast(json.dumps(message))
             rooms[self.room].print_grid()
             rooms[self.room].check_puzzle()
