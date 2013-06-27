@@ -84,7 +84,6 @@ class Room:
             return True
         if self.finished():
             self.complete = True
-            self.room_chat('Puzzle finished!')
             message = {
                 'type': 'puzzle finished',
             }
