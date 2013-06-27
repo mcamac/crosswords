@@ -90,6 +90,7 @@ $ ->
 		if data.type == 'puzzle finished'
 			greenBG()
 			clearInterval timer
+			add_chat_message "<i>Puzzle finished in <b>#{timer_string false}</b>!</i>"
 
 		if background
 			background.toFront()
@@ -560,7 +561,7 @@ $ ->
 
 		ws.send JSON.stringify {type: 'want cursors'}
 
-		timer = setInterval tickTimer, tickTimer.delay
+		timer = setInterval tick_timer, tick_timer.delay
 
 
 	# Chat functions
@@ -668,10 +669,10 @@ $ ->
 	# $.getJSON '/static/puzzle.json', (data) ->
 	# 	make_puzzle data
 
-	padZero = (n) ->
+	pad_zero = (n) ->
 		if n < 10 then "0" + n else n
 
-	tickTimer = ->
+	timer_string = (deci) ->
 		current_time = +new Date
 		total_seconds = (current_time - client_start_time) / 1e3
 
@@ -682,17 +683,18 @@ $ ->
 		hours = ~~(total_seconds / 3600)
 		minutes = ~~(total_seconds / 60) % 60
 		seconds = ~~total_seconds % 60
-		deciseconds = ~~(10 * total_seconds % 10)
 
-		if hours > 0
-			timer_string = "#{hours}:#{padZero minutes}:"
-		else
-			timer_string = "#{minutes}:"
-		timer_string += padZero ~~seconds
-		timer_string += "<small style='color: #aaa;'>.#{deciseconds}</small>"
+		string = if hours > 0 then "#{hours}:#{pad_zero minutes}:" else "#{minutes}:"
+		string += pad_zero ~~seconds
 
-		$('#timer').html timer_string
+		if deci
+			deciseconds = ~~(10 * total_seconds % 10)
+			string += "<small style='color: #aaa;'>.#{deciseconds}</small>"
+		string
 
-	tickTimer.delay = 100
+	tick_timer = ->
+		$('#timer').html timer_string true
+
+	tick_timer.delay = 100
 
 	
