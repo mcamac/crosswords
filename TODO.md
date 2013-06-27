@@ -4,22 +4,18 @@ TODOs
 
 Top Tier Priority
 -----------------
-* Better grid movement (Enter, etc.)
+* Better grid movement, more key bindings (#20)
 * Competitive mode
-  - Live cursors
 * Percent completion (total, by user)
-* Timer
+* Rebus support (#5)
 
 
 Middle Tier Priority
 --------------------
 * Diagramless support and other crossword-like puzzles
-* Customizable key-configs (maybe in JSON à la Sublime Text settings)
+* Customizable key-configs (#22)
 * Stop SVG library from sending a ton of inline CSS
 * Branding
-
-
-Done
-----
-
-* Tab/Shift+Tab
+* High scores (#14)
+* Puzzle index (#16)
+* List of rooms (#17)
