@@ -561,7 +561,7 @@ $ ->
 
 		ws.send JSON.stringify {type: 'want cursors'}
 
-		timer = setInterval tickTimer, 1000
+		timer = setInterval tickTimer, tickTimer.delay
 
 
 	# Chat functions
@@ -669,12 +669,31 @@ $ ->
 	# $.getJSON '/static/puzzle.json', (data) ->
 	# 	make_puzzle data
 
-	formatSeconds = (n) ->
+	padZero = (n) ->
 		if n < 10 then "0" + n else n
 
 	tickTimer = ->
 		current_time = +new Date
-		seconds = Math.max 0, ~~((current_time - client_start_time) / 1e3)
-		$('#timer').html "#{Math.floor(seconds/60)}:#{formatSeconds(seconds%60)}"
+		total_seconds = (current_time - client_start_time) / 1e3
+
+		if total_seconds < 0
+			console.error "#{total_seconds} is negative"
+			total_seconds = 0
+
+		hours = ~~(total_seconds / 3600)
+		minutes = ~~(total_seconds / 60) % 60
+		seconds = ~~total_seconds % 60
+		deciseconds = ~~(10 * total_seconds % 10)
+
+		if hours > 0
+			timer_string = "#{hours}:#{padZero minutes}:"
+		else
+			timer_string = "#{minutes}:"
+		timer_string += padZero ~~seconds
+		timer_string += "<small style='color: #aaa;'>.#{deciseconds}</small>"
+
+		$('#timer').html timer_string
+
+	tickTimer.delay = 100
 
 	
