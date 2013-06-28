@@ -41,6 +41,7 @@ class Room:
         self.grid_owners = [[None for j in range(15)] for i in range(15)]
         self.grid_owner_counts = {}
         self.grid_changes = {}
+        self.last_grid_change = None
 
         self.id = uuid.uuid4()
         self.complete = False
@@ -153,14 +154,16 @@ class Room:
 
         # No need for superfluous grid change entries
         time_since_start = current_time() - self.start_time
-        if delta != 0 or len(self.grid_changes[client_id]) < 2 or self.grid_changes[client_id][-2]['correct'] != self.grid_changes[client_id][-1]['correct']:
+        if 1: ## delta != 0 or len(self.grid_changes[client_id]) < 2 or self.grid_changes[client_id][-2]['correct'] != self.grid_changes[client_id][-1]['correct']:
             # Penalizing the old owner is unfair, must be smart about contributions vs. correctness
             changed_client_id = old_owner_id if delta == -1 else client_id
             if changed_client_id is not None:
                 self.grid_owner_counts[changed_client_id] += delta
-            self.grid_changes[client_id].append({ 'time': time_since_start, 'correct': self.grid_owner_counts[client_id] })
-        else:
-            self.grid_changes[client_id][-1]['time'] = time_since_start
+
+            self.last_grid_change = { 'time': time_since_start, 'correct': self.grid_owner_counts[client_id] }
+            self.grid_changes[client_id].append(self.last_grid_change)
+        ## else:
+        ##     self.grid_changes[client_id][-1]['time'] = time_since_start
 
     def broadcast_memberlist(self, own_socket_id):
         message = {
@@ -350,6 +353,7 @@ class PlayerWebSocket(tornado.websocket.WebSocketHandler):
 
             message['color'] = rooms[self.room].grid_owner_colors()[data['i']][data['j']]
             message['grid_changes'] = rooms[self.room].grid_changes
+            message['last_grid_change'] = rooms[self.room].last_grid_change
             rooms[self.room].broadcast(json.dumps(message))
             rooms[self.room].print_grid()
             rooms[self.room].check_puzzle()
