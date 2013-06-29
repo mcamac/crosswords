@@ -160,7 +160,8 @@ class Room:
             if changed_client_id is not None:
                 self.grid_owner_counts[changed_client_id] += delta
 
-            self.last_grid_change = { 'time': time_since_start, 'correct': self.grid_owner_counts[client_id] }
+            # self.last_grid_change = { 'time': time_since_start, 'correct': self.grid_owner_counts[client_id] }
+            self.last_grid_change = { 'client_id': client_id, 'time': current_time(), 'correct': self.grid_owner_counts[client_id] }
             self.grid_changes[client_id].append(self.last_grid_change)
         ## else:
         ##     self.grid_changes[client_id][-1]['time'] = time_since_start
