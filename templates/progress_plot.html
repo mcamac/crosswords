@@ -1,0 +1,122 @@
+<script src="../static/js/vendor/d3.v3.min.js" charset="utf-8"></script>
+
+<style>
+    .axis path, .axis line {
+        fill: none;
+        stroke: #000;
+        shape-rendering: crispEdges;
+    }
+
+    .x.axis line {
+        shape-rendering: auto;
+    }
+
+    .line {
+        fill: #d9f;
+        stroke: #000;
+        stroke-width: 0.5px;
+    }
+</style>
+<script>
+var n = 40,
+    correct = undefined,
+    random = function () {
+        return {
+            time: new Date,
+            correct: correct === undefined ? correct = 0 : Math.min(1, correct += (1 - 0.9 * correct) * 0.01 + d3.random.normal(0, 1/150)())
+        };
+    };
+
+(function () {
+    window.data = [];
+
+    var start = new Date(),
+        fake_start = new Date(2010, 0, 1, 0, 0, 0);
+
+    var margin = { top: 6, right: 0, bottom: 20, left: 50 },
+        width = 960 - margin.right,
+        height = 120 - margin.top - margin.bottom;
+
+    var x = d3.time.scale()
+        .domain([fake_start, fake_start])
+        .range([0, width]);
+
+    var y = d3.scale.linear()
+        .domain([0, 200])
+        .range([height, 0]);
+
+    var line = d3.svg.area()
+        .interpolate("basis")
+        .x(function (d, i) { return x(+fake_start + +d.time - start); })
+        .y1(function (d, i) { return y(d.correct); })
+        .y0(height);
+
+    var svg = d3.select(".progress-plot")
+        .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .style("margin-left", margin.left + "px")
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    svg.append("defs")
+        .append("clipPath")
+        .attr("id", "clip")
+        .append("rect")
+        .attr("width", width)
+        .attr("height", height);
+
+    var xaxis = svg.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(x.axis = d3.svg.axis()
+            .scale(x)
+            .orient("bottom")
+            //.tickSubdivide(5)
+            .tickFormat(function (d) {
+                return d3.time.format("%-M:%S")(d);
+            }));
+
+    var yaxis = svg.append("g")
+        .attr("class", "y axis")
+        .call(d3.svg.axis()
+            .scale(y)
+            .ticks(5)
+            .orient("left")
+            //.tickFormat(function (d) { return d3.format("%")(d); })
+        );
+
+    var path = svg.append("g")
+        .attr("clip-path", "url(#clip)")
+        .append("path")
+        .data([data])
+        .attr("class", "line")
+        .attr("d", line);
+
+    tick(path, line, data, x);
+
+    function tick(path, line, data, x) {
+
+        // push a new data point onto the back
+        //data.push(random());
+
+        x.domain([fake_start, new Date(+fake_start + +new Date - +start)]);
+
+        xaxis.transition()
+        //.duration(duration)
+            .ease("spline")
+            .call(x.axis);
+        // redraw the line, and then slide it to the left
+        path
+            .attr("d", line)
+            .attr("transform", null)
+            .transition()
+            //.duration(500)
+            .ease("linear")
+            .each("end", function () {
+                tick(path, line, data, x);
+            });
+
+    }
+})();
+</script>
