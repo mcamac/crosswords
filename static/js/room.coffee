@@ -68,6 +68,8 @@ $ ->
 				if player_squares[i][j]
 					player_squares[i][j].remove()
 
+			window.data.push data.last_grid_correct
+
 		if data.type == 'room members'
 			data.content.sort()
 			$('#members_box').html $.map(data.content, (row) ->
