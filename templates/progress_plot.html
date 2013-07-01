@@ -1,4 +1,4 @@
-<script src="../static/js/vendor/d3.v3.min.js" charset="utf-8"></script>
+<script src="/static/js/vendor/d3.v3.min.js" charset="utf-8"></script>
 
 <style>
     .axis path, .axis line {
@@ -18,20 +18,11 @@
     }
 </style>
 <script>
-var n = 40,
-    correct = undefined,
-    random = function () {
-        return {
-            time: new Date,
-            correct: correct === undefined ? correct = 0 : Math.min(1, correct += (1 - 0.9 * correct) * 0.01 + d3.random.normal(0, 1/150)())
-        };
-    };
+var n = 40;
 
 (function () {
-    window.data = [];
-
-    var start = new Date(),
-        fake_start = new Date(2010, 0, 1, 0, 0, 0);
+    window.start = new Date();
+    var fake_start = new Date(2010, 0, 1, 0, 0, 0);
 
     var margin = { top: 6, right: 0, bottom: 20, left: 50 },
         width = 960 - margin.right,
@@ -89,17 +80,14 @@ var n = 40,
     var path = svg.append("g")
         .attr("clip-path", "url(#clip)")
         .append("path")
-        .data([data])
+        .data([window.d3data])
         .attr("class", "line")
         .attr("d", line);
 
-    tick(path, line, data, x);
+    console.log(window.d3data);
+    tick(path, line, window.d3data, x);
 
     function tick(path, line, data, x) {
-
-        // push a new data point onto the back
-        //data.push(random());
-
         x.domain([fake_start, new Date(+fake_start + +new Date - +start)]);
 
         xaxis.transition()
@@ -114,7 +102,7 @@ var n = 40,
             //.duration(500)
             .ease("linear")
             .each("end", function () {
-                tick(path, line, data, x);
+                tick(path, line, window.d3data, x);
             });
 
     }
