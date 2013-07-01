@@ -1,3 +1,4 @@
+window.d3data = []
 $ ->
 	time_ping = undefined
 	time_delta = 0
@@ -54,6 +55,9 @@ $ ->
 			fill_existing_letters data.content.grid
 			fill_existing_colors data.content.player_squares
 
+			window.start = client_start_time
+			#window.d3data = data.content.grid_corrects
+
 			if data.content.complete
 				greenBG()
 
@@ -68,7 +72,7 @@ $ ->
 				if player_squares[i][j]
 					player_squares[i][j].remove()
 
-			window.data.push data.last_grid_correct
+			window.d3data.push data.last_grid_correct
 
 		if data.type == 'room members'
 			data.content.sort()
