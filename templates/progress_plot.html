@@ -20,9 +20,10 @@
 <script>
 var n = 40;
 
-(function () {
-    window.start = new Date();
-    var fake_start = new Date(2010, 0, 1, 0, 0, 0);
+function start_d3() {
+    var start = window.client_start_time,
+        time_delta = window.time_delta,
+        fake_start = new Date(2010, 0, 1, 0, 0, 0);
 
     var margin = { top: 6, right: 0, bottom: 20, left: 50 },
         width = 960 - margin.right,
@@ -38,7 +39,7 @@ var n = 40;
 
     var line = d3.svg.area()
         .interpolate("basis")
-        .x(function (d, i) { return x(+fake_start + +d.time - start); })
+        .x(function (d, i) { return x(+fake_start + +d.server_time + time_delta - start); })
         .y1(function (d, i) { return y(d.correct); })
         .y0(height);
 
@@ -84,7 +85,6 @@ var n = 40;
         .attr("class", "line")
         .attr("d", line);
 
-    console.log(window.d3data);
     tick(path, line, window.d3data, x);
 
     function tick(path, line, data, x) {
@@ -106,5 +106,5 @@ var n = 40;
             });
 
     }
-})();
+}
 </script>
