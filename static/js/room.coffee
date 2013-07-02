@@ -1,8 +1,8 @@
 window.d3data = []
 $ ->
 	time_ping = undefined
-	time_delta = 0
-	client_start_time = undefined
+	window.time_delta = 0
+	window.client_start_time = undefined
 	timer = undefined
 
 	ws = new WebSocket("ws://#{location.hostname}:#{location.port}#{location.pathname}/sub")
@@ -39,23 +39,26 @@ $ ->
 
 		if data.type == 'new puzzle'
 			server_start_time = +new Date data.start_time
-			client_start_time = server_start_time + time_delta
+			window.client_start_time = server_start_time + time_delta
 			make_puzzle data.content
+
+			do start_d3
 
 		if data.type == 'existing puzzle'
 			time_pong = +new Date
 			time_roundtrip = time_pong - time_ping
 			server_current_time = +new Date data.content.current_time
-			time_delta = new Date - time_roundtrip / 2 - server_current_time
+			window.time_delta = new Date - time_roundtrip / 2 - server_current_time
 
 			server_start_time = +new Date data.content.start_time
-			client_start_time = server_start_time + time_delta
+			window.client_start_time = server_start_time + time_delta
 
 			make_puzzle data.content.puzzle
 			fill_existing_letters data.content.grid
 			fill_existing_colors data.content.player_squares
 
 			window.start = client_start_time
+			do start_d3
 			#window.d3data = data.content.grid_corrects
 
 			if data.content.complete
@@ -680,7 +683,7 @@ $ ->
 
 	timer_string = (deci) ->
 		current_time = +new Date
-		total_seconds = (current_time - client_start_time) / 1e3
+		total_seconds = (current_time - window.client_start_time) / 1e3
 
 		if total_seconds < 0
 			console.error "#{total_seconds} is negative"
