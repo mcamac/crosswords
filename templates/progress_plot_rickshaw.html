@@ -1,6 +1,8 @@
 <script src="/static/js/vendor/d3.v3.min.js" charset="utf-8"></script>
+<script src="/static/js/vendor/rickshaw.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="/static/css/vendor/rickshaw.min.css">
 
-<style>
+<!--<style>
     .axis path, .axis line {
         fill: none;
         stroke: #000;
@@ -16,11 +18,35 @@
         stroke: #000;
         stroke-width: 0.5px;
     }
-</style>
+</style>-->
 <script>
-var n = 40;
-
 function start_d3() {
+    var start = window.client_start_time,
+        time_delta = window.time_delta,
+//        fake_start = new Date(2010, 0, 1, 0, 0, 0);
+        fake_start = start;
+
+    var graph = new Rickshaw.Graph({
+        element: document.querySelector('.progress-plot'),
+        width: 960,
+        height: 120,
+        renderer: 'area',
+        stroke: true,
+        series: [
+            {
+                data: [ { x: fake_start, y: 0 }, { x: fake_start + 1e3, y: 100 } ],
+                color: 'lightblue'
+            }
+        ]
+    });
+
+    var axes = new Rickshaw.Graph.Axis.Time( { graph: graph } );
+    //graph.series.addData(window.d3data);
+    graph.render();
+}
+
+function start_d3_() {
+    return;
     var start = window.client_start_time,
         time_delta = window.time_delta,
         fake_start = new Date(2010, 0, 1, 0, 0, 0);
