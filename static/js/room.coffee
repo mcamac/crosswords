@@ -2,6 +2,7 @@ $ ->
 	time_ping = undefined
 	window.time_delta = 0
 	window.client_start_time = undefined
+	window.fake_start = +new Date(2010, 0, 1, 0, 0, 0);
 	timer = undefined
 
 	ws = new WebSocket("ws://#{location.hostname}:#{location.port}#{location.pathname}/sub")
@@ -83,7 +84,7 @@ $ ->
 				name: client_grid_changes.name
 				color: client_grid_changes.color
 				data: ({
-					x: (d.server_time + window.time_delta) / 1e3
+					x: (window.fake_start - window.client_start_time + d.server_time + window.time_delta) / 1e3
 					y: d.correct
 				} for d in client_grid_changes.data)
 			} for own client_id, client_grid_changes of data.grid_changes
