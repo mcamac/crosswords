@@ -42,6 +42,7 @@ function start_d3() {
             }
         ]
     });
+    window.graph.renderer.unstack = true;
 
     var axes = new Rickshaw.Graph.Axis.Time( { graph: graph } );
     //graph.series.addData(window.d3data);
