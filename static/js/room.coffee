@@ -694,8 +694,9 @@ $ ->
 	pad_zero = (n) ->
 		if n < 10 then "0" + n else n
 
-	timer_string = (deci) ->
-		current_time = +new Date
+	timer_string = (deci) -> window.timer_string_ +new Date, deci
+
+	window.timer_string_ = (current_time, deci) ->
 		total_seconds = (current_time - window.client_start_time) / 1e3
 
 		if total_seconds < 0
