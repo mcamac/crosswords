@@ -141,7 +141,7 @@ class Room:
             self.grid_changes[client_id] = {
                 'color': self.clients[client_id].color,
                 'name': self.clients[client_id].name,
-                'data': []
+                'data': [{ 'client_id': client_id, 'server_time': self.start_time, 'correct': 0 }]
             }
 
         old_char = self.grid[i][j]
