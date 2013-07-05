@@ -138,7 +138,11 @@ class Room:
 
     def grid_change(self, client_id, i, j, new_char):
         if client_id not in self.grid_changes:
-            self.grid_changes[client_id] = { 'color': self.clients[client_id].color, 'data': [] }
+            self.grid_changes[client_id] = {
+                'color': self.clients[client_id].color,
+                'name': self.clients[client_id].name,
+                'data': []
+            }
 
         old_char = self.grid[i][j]
 

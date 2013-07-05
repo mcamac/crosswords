@@ -2,23 +2,9 @@
 <script src="/static/js/vendor/rickshaw.min.js" charset="utf-8"></script>
 <link rel="stylesheet" href="/static/css/vendor/rickshaw.min.css">
 
-<!--<style>
-    .axis path, .axis line {
-        fill: none;
-        stroke: #000;
-        shape-rendering: crispEdges;
-    }
-
-    .x.axis line {
-        shape-rendering: auto;
-    }
-
-    .line {
-        fill: #d9f;
-        stroke: #000;
-        stroke-width: 0.5px;
-    }
-</style>-->
+<style>
+.detail_swatch { display: inline-block; width: 10px; height: 10px; margin: 0 4px 0 0 }
+</style>
 <script>
 window.d3data = [];
 function start_d3() {
@@ -45,6 +31,15 @@ function start_d3() {
     window.graph.renderer.unstack = true;
 
     var axes = new Rickshaw.Graph.Axis.Time( { graph: graph } );
+    var hoverdetail = new Rickshaw.Graph.HoverDetail({
+        graph: graph,
+        xFormatter: function(d) { var D = new Date(d * 1e3); return D.getMinutes() + ':' + D.getSeconds(); },
+        formatter: function(series, x, y) {
+            var swatch = '<span class="detail_swatch" style="background-color: ' + series.color + '"></span>';
+            var content = swatch + series.name + ": " + parseInt(y);
+            return content;
+        }
+    });
     //graph.series.addData(window.d3data);
     graph.render();
 }

@@ -80,7 +80,7 @@ $ ->
 			window.A = data.grid_corrects
 			c = 0
 			window.graph.series[c++] = {
-				name: client_id
+				name: client_grid_changes.name
 				color: client_grid_changes.color
 				data: ({
 					x: (d.server_time + window.time_delta) / 1e3
