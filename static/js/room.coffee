@@ -1,4 +1,3 @@
-window.d3data = []
 $ ->
 	time_ping = undefined
 	window.time_delta = 0
@@ -75,7 +74,10 @@ $ ->
 				if player_squares[i][j]
 					player_squares[i][j].remove()
 
-			window.d3data.push data.last_grid_correct
+			window.graph.series[0].data.push
+				x: (data.last_grid_correct.server_time + window.time_delta) / 1e3
+				y: data.last_grid_correct.correct
+			window.graph.render()
 
 		if data.type == 'room members'
 			data.content.sort()
