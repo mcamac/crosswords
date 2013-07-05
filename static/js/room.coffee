@@ -74,9 +74,19 @@ $ ->
 				if player_squares[i][j]
 					player_squares[i][j].remove()
 
-			window.graph.series[0].data.push
-				x: (data.last_grid_correct.server_time + window.time_delta) / 1e3
-				y: data.last_grid_correct.correct
+			#window.graph.series[0].data.push
+			#	x: (data.last_grid_correct.server_time + window.time_delta) / 1e3
+			#	y: data.last_grid_correct.correct
+			window.A = data.grid_corrects
+			c = 0
+			window.graph.series[c++] = {
+				name: client_id
+				color: client_grid_changes.color
+				data: ({
+					x: (d.server_time + window.time_delta) / 1e3
+					y: d.correct
+				} for d in client_grid_changes.data)
+			} for own client_id, client_grid_changes of data.grid_changes
 			window.graph.render()
 
 		if data.type == 'room members'
