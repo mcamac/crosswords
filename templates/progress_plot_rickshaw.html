@@ -20,21 +20,24 @@
     }
 </style>-->
 <script>
+window.d3data = [];
 function start_d3() {
     var start = window.client_start_time,
         time_delta = window.time_delta,
 //        fake_start = new Date(2010, 0, 1, 0, 0, 0);
         fake_start = start;
+    window.d3data.push({ x: fake_start / 1e3, y: 0 });
 
-    var graph = new Rickshaw.Graph({
+    window.graph = new Rickshaw.Graph({
         element: document.querySelector('.progress-plot'),
         width: 960,
         height: 120,
         renderer: 'area',
+        interpolation: 'linear',
         stroke: true,
         series: [
             {
-                data: [ { x: fake_start, y: 0 }, { x: fake_start + 1e3, y: 100 } ],
+                data: window.d3data,
                 color: 'lightblue'
             }
         ]
