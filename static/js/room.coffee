@@ -59,7 +59,6 @@ $ ->
 
 			window.start = client_start_time
 			do start_d3
-			#window.d3data = data.content.grid_corrects
 
 			if data.content.complete
 				greenBG()
@@ -75,10 +74,6 @@ $ ->
 				if player_squares[i][j]
 					player_squares[i][j].remove()
 
-			#window.graph.series[0].data.push
-			#	x: (data.last_grid_correct.server_time + window.time_delta) / 1e3
-			#	y: data.last_grid_correct.correct
-			window.A = data.grid_corrects
 			c = 0
 			window.graph.series[c++] = {
 				name: client_grid_changes.name
