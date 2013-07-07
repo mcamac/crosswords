@@ -10,6 +10,7 @@ $ ->
 	lsns = 'mcamac:'
 	uuid = localStorage[lsns + 'uuid'] or= null # since JSON.stringify is broken wrt undefined
 	ws.onopen = ->
+		console.log uuid
 		@send JSON.stringify
 			type: 'recall uuid'
 			uuid: uuid
@@ -25,7 +26,7 @@ $ ->
 
 	ws.onmessage = (msg) ->
 		data = JSON.parse msg.data
-		console.log data
+		console.log data.type, data
 
 		if data.type == 'new uuid'
 			localStorage[lsns + 'uuid'] = data.uuid
@@ -632,9 +633,7 @@ $ ->
 								.attr {
 									stroke: HIGHLIGHT_PERPENDICULAR
 									'stroke-width': STROKE_WIDTH_PLAYER
-									#'stroke-dasharray': '.'
 									fill: 'none'
-									#opacity: 0.5
 								}
 
 		if square_highlight
