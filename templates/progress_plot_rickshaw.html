@@ -29,6 +29,7 @@ function start_d3() {
     window.graph.renderer.unstack = true;
 
     var axes = new Rickshaw.Graph.Axis.Time( { graph: graph } );
+    // Weird shit going on with hover
     var hoverdetail = new Rickshaw.Graph.HoverDetail({
         graph: graph,
         xFormatter: function(d) { return window.timer_string_(1e3 * d - window.fake_start + window.client_start_time, false); },
@@ -38,10 +39,10 @@ function start_d3() {
             return content;
         }
     });
-    //graph.series.addData(window.d3data);
     graph.render();
 }
 
+// This is pre-rickshaw raw d3, the axis scrolling might still be usable
 function start_d3_() {
     return;
     var start = window.client_start_time,
