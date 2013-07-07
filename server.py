@@ -7,7 +7,7 @@ import tornado.ioloop
 import tornado.template
 import tornado.autoreload
 import random, string
-import uuid
+from uuid import uuid4
 import logging
 
 import time
@@ -28,6 +28,7 @@ users = {}
 rooms = {}
 room_hash = {}
 sockets = {}
+name_hash = {}
 
 class Puzzle:
     pass
@@ -43,7 +44,7 @@ class Room:
         self.grid_changes = {}
         self.last_grid_change = None
 
-        self.id = uuid.uuid4()
+        self.id = uuid4()
         self.complete = False
         self.competitive = True
 
@@ -171,6 +172,7 @@ class Room:
             'type': 'room members',
             'content': [sockets[id].metadata() for id in self.clients if id not in self.clients_exited]
         }
+        print message
         self.broadcast(json.dumps(message))
 
 
@@ -233,18 +235,26 @@ class PlayerWebSocket(tornado.websocket.WebSocketHandler):
         self.name = ''.join(random.choice(string.ascii_uppercase) for x in range(5))
         print 'Opening', self.name
 
-    def open2(self, username):
+    def open2(self, old_uuid):
         # look up the uuid in the NSA's huge data center
-        if uuid in rooms[self.room].clients.keys():
-            self.id = uuid
-            self.color = color_scheme[rooms[self.room].clients.keys().index(uuid) % len(color_scheme)]
+        if old_uuid in rooms[self.room].clients.keys():
+            self.id = old_uuid
+            self.color = color_scheme[rooms[self.room].clients.keys().index(old_uuid) % len(color_scheme)]
         else:
-            self.id = str(uuid.uuid4())
+            self.id = str(uuid4())
             self.color = next_color_in_scheme(len(rooms[self.room].clients))
             self.send({
                 'type': 'new uuid',
                 'uuid': self.id
                 })
+
+        if self.id in name_hash:
+            self.name = name_hash[self.id]
+        name_hash[self.id] = self.name
+        print rooms[self.room].clients.keys()
+
+        if self.id in rooms[self.room].clients_exited:
+            rooms[self.room].clients_exited.remove(self.id)
 
         sockets[self.id] = self
 
@@ -259,6 +269,8 @@ class PlayerWebSocket(tornado.websocket.WebSocketHandler):
         # No encapsulation? #YOLO
         if self.id not in rooms[self.room].grid_owner_counts:
             rooms[self.room].grid_owner_counts[self.id] = 0
+
+        print rooms[self.room].clients
 
         message = {
             'type': 'room chat message',
@@ -337,6 +349,7 @@ class PlayerWebSocket(tornado.websocket.WebSocketHandler):
                     if new_username.isalnum():
                         alert = '%s changed their name to %s' % (self.name, new_username)
                         self.name = new_username
+                        name_hash[self.id] = self.name
                         rooms[self.room].room_chat(alert)
                         rooms[self.room].broadcast_memberlist(self.id)
                     else:
