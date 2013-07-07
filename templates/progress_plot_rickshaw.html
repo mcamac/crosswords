@@ -15,21 +15,21 @@ function start_d3() {
     window.graph = new Rickshaw.Graph({
         element: document.querySelector('.progress-plot'),
         width: 960,
-        height: 120,
+        height: 160,
         renderer: 'area',
         interpolation: 'step-after',
         stroke: true,
         series: [
             {
                 data: window.d3data,
-                color: 'lightblue'
+                color: 'transparent'
             }
         ]
     });
     window.graph.renderer.unstack = true;
 
     var axes = new Rickshaw.Graph.Axis.Time( { graph: graph } );
-    // Weird shit going on with hover
+    var yAxis = new Rickshaw.Graph.Axis.Y({ graph: graph });
     var hoverdetail = new Rickshaw.Graph.HoverDetail({
         graph: graph,
         xFormatter: function(d) { return window.timer_string_(1e3 * d - window.fake_start + window.client_start_time, false); },
