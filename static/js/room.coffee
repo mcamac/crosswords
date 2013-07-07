@@ -82,7 +82,8 @@ $ ->
 			c = 0
 			window.graph.series[c++] = {
 				name: client_grid_changes.name
-				color: client_grid_changes.color
+				stroke: "rgba(#{client_grid_changes.color.slice 4, -1}, 0.9)"
+				color: "rgba(#{client_grid_changes.color.slice 4, -1}, 0.5)"
 				data: ({
 					x: (window.fake_start - window.client_start_time + d.server_time + window.time_delta) / 1e3
 					y: d.correct
@@ -228,7 +229,7 @@ $ ->
 
 	new_letter = (i, j, char) ->
 		xoffset = if puzzle_size >= 20 then 0.63 else 0.5
-		paper.text((j + xoffset) * square_size, (i + 0.55) * square_size, char)
+		paper.text((j + xoffset) * square_size, Math.round((i + 0.55) * square_size), char)
 			 .attr(
 			 	'font-size': if puzzle_size >= 20 then 16 else 20
 			 	'text-anchor': 'middle'
@@ -258,7 +259,7 @@ $ ->
 		char = char.toUpperCase()
 		#color = if (i == ci) and (j == cj) then 'white' else 'black'
 		xoffset = if puzzle_size >= 20 then 0.63 else 0.5
-		letters[i][j] = paper.text((j + xoffset) * square_size, (i + 0.55) * square_size, char)
+		letters[i][j] = paper.text((j + xoffset) * square_size, Math.round((i + 0.55) * square_size), char)
 							 .attr(
 							 	'font-size': if puzzle_size >= 20 then 16 else 20
 							 	'text-anchor': 'middle'
