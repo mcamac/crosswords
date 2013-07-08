@@ -42,7 +42,10 @@ class Room:
         self.grid_owners = [[None for j in range(15)] for i in range(15)]
         self.grid_owner_counts = {}
         self.grid_changes = {}
+        #self.grid_corrects = {}
+        self.grid_corrects = []
         self.last_grid_change = None
+        self.last_grid_correct = None
 
         self.id = uuid4()
         self.complete = False
@@ -136,7 +139,11 @@ class Room:
 
     def grid_change(self, client_id, i, j, new_char):
         if client_id not in self.grid_changes:
-            self.grid_changes[client_id] = []
+            self.grid_changes[client_id] = {
+                'color': self.clients[client_id].color,
+                'name': self.clients[client_id].name,
+                'data': [{ 'client_id': client_id, 'server_time': self.start_time, 'correct': 0 }]
+            }
 
         old_char = self.grid[i][j]
 
@@ -162,8 +169,10 @@ class Room:
                 self.grid_owner_counts[changed_client_id] += delta
 
             # self.last_grid_change = { 'time': time_since_start, 'correct': self.grid_owner_counts[client_id] }
-            self.last_grid_change = { 'client_id': client_id, 'time': current_time(), 'correct': self.grid_owner_counts[client_id] }
-            self.grid_changes[client_id].append(self.last_grid_change)
+            self.last_grid_change = { 'client_id': client_id, 'server_time': current_time(), 'correct': self.grid_owner_counts[client_id] }
+            self.last_grid_correct = { 'client_id': client_id, 'server_time': current_time(), 'correct': sum(self.grid_owner_counts.values()) }
+            self.grid_changes[client_id]['data'].append(self.last_grid_change)
+            self.grid_corrects.append(self.last_grid_correct)
         ## else:
         ##     self.grid_changes[client_id][-1]['time'] = time_since_start
 
@@ -289,7 +298,8 @@ class PlayerWebSocket(tornado.websocket.WebSocketHandler):
                 'player_squares': rooms[self.room].grid_owner_colors(),
                 'complete': rooms[self.room].complete,
                 'start_time': rooms[self.room].start_time,
-                'current_time': current_time()
+                'current_time': current_time(),
+                'grid_corrects': rooms[self.room].grid_corrects
             }
             self.send(message)
 
@@ -367,7 +377,9 @@ class PlayerWebSocket(tornado.websocket.WebSocketHandler):
 
             message['color'] = rooms[self.room].grid_owner_colors()[data['i']][data['j']]
             message['grid_changes'] = rooms[self.room].grid_changes
-            message['last_grid_change'] = rooms[self.room].last_grid_change
+            #message['last_grid_change'] = rooms[self.room].last_grid_change
+            #message['last_grid_correct'] = rooms[self.room].last_grid_correct
+            message['grid_corrects'] = rooms[self.room].grid_corrects
             rooms[self.room].broadcast(json.dumps(message))
             rooms[self.room].print_grid()
             rooms[self.room].check_puzzle()

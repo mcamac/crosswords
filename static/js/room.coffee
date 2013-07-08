@@ -1,7 +1,8 @@
 $ ->
 	time_ping = undefined
-	time_delta = 0
-	client_start_time = undefined
+	window.time_delta = 0
+	window.client_start_time = undefined
+	window.fake_start = +new Date(2010, 0, 1, 0, 0, 0);
 	timer = undefined
 
 	ws = new WebSocket("ws://#{location.hostname}:#{location.port}#{location.pathname}/sub")
@@ -39,21 +40,26 @@ $ ->
 
 		if data.type == 'new puzzle'
 			server_start_time = +new Date data.start_time
-			client_start_time = server_start_time + time_delta
+			window.client_start_time = server_start_time + time_delta
 			make_puzzle data.content
+
+			do start_d3
 
 		if data.type == 'existing puzzle'
 			time_pong = +new Date
 			time_roundtrip = time_pong - time_ping
 			server_current_time = +new Date data.content.current_time
-			time_delta = new Date - time_roundtrip / 2 - server_current_time
+			window.time_delta = new Date - time_roundtrip / 2 - server_current_time
 
 			server_start_time = +new Date data.content.start_time
-			client_start_time = server_start_time + time_delta
+			window.client_start_time = server_start_time + time_delta
 
 			make_puzzle data.content.puzzle
 			fill_existing_letters data.content.grid
 			fill_existing_colors data.content.player_squares
+
+			window.start = client_start_time
+			do start_d3
 
 			if data.content.complete
 				greenBG()
@@ -68,6 +74,18 @@ $ ->
 			else
 				if player_squares[i][j]
 					player_squares[i][j].remove()
+
+			c = 0
+			window.graph.series[c++] = {
+				name: client_grid_changes.name
+				stroke: "rgba(#{client_grid_changes.color.slice 4, -1}, 0.9)"
+				color: "rgba(#{client_grid_changes.color.slice 4, -1}, 0.5)"
+				data: ({
+					x: (window.fake_start - window.client_start_time + d.server_time + window.time_delta) / 1e3
+					y: d.correct
+				} for d in client_grid_changes.data)
+			} for own client_id, client_grid_changes of data.grid_changes
+			window.graph.render()
 
 		if data.type == 'room members'
 			data.content.sort()
@@ -207,7 +225,7 @@ $ ->
 
 	new_letter = (i, j, char) ->
 		xoffset = if puzzle_size >= 20 then 0.63 else 0.5
-		paper.text((j + xoffset) * square_size, (i + 0.55) * square_size, char)
+		paper.text((j + xoffset) * square_size, Math.round((i + 0.55) * square_size), char)
 			 .attr(
 			 	'font-size': if puzzle_size >= 20 then 16 else 20
 			 	'text-anchor': 'middle'
@@ -237,7 +255,7 @@ $ ->
 		char = char.toUpperCase()
 		#color = if (i == ci) and (j == cj) then 'white' else 'black'
 		xoffset = if puzzle_size >= 20 then 0.63 else 0.5
-		letters[i][j] = paper.text((j + xoffset) * square_size, (i + 0.55) * square_size, char)
+		letters[i][j] = paper.text((j + xoffset) * square_size, Math.round((i + 0.55) * square_size), char)
 							 .attr(
 							 	'font-size': if puzzle_size >= 20 then 16 else 20
 							 	'text-anchor': 'middle'
@@ -671,9 +689,10 @@ $ ->
 	pad_zero = (n) ->
 		if n < 10 then "0" + n else n
 
-	timer_string = (deci) ->
-		current_time = +new Date
-		total_seconds = (current_time - client_start_time) / 1e3
+	timer_string = (deci) -> window.timer_string_ +new Date, deci
+
+	window.timer_string_ = (current_time, deci) ->
+		total_seconds = (current_time - window.client_start_time) / 1e3
 
 		if total_seconds < 0
 			console.error "#{total_seconds} is negative"
