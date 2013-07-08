@@ -360,6 +360,9 @@ $ ->
 		set_cursor ns[0], ns[1]
 
 
+	######################## 
+	## KEYBOARD SHORTCUTS ##
+	########################
 	key 'left', go_left
 	key 'up', (e) ->
 		e.preventDefault()
@@ -370,7 +373,9 @@ $ ->
 		e.preventDefault()
 		go_down()
 
-	key 'space', flip_dir
+	key 'space', (e) ->
+		e.preventDefault()
+		flip_dir()
 
 	key 'backspace', (e) ->
 		e.preventDefault()
