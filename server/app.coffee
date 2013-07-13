@@ -1,8 +1,8 @@
 express = require 'express'
 http = require 'http'
 
-MultiplayerRoom = require './shared/room'
-Player = require './shared/player'
+MultiplayerRoom = require '../shared/room'
+Player = require '../shared/player'
 
 
 
@@ -16,12 +16,18 @@ server = http.Server(app)
 
 io = require('socket.io').listen server
 
+server.listen '5558'
+
+app.set 'views', __dirname + '/../client/views'
+app.use '/static', express.static(__dirname + '/../client/static')
+
 ## Routes
 app.get '/lobby', (req, res) ->
-  res.end 'hello world'
+  res.send 'hello world'
 
 app.get '/play/:room_name', (req, res) ->
-  res.end req.params.room_name
+  # res.send req.params.room_name
+  res.render 'room.jade', {}
 
 app.listen 5557
 
@@ -51,7 +57,14 @@ class MultiplayerCrosswordRoom extends MultiplayerRoom
     io.sockets.in(@name).emit name, data
 
 
+# Load a room 
+
+
 io.sockets.on 'connection', (socket) ->
-  socket.emit 'hello', 'hello'
-  socket.on 'join', ->
-    return
+  socket.emit 'connection acknowledged', ''
+
+  socket.on 'join room', ({roomName, userId}) ->
+    console.log roomName, userId
+
+  socket.on 'disconnect', ->
+    console.log 'disconn'
