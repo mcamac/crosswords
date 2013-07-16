@@ -14,6 +14,10 @@ class MultiplayerRoom
 
     @grid = []
     
+    @competitive = false
+    @diagramless = false
+
+    @start_time = null
 
 
     @client_squares = {}

@@ -2,6 +2,53 @@ html
   head
     script(src='http://localhost:5558/socket.io/socket.io.js')
     script(src='/static/js/jquery.js')
+    script(src='/static/js/raphael.min.js')
+    script(src='/static/js/keymaster.min.js')
     script(src='/static/js/room.js')
+
+    link(rel='stylesheet', type='text/css', href='/static/css/foundation.css')
+    link(rel='stylesheet', type='text/css', href='/static/css/room.css')
+    //- script(src='/static/css/room.css')
+    title Crosswords
   body
-    h3 Hello
+    nav.top-bar
+      ul.title-area
+        li.name
+          h1
+            a(href='#') Crosswords
+      section.top-bar-section
+        ul.left
+          li.divider
+          li
+            a(href='#') Browse Puzzles
+          //- li.divider
+          li
+            a(href='#') Room Options
+          //- li.divider
+          li
+            a(a href='#') Help
+
+    div.row.game-area
+      div.large-3.columns
+        h6 Room Members
+        #members_box
+        h6 Chat
+        #chat_box
+        input#chat_input(type="text")
+      div.large-6.columns.crossword-column
+        div.row
+          div.small-10.columns
+            h5
+              span#puzzle_title
+          div.small-2.columns
+            h5#timer 0:00
+          div#crossword_canvas
+
+      div.large-3.columns.clue-area
+        h5 Across
+        ul#A_clues.clue-list
+        h5 Down
+        ul#D_clues.clue-list
+
+        div#score_box
+
