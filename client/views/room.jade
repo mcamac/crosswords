@@ -20,18 +20,22 @@ html
         ul.left
           li.divider
           li
-            a(href='#') Browse Puzzles
+            a(href='#', data-reveal-id='browse_puzzles_modal')
+              | Browse Puzzles
           //- li.divider
           li
             a(href='#') Room Options
           //- li.divider
           li
             a(a href='#') Help
+          li
+            a(a href='#') Constructor
 
     div.row.game-area
       div.large-3.columns
-        h6 Room Members
+        h6 NY Times, Monday, Jun 3
         #members_box
+          p martin, jong
         h6 Chat
         #chat_box
         input#chat_input(type="text")
@@ -40,7 +44,7 @@ html
           div.small-10.columns
             h5
               span#puzzle_title
-          div.small-2.columns
+          div.small-2.columns.timer
             h5#timer 0:00
           div#crossword_canvas
 
@@ -51,4 +55,9 @@ html
         ul#D_clues.clue-list
 
         div#score_box
+
+
+    div#browse_puzzles_modal.reveal-modal
+      <h2>Hello!</h2>
+
 
