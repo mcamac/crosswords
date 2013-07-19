@@ -137,8 +137,8 @@ class PuzzleManager
 
     # initialize user highlights
     @g.highlights.user['user'] = @g.paper.rect(
-      3.5, 3.5,
-      @g.grid.squareSize - 6, @g.grid.squareSize - 6
+      3, 3,
+      @g.grid.squareSize - 5, @g.grid.squareSize - 5
     ).attr {
       stroke: 'rgb(61,104,184)' 
       'stroke-width': 4
@@ -186,8 +186,8 @@ class PuzzleManager
 
   _setHighlight: (id, [r, c]) ->
     @g.highlights.user[id]?.attr
-      x: @g.grid.squareSize * c + 3.5
-      y: @g.grid.squareSize * r + 3.5
+      x: @g.grid.squareSize * c + 3
+      y: @g.grid.squareSize * r + 3
 
     if id is 'user'
       [@g.ci, @g.cj] = [r, c]
