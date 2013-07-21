@@ -98,9 +98,6 @@ class PuzzleManager
           'text-anchor': 'middle'
         }
 
-
-
-
     # add grid lines
     for offset in [0..@p.height]
       pxoff = @g.grid.squareSize * offset + 0.5   
