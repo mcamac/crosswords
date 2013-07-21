@@ -7,7 +7,7 @@ scraper
 node_modules
 
 */app.js
-client/static/js/room.js
+client/static/js/*.js
 shared/room.js
 */player.js
 Gruntfile.js
