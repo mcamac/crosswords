@@ -6,5 +6,9 @@ static/js/oldroom.js
 scraper
 node_modules
 
-*.js
+*/app.js
+*/room.js
+./client/static/js/room.js
+*/player.js
+Gruntfile.js
 *.map
