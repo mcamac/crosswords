@@ -7,8 +7,8 @@ scraper
 node_modules
 
 */app.js
-*/room.js
-./client/static/js/room.js
+client/static/js/room.js
+shared/room.js
 */player.js
 Gruntfile.js
 *.map
