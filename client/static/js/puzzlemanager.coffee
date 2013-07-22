@@ -14,6 +14,9 @@ class @PuzzleManager
     if options.puzzle
       @p = options.puzzle
 
+    @keyManager = new KeyManager
+    @keyManager.registerBindings @
+
     # graphics object
     @g = {}
 
@@ -131,9 +134,9 @@ class @PuzzleManager
 
     # load clue lists
     for num, clue of @p.clues.across
-      $('#A_clues').append "<li>#{num} #{clue}</li>"
+      $('#A_clues').append "<li value='#{num}'> #{clue}</li>"
     for num, clue of @p.clues.down
-      $('#D_clues').append "<li>#{num} #{clue}</li>"
+      $('#D_clues').append "<li value='#{num}'> #{clue}</li>"
 
     # initialize user highlights
     @g.highlights.user['user'] = @g.paper.rect(
@@ -199,6 +202,12 @@ class @PuzzleManager
 
   moveToPreviousClue: ->   
     @moveToClue (@p.nextClueNumber @currentClue(), @g.dir, -1)
+
+  enterRebus: ->
+    console.error "#{arguments.callee.name} not implemented"
+
+  backspace: ->
+    console.error "#{arguments.callee.name} not implemented"
 
   _setHighlight: (id, [r, c]) ->
     if not @p.validSquare [r, c]
