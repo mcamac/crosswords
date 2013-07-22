@@ -9,7 +9,10 @@ body, h1, h2, h3, h4, h5, h6 {
 .clue-list {
   font-size: 13px;
   height: 200px;
-  overflow: scroll; }
+  overflow: scroll;
+  margin-left: 0;
+  padding-left: 2em;
+  list-style-position: outside; }
 
 #members_box {
   height: 250px; }
@@ -29,4 +32,4 @@ svg {
 
 ul.puzzle-list {
   height: 400px;
-  overflow: auto; }
+  overflow: scroll; }
