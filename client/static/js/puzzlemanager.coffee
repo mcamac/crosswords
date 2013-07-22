@@ -14,6 +14,9 @@ class @PuzzleManager
     if options.puzzle
       @p = options.puzzle
 
+    @keyManager = new KeyManager
+    @keyManager.registerBindings @
+
     # graphics object
     @g = {}
 
@@ -176,6 +179,12 @@ class @PuzzleManager
 
   moveToPreviousClue: ->   
     @moveToClue (@p.nextClueNumber @currentClue(), @g.dir, -1)
+
+  enterRebus: ->
+    console.error "#{arguments.callee.name} not implemented"
+
+  backspace: ->
+    console.error "#{arguments.callee.name} not implemented"
 
   _setHighlight: (id, [r, c]) ->
     @g.highlights.user[id]?.attr
