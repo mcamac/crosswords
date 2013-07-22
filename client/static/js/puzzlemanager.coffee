@@ -57,17 +57,21 @@ class @PuzzleManager
     @g.grid.lines = []
 
     # Draw and format puzzle numbers
+    @g.numbers = {}
+    @g.blackSquares = {}
     currentNumber = 1
     for r in [0...@p.height]
+      @g.numbers[r] = {}
+      @g.blackSquares[r] = {}
       for c in [0...@p.width]
         if @p.gridNumbers[r][c]
-          @g.paper.text(
+          @g.numbers[r][c] = @g.paper.text(
             @g.grid.squareSize * c + 3,
             @g.grid.squareSize * r + 8.5,
             @p.gridNumbers[r][c])
             .attr @g.grid.numbers.style
         if @p.grid[r][c] == '_'
-          @g.paper.rect(
+          @g.blackSquares[r][c] = @g.paper.rect(
             @g.grid.squareSize * c + 0.5,
             @g.grid.squareSize * r + 0.5,
             @g.grid.squareSize,
@@ -122,6 +126,9 @@ class @PuzzleManager
     @g.cj = 0
     @g.dir = dir.ACROSS
 
+    # replace puzzle title
+    $()
+
     # load clue lists
     for num, clue of @p.clues.across
       $('#A_clues').append "<li>#{num} #{clue}</li>"
@@ -144,12 +151,28 @@ class @PuzzleManager
 
     console.log 'rendered'
 
+    @moveToClue 1
+
+  resetGrid: ->
+    for r in [0...@p.height]
+      for c in [0...@p.width]
+        @g.numbers?[r]?[c]?.remove()
+        @g.blackSquares?[r]?[c]?.remove()
+
+    $('.clue-list').html ''
+
+    # clear highlights
+    @g.highlights.user['user']?.remove()
+    @g.highlights.across?.remove()
+    @g.highlights.down?.remove()
+
   flipDir: ->
     @g.dir = if @g.dir == dir.ACROSS then dir.DOWN else dir.ACROSS
     @_reHighlight()
 
   loadPuzzle: (@p) ->  
     # load puzzle data into manager and render
+    @resetGrid()
     @render()
 
   setCurrentSquare: (value, move) ->
@@ -178,6 +201,9 @@ class @PuzzleManager
     @moveToClue (@p.nextClueNumber @currentClue(), @g.dir, -1)
 
   _setHighlight: (id, [r, c]) ->
+    if not @p.validSquare [r, c]
+      return
+
     @g.highlights.user[id]?.attr
       x: @g.grid.squareSize * c + 3
       y: @g.grid.squareSize * r + 3
