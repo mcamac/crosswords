@@ -4,6 +4,7 @@ html
     script(src='/static/js/jquery.js')
     script(src='/static/js/raphael.min.js')
     script(src='/static/js/keymaster.min.js')
+    script(src='/static/js/foundation.min.js')
 
     script(src='/static/js/keymanager.js')
     script(src='/static/js/puzzle.js')
@@ -24,7 +25,7 @@ html
         ul.left
           li.divider
           li
-            a(href='#', data-reveal-id='browse_puzzles_modal')
+            a#browse_puzzles_a.reveal-link(href='#', data-reveal-id='browse_puzzles_modal')
               | Browse Puzzles
           //- li.divider
           li
@@ -62,6 +63,8 @@ html
 
 
     div#browse_puzzles_modal.reveal-modal
-      <h2>Hello!</h2>
+      h3 Browse Puzzles (# puzzles)
+      ul.puzzle-list
+      a.close-reveal-modal &#215;
 
 
