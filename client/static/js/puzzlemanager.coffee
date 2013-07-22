@@ -127,9 +127,9 @@ class @PuzzleManager
 
     # load clue lists
     for num, clue of @p.clues.across
-      $('#A_clues').append "<li>#{num} #{clue}</li>"
+      $('#A_clues').append "<li value='#{num}''> #{clue}</li>"
     for num, clue of @p.clues.down
-      $('#D_clues').append "<li>#{num} #{clue}</li>"
+      $('#D_clues').append "<li value='#{num}'> #{clue}</li>"
 
     # initialize user highlights
     @g.highlights.user['user'] = @g.paper.rect(
