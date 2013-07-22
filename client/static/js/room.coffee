@@ -28,3 +28,34 @@ $ ->
   puzzleManager.loadPuzzle new Puzzle samplePuzzle
 
   console.log puzzleManager
+
+
+  key 'shift+o', (e) ->
+    $('#browse_puzzles_a').trigger 'click'
+
+  $.getJSON(
+    '/puzzles',
+    (data) ->
+      console.log data
+      for puzzle in data
+        $('#browse_puzzles_modal ul').append(
+          """
+          <li>
+            #{puzzle.title} -
+            <a class='load-puzzle-a'
+               data-puzzle-id='#{puzzle._id}' href='#'>
+              Load
+            </a>
+          </li>
+          """
+        )
+  )
+
+  $('#browse_puzzles_modal').on 'click', '.load-puzzle-a', (e) ->
+    $.getJSON(
+      "/puzzle/#{$(this).data('puzzle-id')}",
+      (puzzle) ->
+        puzzleManager.loadPuzzle new Puzzle puzzle
+    )
+
+  $(document).foundation()

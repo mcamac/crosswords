@@ -1,10 +1,21 @@
 express = require 'express'
 http = require 'http'
+mongoose = require 'mongoose'
+mongoose.connect 'mongodb://localhost/crosswords'
 
 MultiplayerRoom = require '../shared/room'
 Player = require '../shared/player'
 
 
+puzzleSchema = new mongoose.Schema
+  title: String
+  puzzle: Array
+  author: String
+  clues: mongoose.Schema.Types.Mixed
+  height: Number
+  width: Number
+
+Puzzle = mongoose.model 'Puzzle', puzzleSchema
 
 
 ## Global rooms object
@@ -28,6 +39,16 @@ app.get '/lobby', (req, res) ->
 app.get '/play/:room_name', (req, res) ->
   # res.send req.params.room_name
   res.render 'room.jade', {}
+
+app.get '/puzzles', (req, res) ->
+  Puzzle.find().select('title author _id')
+        .skip(100).limit(50).exec (err, puzzles) ->
+    res.json puzzles
+
+app.get '/puzzle/:id', (req, res) ->
+  Puzzle.findOne({_id: req.params.id}).exec (err, puzzle) ->
+    res.json puzzle
+
 
 app.listen 5557
 
@@ -55,6 +76,8 @@ class MultiplayerCrosswordRoom extends MultiplayerRoom
 
   emit: (name, data) ->
     io.sockets.in(@name).emit name, data
+
+
 
 
 # Load a room 
