@@ -129,7 +129,7 @@ class @PuzzleManager
     @g.cj = 0
     @g.dir = dir.ACROSS
 
-    # reaplace puzzle title
+    # replace puzzle title
     $('.puzzle-title').html @p.title
 
     # load clue lists
