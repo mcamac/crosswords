@@ -90,7 +90,7 @@ $ ->
 		if data.type == 'room members'
 			data.content.sort()
 			$('#members_box').html $.map(data.content, (row) ->
-				"<span style='border-bottom: 3px solid #{row.color};'>#{row.name}</span>").join(', ')
+				"<span class='member' style='border-color: #{row.color};'>#{row.name}</span>").join(', ')
 			send_set_cursor ci, cj
 
 			ids = $.map(data.content, (row) -> row.id)
@@ -712,7 +712,7 @@ $ ->
 
 		if deci
 			deciseconds = ~~(10 * total_seconds % 10)
-			string += "<small style='color: #aaa;'>.#{deciseconds}</small>"
+			string += "<small class='deciseconds'>.#{deciseconds}</small>"
 		string
 
 	tick_timer = ->
