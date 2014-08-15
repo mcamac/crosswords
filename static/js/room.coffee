@@ -127,7 +127,7 @@ $ ->
 		$('#chat_box').scrollTop $('#chat_box')[0].scrollHeight
 
 	greenBG = ->
-		background.attr 'opacity', 0.2
+		background.node.classList.add 'green'
 
 	# Crossword SVG variables
 	grid_lines = []
@@ -159,9 +159,6 @@ $ ->
 	square_highlight = null
 	across_highlight = null
 	down_highlight = null
-	HIGHLIGHT_SQUARE        = 'rgb(61,104,184)'
-	HIGHLIGHT_PARALLEL      = 'rgba(61,104,184,0.55)'
-	HIGHLIGHT_PERPENDICULAR = 'rgba(61,104,184,0.15)'
 	STROKE_WIDTH_PLAYER = 5
 	STROKE_WIDTH_OTHER = 3
 
@@ -186,9 +183,7 @@ $ ->
 
 		black_squares[i][j] = 
 			paper.rect(j * square_size+0.5, i * square_size+0.5, square_size, square_size)
-				 .attr(
-				 	fill: '#333'
-				 )
+		black_squares[i][j].node.classList.add 'black'
 
 	set_player_square = (i, j, color) ->
 		if player_squares[i][j]
@@ -208,9 +203,8 @@ $ ->
 			paper.rect(X, Y, W, H)
 				 .attr(
 				 	fill: color
-				 	opacity: 0.4
-				 	stroke: 'none'
 				 )
+		player_squares[i][j].node.classList.add 'player-square'
 		player_squares[i][j].toBack()
 
 	has_number = (p, i, j) ->
@@ -403,8 +397,9 @@ $ ->
 			width: ~~(square_size * (acr_ej - acr_sj + 1)) - STROKE_WIDTH_PLAYER - 1
 			x: acr_sj * square_size + 0.5 + (STROKE_WIDTH_PLAYER + 1) / 2
 			y: ci * square_size + 0.5 + (STROKE_WIDTH_PLAYER + 1) / 2
-			stroke: if dir == 'A' then HIGHLIGHT_PARALLEL else HIGHLIGHT_PERPENDICULAR
 		}
+		across_highlight.node.classList[if dir == 'A' then 'add' else 'remove'] 'highlight-parallel'
+		across_highlight.node.classList[if dir == 'A' then 'remove' else 'add'] 'highlight-perpendicular'
 
 		down_si = ci
 		down_ei = ci
@@ -416,8 +411,9 @@ $ ->
 			height: ~~(square_size * (down_ei - down_si + 1)) - STROKE_WIDTH_PLAYER - 1
 			x: cj * square_size + 0.5 + (STROKE_WIDTH_PLAYER + 1) / 2
 			y: down_si * square_size + 0.5 + (STROKE_WIDTH_PLAYER + 1) / 2
-			stroke: if dir == 'D' then HIGHLIGHT_PARALLEL else HIGHLIGHT_PERPENDICULAR
 		}
+		down_highlight.node.classList[if dir == 'D' then 'add' else 'remove'] 'highlight-parallel'
+		down_highlight.node.classList[if dir == 'D' then 'remove' else 'add'] 'highlight-perpendicular'
 
 		square_highlight.attr {
 			x: cj * square_size + 0.5 + (STROKE_WIDTH_PLAYER + 1) / 2
@@ -464,9 +460,8 @@ $ ->
 							.attr {
 								stroke: color
 								'stroke-width': STROKE_WIDTH_OTHER
-								fill: 'none'
-								opacity: 0.7
 							}
+			cursors[pid].node.classList.add 'their-highlight-square'
 		else
 			cursors[pid].attr {
 				stroke: color
@@ -535,10 +530,7 @@ $ ->
 			grid_lines.push paper.path "M0.5,#{pxoff}h#{grid_size}"
 
 		for line in grid_lines
-			line.attr {
-				stroke: '#ddd'
-				'stroke-width': 1
-			}
+			line.node.classList.add 'gridline'
 
 		# Draw and format puzzle numbers
 		current_number = 1
@@ -565,11 +557,7 @@ $ ->
 			background.remove()
 
 		background = paper.rect(0, 0, grid_size, grid_size)
-					  .attr {
-					  	stroke: 'none'
-					  	fill: '#62cb62'
-					  	opacity: 0.0
-					  }
+		background.node.classList.add 'background'
 
 		background.click (e) ->
 			ei = Math.floor e.layerY / square_size
@@ -640,12 +628,9 @@ $ ->
 									  square_size,
 									  square_size - STROKE_WIDTH_PLAYER - 1)
 								.attr {
-									stroke: HIGHLIGHT_PARALLEL
 									'stroke-width': STROKE_WIDTH_PLAYER
-									#'stroke-dasharray': '.'
-									fill: 'none'
-									#opacity: 0.5
 								}
+		across_highlight.node.classList.add 'highlight-across', 'highlight-parallel'
 		
 		if down_highlight
 			down_highlight.remove()
@@ -654,10 +639,9 @@ $ ->
 									  square_size - STROKE_WIDTH_PLAYER - 1,
 									  square_size)
 								.attr {
-									stroke: HIGHLIGHT_PERPENDICULAR
 									'stroke-width': STROKE_WIDTH_PLAYER
-									fill: 'none'
 								}
+		down_highlight.node.classList.add 'highlight-down', 'highlight-perpendicular'
 
 		if square_highlight
 			square_highlight.remove()
@@ -666,11 +650,9 @@ $ ->
 									  square_size - STROKE_WIDTH_PLAYER - 1,
 									  square_size - STROKE_WIDTH_PLAYER - 1)
 								.attr {
-									stroke: HIGHLIGHT_SQUARE
 									'stroke-width': STROKE_WIDTH_PLAYER
-									fill: 'none'
-									opacity: 1
 								}
+		square_highlight.node.classList.add 'highlight-square'
 
 		$('#A_clues').empty()
 		$('#D_clues').empty()
