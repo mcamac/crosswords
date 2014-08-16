@@ -131,7 +131,8 @@ $ ->
 
 	# Crossword SVG variables
 	grid_lines = []
-	grid_size = 540
+	grid_size_max = 540
+	grid_size = grid_size_max
 
 	number_text = {}
 	numbers = {}
@@ -144,7 +145,7 @@ $ ->
 
 	p = {}
 
-	square_size = grid_size / (1.0 * puzzle_size)
+	square_size = grid_size / puzzle_size
 
 	letters = {}
 
@@ -503,8 +504,9 @@ $ ->
 
 		# console.log JSON.stringify contents
 
-		puzzle_size = puzzle.height
-		square_size = grid_size / (1.0 * puzzle_size)
+		puzzle_size = +puzzle.height
+		square_size = ~~(grid_size_max / puzzle_size)
+		grid_size = square_size * puzzle_size
 
 		clues['A'] = puzzle.clues.across
 		clues['D'] = puzzle.clues.down
