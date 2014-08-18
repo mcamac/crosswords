@@ -1,6 +1,5 @@
 <html>
 <head>
-<script src="/static/js/vendor/raphael-min.js" type="text/javascript"></script>
 <script src="/static/js/vendor/jquery.js" type="text/javascript"></script>
 <script src="/static/js/vendor/foundation.min.js" type="text/javascript"></script>
 <script src="/static/js/vendor/foundation/foundation.forms.js" type="text/javascript"></script>
@@ -65,7 +64,20 @@
 			</div>
 		</div>
 		<p id="current_clue">Current clue</p>
-		<div id="crossword_canvas"></div>
+		<div id="crossword-container">
+			<svg id="crossword" style="overflow: hidden; position: relative;">
+				<!-- Back -->
+				<g id="black-squares" />
+				<g id="filled-squares" />
+				<g id="cursor" />
+				<g id="their-cursors" />
+				<g id="numbers" />
+				<g id="letters" />
+				<g id="gridlines" />
+				<g id="background" />
+				<!-- Front -->
+			</svg>
+		</div>
 	</div>
 
 	<div class="large-3 columns clue-area">
@@ -116,6 +128,7 @@
 	<p>The grid will turn green when the puzzle is complete.</p>
 </div>
 
+<script src="/static/js/render.js" type="text/javascript"></script>
 <script src="/static/js/room.js" type="text/javascript"></script>
 
 <script>

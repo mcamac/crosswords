@@ -73,7 +73,7 @@ $ ->
 				set_player_square i, j, data.color
 			else
 				if player_squares[i][j]
-					player_squares[i][j].remove()
+					remove player_squares[i][j]
 
 			c = 0
 			window.graph.series[c++] = {
@@ -97,7 +97,7 @@ $ ->
 			console.log ids
 			for id, _ of cursors
 				if $.inArray(id, ids) == -1 and cursors[id]
-					cursors[id].remove()
+					remove cursors[id]
 					cursors[id] = undefined
 
 		if data.type == 'want cursors'
@@ -110,9 +110,6 @@ $ ->
 			greenBG()
 			clearInterval timer
 			add_chat_message "<i>Puzzle finished in <b>#{timer_string false}</b>!</i>"
-
-		if background
-			background.toFront()
 
 	send_chat_message = (message) ->
 		ws.send JSON.stringify {
@@ -127,7 +124,7 @@ $ ->
 		$('#chat_box').scrollTop $('#chat_box')[0].scrollHeight
 
 	greenBG = ->
-		background.node.classList.add 'green'
+		background.classList.add 'green'
 
 	# Crossword SVG variables
 	grid_lines = []
@@ -169,7 +166,7 @@ $ ->
 	black_squares = {}
 	player_squares = {}
 
-	paper = Raphael "crossword_canvas", grid_size + 2, grid_size + 2
+	Render.setDims('crossword') grid_size + 2, grid_size + 2
 
 	USER = 0
 	dir = 'A'
@@ -178,17 +175,20 @@ $ ->
 		D: '▼' # ▽
 
 	## UI Code
+	remove = (el) -> el.parentNode.removeChild(el)
+
+	add_black_square = Render.rect 'black-squares'
 	blacken_square = (i, j) ->
 		if black_squares[i][j]
-			black_squares[i][j].remove()
+			remove black_squares[i][j]
 
-		black_squares[i][j] = 
-			paper.rect(j * square_size+0.5, i * square_size+0.5, square_size, square_size)
-		black_squares[i][j].node.classList.add 'black'
+		black_squares[i][j] =
+			add_black_square j * square_size+0.5, i * square_size+0.5, square_size, square_size
 
+	add_player_square = Render.rect 'filled-squares'
 	set_player_square = (i, j, color) ->
 		if player_squares[i][j]
-			player_squares[i][j].remove()
+			remove player_squares[i][j]
 
 		xoffset = if puzzle_size >= 20 then 0.33 else 0.2
 
@@ -201,12 +201,7 @@ $ ->
 		W = -1 + square_size
 		H = -1 + square_size
 		player_squares[i][j] = 
-			paper.rect(X, Y, W, H)
-				 .attr(
-				 	fill: color
-				 )
-		player_squares[i][j].node.classList.add 'player-square'
-		player_squares[i][j].toBack()
+			add_player_square X, Y, W, H, { fill: color || 'none' }
 
 	has_number = (p, i, j) ->
 		# # console.log p[i][j]
@@ -218,47 +213,35 @@ $ ->
 			return true
 		return false
 
+	add_letter = Render.text 'letters'
 	new_letter = (i, j, char) ->
 		xoffset = if puzzle_size >= 20 then 0.63 else 0.5
-		paper.text((j + xoffset) * square_size, Math.round((i + 0.55) * square_size), char)
-			 .attr(
-			 	'font-size': if puzzle_size >= 20 then 16 else 20
-			 	'text-anchor': 'middle'
-			 	'font-family': 'Source Sans'
-			 	'font-weight': '600'
-			 )
+		add_letter (j + xoffset) * square_size, Math.round((i + 0.55) * square_size), char,
+		 	'font-size': if puzzle_size >= 20 then 16 else 20
 
 	fill_existing_letters = (grid) ->
 		for i in [0..puzzle_size-1]
 			for j in [0..puzzle_size-1]
 				if letters[i][j]
-					letters[i][j].remove()
+					remove letters[i][j]
 				letters[i][j] = new_letter i, j, grid[i][j]
 
 	fill_existing_colors = (grid_colors) ->
 		for i in [0..puzzle_size-1]
 			for j in [0..puzzle_size-1]
 				if player_squares[i][j]
-					player_squares[i][j].remove()
+					remove player_squares[i][j]
 				set_player_square i, j, grid_colors[i][j]
 
 	set_square_value = (i, j, char, broadcast) ->
 		if letters[i][j]
-			letters[i][j].remove()
+			remove letters[i][j]
 
 		# console.log letters[i][j], i, j, char
 		char = char.toUpperCase()
-		#color = if (i == ci) and (j == cj) then 'white' else 'black'
 		xoffset = if puzzle_size >= 20 then 0.63 else 0.5
-		letters[i][j] = paper.text((j + xoffset) * square_size, Math.round((i + 0.55) * square_size), char)
-							 .attr(
-							 	'font-size': if puzzle_size >= 20 then 16 else 20
-							 	'text-anchor': 'middle'
-							 	'font-family': 'Source Sans'
-							 	'font-weight': '600'
-							 	#fill: color
-							 )
-			
+		letters[i][j] = add_letter (j + xoffset) * square_size, Math.round((i + 0.55) * square_size), char,
+						 	'font-size': if puzzle_size >= 20 then 16 else 20
 
 	send_set_square_value = (i, j, char) ->
 		ws.send JSON.stringify {
@@ -394,13 +377,11 @@ $ ->
 			acr_sj--
 		while valid(p, ci, acr_ej + 1)
 			acr_ej++
-		across_highlight.attr {
-			width: ~~(square_size * (acr_ej - acr_sj + 1)) - STROKE_WIDTH_PLAYER - 1
-			x: acr_sj * square_size + 0.5 + (STROKE_WIDTH_PLAYER + 1) / 2
-			y: ci * square_size + 0.5 + (STROKE_WIDTH_PLAYER + 1) / 2
-		}
-		across_highlight.node.classList[if dir == 'A' then 'add' else 'remove'] 'highlight-parallel'
-		across_highlight.node.classList[if dir == 'A' then 'remove' else 'add'] 'highlight-perpendicular'
+		across_highlight.setAttribute 'width', ~~(square_size * (acr_ej - acr_sj + 1)) - STROKE_WIDTH_PLAYER - 1
+		across_highlight.setAttribute 'x', acr_sj * square_size + 0.5 + (STROKE_WIDTH_PLAYER + 1) / 2
+		across_highlight.setAttribute 'y', ci * square_size + 0.5 + (STROKE_WIDTH_PLAYER + 1) / 2
+		across_highlight.classList[if dir == 'A' then 'add' else 'remove'] 'highlight-parallel'
+		across_highlight.classList[if dir == 'A' then 'remove' else 'add'] 'highlight-perpendicular'
 
 		down_si = ci
 		down_ei = ci
@@ -408,36 +389,23 @@ $ ->
 			down_si--
 		while valid(p, down_ei + 1, cj)
 			down_ei++
-		down_highlight.attr {
-			height: ~~(square_size * (down_ei - down_si + 1)) - STROKE_WIDTH_PLAYER - 1
-			x: cj * square_size + 0.5 + (STROKE_WIDTH_PLAYER + 1) / 2
-			y: down_si * square_size + 0.5 + (STROKE_WIDTH_PLAYER + 1) / 2
-		}
-		down_highlight.node.classList[if dir == 'D' then 'add' else 'remove'] 'highlight-parallel'
-		down_highlight.node.classList[if dir == 'D' then 'remove' else 'add'] 'highlight-perpendicular'
+		down_highlight.setAttribute 'height', ~~(square_size * (down_ei - down_si + 1)) - STROKE_WIDTH_PLAYER - 1
+		down_highlight.setAttribute 'x', cj * square_size + 0.5 + (STROKE_WIDTH_PLAYER + 1) / 2
+		down_highlight.setAttribute 'y', down_si * square_size + 0.5 + (STROKE_WIDTH_PLAYER + 1) / 2
+		down_highlight.classList[if dir == 'D' then 'add' else 'remove'] 'highlight-parallel'
+		down_highlight.classList[if dir == 'D' then 'remove' else 'add'] 'highlight-perpendicular'
 
-		square_highlight.attr {
-			x: cj * square_size + 0.5 + (STROKE_WIDTH_PLAYER + 1) / 2
-			y: ci * square_size + 0.5 + (STROKE_WIDTH_PLAYER + 1) / 2
-		}
+		square_highlight.setAttribute 'x', cj * square_size + 0.5 + (STROKE_WIDTH_PLAYER + 1) / 2
+		square_highlight.setAttribute 'y', ci * square_size + 0.5 + (STROKE_WIDTH_PLAYER + 1) / 2
+ 
 		return
 
-		#if letters[ci][cj]
-		#	letters[ci][cj].attr 'fill', 'white'
-
-		#if numbers[ci][cj]
-		#	number_text[ci][cj].attr 'fill', 'white'
 
 	set_cursor = (i, j) ->
 		if p[i][j] == '_'
 			return
 
 		# console.log ci, cj, i, j
-		if letters[ci][cj] and not (ci == i and cj == j)
-			letters[ci][cj].attr 'fill', 'black'
-
-		if number_text[ci][cj]
-			number_text[ci][cj].attr 'fill', 'black'
 		ci = i
 		cj = j
 		# console.log 'set',ci,cj
@@ -453,22 +421,18 @@ $ ->
 			content: [i, j]
 		}
 
+	add_their_cursor = Render.rect 'their-cursors'
 	place_cursor = (pid, color, i, j) ->
 		if not cursors[pid]
-			cursors[pid] = paper.rect(-50, -50,
+			cursors[pid] = add_their_cursor -50, -50,
 								  square_size - STROKE_WIDTH_OTHER - 1,
-								  square_size - STROKE_WIDTH_OTHER - 1)
-							.attr {
-								stroke: color
-								'stroke-width': STROKE_WIDTH_OTHER
-							}
-			cursors[pid].node.classList.add 'their-highlight-square'
+								  square_size - STROKE_WIDTH_OTHER - 1,
+								  stroke: color
+								  'stroke-width': STROKE_WIDTH_OTHER
 		else
-			cursors[pid].attr {
-				stroke: color
-				x: j * square_size + 0.5 + (STROKE_WIDTH_OTHER + 1) / 2
-				y: i * square_size + 0.5 + (STROKE_WIDTH_OTHER + 1) / 2
-			}
+			cursors[pid].setAttribute 'stroke', color
+			cursors[pid].setAttribute 'x', j * square_size + 0.5 + (STROKE_WIDTH_OTHER + 1) / 2
+			cursors[pid].setAttribute 'y', i * square_size + 0.5 + (STROKE_WIDTH_OTHER + 1) / 2
 		console.log cursors[pid]
 
 
@@ -526,29 +490,24 @@ $ ->
 					blacken_square i, j
 
 		# Draw and format grid lines
+		add_gridline = Render.path 'gridlines'
 		for offset in [0..puzzle_size]
 			pxoff = square_size * offset + 0.5
-			grid_lines.push paper.path "M#{pxoff},0.5v#{grid_size}"
-			grid_lines.push paper.path "M0.5,#{pxoff}h#{grid_size}"
-
-		for line in grid_lines
-			line.node.classList.add 'gridline'
+			grid_lines.push add_gridline "M#{pxoff},0.5v#{grid_size}"
+			grid_lines.push add_gridline "M0.5,#{pxoff}h#{grid_size}"
 
 		# Draw and format puzzle numbers
 		current_number = 1
+		add_number = Render.text 'numbers'
 		for i in [0..puzzle_size-1]
 			for j in [0..puzzle_size-1]
 				if has_number p,i,j 
 					# console.log "#{i} #{j} #{current_number}"
-					number_text[i][j] = paper.text(
+					number_text[i][j] = add_number \
 						square_size * j + 2, 
 						square_size * i + 8, 
-						current_number)
-						 .attr {
-						 	'font-size': if puzzle_size >= 20 then '9px' else '11px'
-						 	'text-anchor': 'start'
-						 }
-					number_text[i][j].node.className.baseVal += ' grid-number'
+						current_number,
+						'font-size': if puzzle_size >= 20 then '9px' else '11px'
 					numbers[i][j] = current_number
 					number_list.push(current_number)
 					numbers_rev['A'+current_number] = [i, j]
@@ -556,12 +515,11 @@ $ ->
 					current_number += 1
 
 		if background
-			background.remove()
+			remove background
 
-		background = paper.rect(0, 0, grid_size, grid_size)
-		background.node.classList.add 'background'
+		background = Render.rect('background') 0, 0, grid_size, grid_size
 
-		background.click (e) ->
+		background.addEventListener 'click', (e) ->
 			ei = Math.floor e.layerY / square_size
 			ej = Math.floor e.layerX / square_size
 			if ei == ci and ej == cj
@@ -591,19 +549,19 @@ $ ->
 	reset_puzzle = ->
 		# clear gridlines
 		for line in grid_lines
-			line.remove()
+			remove line
 
 		# Clear black squares
 		for i,_ of letters
 			for j, _ of letters[i]
 				if black_squares[i] and black_squares[i][j]
-					black_squares[i][j].remove()
+					remove black_squares[i][j]
 				if letters[i] and letters[i][j]
 					set_square_value i,j,'',false
 				if number_text[i] and number_text[i][j]
-					number_text[i][j].remove()
+					remove number_text[i][j]
 				if player_squares[i] and player_squares[i][j]
-					player_squares[i][j].remove()
+					remove player_squares[i][j]
 
 		# Initialize black squares
 		for i in [0..puzzle_size - 1]
@@ -623,38 +581,33 @@ $ ->
 		numbers_rev = {}
 		
 
+		add_cursor = Render.rect 'cursor'
 		if across_highlight
-			across_highlight.remove()
-		across_highlight = paper.rect(-50,
+			remove across_highlight
+		across_highlight = add_cursor -50,
 									  -50,
 									  square_size,
-									  square_size - STROKE_WIDTH_PLAYER - 1)
-								.attr {
-									'stroke-width': STROKE_WIDTH_PLAYER
-								}
-		across_highlight.node.classList.add 'highlight-across', 'highlight-parallel'
+									  square_size - STROKE_WIDTH_PLAYER - 1,
+									  'stroke-width': STROKE_WIDTH_PLAYER
+									  'class': 'highlight-across highlight-parallel'
 		
 		if down_highlight
-			down_highlight.remove()
-		down_highlight = paper.rect(-50,
+			remove down_highlight
+		down_highlight = add_cursor   -50,
 									  -50,
 									  square_size - STROKE_WIDTH_PLAYER - 1,
-									  square_size)
-								.attr {
-									'stroke-width': STROKE_WIDTH_PLAYER
-								}
-		down_highlight.node.classList.add 'highlight-down', 'highlight-perpendicular'
+									  square_size,
+									  'stroke-width': STROKE_WIDTH_PLAYER
+									  'class': 'highlight-down highlight-perpendicular'
 
 		if square_highlight
-			square_highlight.remove()
-		square_highlight = paper.rect(-50,
+			remove square_highlight
+		square_highlight = add_cursor -50,
 									  -50,
 									  square_size - STROKE_WIDTH_PLAYER - 1,
-									  square_size - STROKE_WIDTH_PLAYER - 1)
-								.attr {
-									'stroke-width': STROKE_WIDTH_PLAYER
-								}
-		square_highlight.node.classList.add 'highlight-square'
+									  square_size - STROKE_WIDTH_PLAYER - 1,
+									  'stroke-width': STROKE_WIDTH_PLAYER
+									  'class': 'highlight-square'
 
 		$('#A_clues').empty()
 		$('#D_clues').empty()

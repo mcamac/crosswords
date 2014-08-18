@@ -1,29 +1,38 @@
 /* Background */
-.background {
+#background {
 	stroke: none;
 	fill: #62cb62;
 	opacity: 0;
 }
-.background.green {
+#background.green {
 	opacity: 0.2;
 }
 
+/* Black squares */
+#black-squares {
+	fill: #333;
+}
+
 /* Gridlines */
-.gridline {
+#gridlines {
 	stroke: #ddd;
 	stroke-width: 1px;
 }
 
-/* Black squares */
-.black {
-	fill: #333;
-}
-
 /* Grid numbers */
-.grid-number {
-	font-family: 'Source Sans' !important;
-	font-weight: 300 !important;
-	color: #666 !important;
+#numbers text, #letters text {
+	font-family: 'Source Sans';
+	/* Chrome requires a selector like g text (instead of g) for this to work */
+	dominant-baseline: central;
+}
+#numbers {
+	font-weight: 300;
+	color: #666;
+	text-anchor: start;
+}
+#letters {
+	font-weight: 600;
+	text-anchor: middle;
 }
 
 /* My cursor */
@@ -43,13 +52,13 @@
 }
 
 /* Their cursor */
-.their-highlight-square {
+#their-cursors {
 	fill: none;
 	opacity: 0.7;
 }
 
 /* Filled squares */
-.player-square {
+#filled-squares {
 	stroke: none;
 	opacity: 0.4;
 }
