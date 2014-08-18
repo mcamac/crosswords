@@ -1,7 +1,7 @@
 $ ->
   # Vue components
 
-  membersBox = new Vue({
+  membersBox = new Vue {
     el: '#members_box'
     data: {
       users: [{
@@ -10,15 +10,16 @@ $ ->
         username: 'joseph'
       }]
     }
-  })
+  }
 
-  ClueList = Vue.extend({
-    template: '<li v-repeat="clues" value="{{ num }}"> {{ text }}</li>',
+
+  ClueList = Vue.extend {
+    template: '#clue-li',
     data: {
       dir: 'across',
       clues: { across: [], down: [] }
     }
-  })
+  }
 
   clueSymbols =
     down: '▼'

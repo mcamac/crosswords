@@ -57,9 +57,9 @@ html
         div.large-3.columns.clue-area
           h5 Across
           //- ol#A_clues.clue-list
-          ol.clue-list(v-component="clue-list", v-with="clues: clues.across")
+          ol.clue-list(v-component="clue-list", v-with="clues: clues.across, current: currentClue")
           h5 Down
-          ol.clue-list(v-component="clue-list", v-with="clues: clues.down")
+          ol.clue-list(v-component="clue-list", v-with="clues: clues.down, current: currentClue")
 
           div#score_box
             | Graph could go here
@@ -70,4 +70,7 @@ html
         ul.puzzle-list
         a.close-reveal-modal &#215;
 
+    script(type='x/template', id='clue-li').
+      <li class="li-clue {{ (num === current.num) ? 'active': ''}}"
+           v-repeat="clues" value="{{ num }}"> {{ text }}</li>
 
