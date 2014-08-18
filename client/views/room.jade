@@ -1,6 +1,7 @@
 html
   head
     script(src='/socket.io/socket.io.js')
+    script(src='/static/js/vendor/vue.js')
     script(src='/static/js/vendor/jquery.js')
     script(src='/static/js/vendor/raphael.min.js')
     script(src='/static/js/vendor/keymaster.min.js')
@@ -37,7 +38,7 @@ html
       div.large-3.columns
         h6.puzzle-title NY Times, Monday, Jun 3
         #members_box
-          p martin, jong
+          span(v-repeat="users") {{ username }}
         h6 Chat
         #chat_box
         input#chat_input(type="text")
