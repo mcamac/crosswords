@@ -1,6 +1,6 @@
 
 class @PuzzleManager
-  constructor: (options) ->
+  constructor: (options, @ui) ->
     # an HTML element is required
     @el = options.elements.gridEl
     @$el = $(@el)
@@ -134,7 +134,7 @@ class @PuzzleManager
     $('.puzzle-title').html @p.title
 
     # load clue lists
-    window.state.clues = @p.clues
+    @ui.clues = @p.clues
 
     # initialize user highlights
     @g.highlights.user['user'] = @g.paper.rect(
@@ -239,12 +239,7 @@ class @PuzzleManager
 
   _reHighlight: ->
     # update clue text
-    currentClue = @currentClueObj()
-
-    clueSymbols =
-      down: '▼'
-      across: '▶'
-    $('#current_clue').html "#{clueSymbols[currentClue.dir]} #{currentClue.num}: #{currentClue.text}"
+    @ui.currentClue = @currentClueObj()
 
     # update highlights
     [sr, er] = [@g.ci, @g.ci]
