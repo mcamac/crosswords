@@ -25,14 +25,21 @@ rooms = {}
 app = express()
 server = http.Server(app)
 
-io = require('socket.io').listen server
+io = require('socket.io') server
 
-server.listen '5558'
 
 app.set 'views', __dirname + '/../client/views'
 app.use '/static', express.static(__dirname + '/../client/static')
 
+cookieParser = require 'cookie-parser'
+session = require 'express-session'
+app.use cookieParser()
+app.use session({ secret: 'keyboard cat', resave: true, saveUninitialized: true })
+
 ## Routes
+app.get '/', (req, res) ->
+  res.redirect '/lobby'
+
 app.get '/lobby', (req, res) ->
   res.send 'hello world'
 
@@ -49,9 +56,7 @@ app.get '/puzzle/:id', (req, res) ->
   Puzzle.findOne({_id: req.params.id}).exec (err, puzzle) ->
     res.json puzzle
 
-
-app.listen 5557
-
+server.listen 5557
 
 ####
 class CrosswordPlayer extends Player
