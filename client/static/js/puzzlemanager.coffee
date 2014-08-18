@@ -134,8 +134,8 @@ class @PuzzleManager
     $('.puzzle-title').html @p.title
 
     # load clue lists
-    acrossClues = ({ num: parseInt(num), text: clue} for num, clue of @p.clues.across)
-    downClues = ({ num: parseInt(num), text: clue} for num, clue of @p.clues.down)
+    acrossClues = ({ num: parseInt(num), text: clue, dir: 'across' } for num, clue of @p.clues.across)
+    downClues = ({ num: parseInt(num), text: clue, dir: 'down' } for num, clue of @p.clues.down)
     @ui.clues.across = acrossClues
     @ui.clues.down = downClues
 
