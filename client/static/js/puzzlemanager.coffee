@@ -1,3 +1,4 @@
+
 class @PuzzleManager
   constructor: (options) ->
     # an HTML element is required
@@ -133,10 +134,7 @@ class @PuzzleManager
     $('.puzzle-title').html @p.title
 
     # load clue lists
-    for num, clue of @p.clues.across
-      $('#A_clues').append "<li value='#{num}'> #{clue}</li>"
-    for num, clue of @p.clues.down
-      $('#D_clues').append "<li value='#{num}'> #{clue}</li>"
+    window.state.clues = @p.clues
 
     # initialize user highlights
     @g.highlights.user['user'] = @g.paper.rect(
@@ -161,8 +159,6 @@ class @PuzzleManager
       for c in [0...@p.width]
         @g.numbers?[r]?[c]?.remove()
         @g.blackSquares?[r]?[c]?.remove()
-
-    $('.clue-list').html ''
 
     # clear highlights
     @g.highlights.user['user']?.remove()

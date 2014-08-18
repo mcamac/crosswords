@@ -14,56 +14,58 @@ html
     //- script(src='/static/css/room.css')
     title Crosswords
   body
-    nav.top-bar
-      ul.title-area
-        li.name
-          h1
-            a(href='#') Crosswords
-      section.top-bar-section
-        ul.left
-          li.divider
-          li
-            a#browse_puzzles_a.reveal-link(href='#', data-reveal-id='browse_puzzles_modal')
-              | Browse Puzzles
-          //- li.divider
-          li
-            a(href='#') Room Options
-          //- li.divider
-          li
-            a(a href='#') Help
-          li
-            a(a href='#') Constructor
+    #content
+      nav.top-bar
+        ul.title-area
+          li.name
+            h1
+              a(href='#') Crosswords
+        section.top-bar-section
+          ul.left
+            li.divider
+            li
+              a#browse_puzzles_a.reveal-link(href='#', data-reveal-id='browse_puzzles_modal')
+                | Browse Puzzles
+            //- li.divider
+            li
+              a(href='#') Room Options
+            //- li.divider
+            li
+              a(a href='#') Help
+            li
+              a(a href='#') Constructor
 
-    div.row.game-area
-      div.large-3.columns
-        h6.puzzle-title NY Times, Monday, Jun 3
-        #members_box
-          span(v-repeat="users") {{ username }}
-        h6 Chat
-        #chat_box
-        input#chat_input(type="text")
-      div.large-6.columns.crossword-column
-        div.row
-          div.small-10.columns
-            h5
-              p#current_clue
-          div.small-2.columns.timer
-            h5#timer 0:00
-          div#crossword_canvas
+      div.row.game-area
+        div.large-3.columns
+          h6.puzzle-title NY Times, Monday, Jun 3
+          #members_box
+            span(v-repeat="users") {{ username }}
+          h6 Chat
+          #chat_box
+          input#chat_input(type="text")
+        div.large-6.columns.crossword-column
+          div.row
+            div.small-10.columns
+              h5
+                p#current_clue
+            div.small-2.columns.timer
+              h5#timer 0:00
+            div#crossword_canvas
 
-      div.large-3.columns.clue-area
-        h5 Across
-        ol#A_clues.clue-list
-        h5 Down
-        ol#D_clues.clue-list
+        div.large-3.columns.clue-area
+          h5 Across
+          //- ol#A_clues.clue-list
+          ol.clue-list(v-component="clue-list", v-with="clues: clues.across")
+          h5 Down
+          ol.clue-list(v-component="clue-list", v-with="clues: clues.down")
 
-        div#score_box
-          | Graph could go here
+          div#score_box
+            | Graph could go here
 
 
-    div#browse_puzzles_modal.reveal-modal
-      h3 Browse Puzzles (# puzzles)
-      ul.puzzle-list
-      a.close-reveal-modal &#215;
+      div#browse_puzzles_modal.reveal-modal
+        h3 Browse Puzzles (# puzzles)
+        ul.puzzle-list
+        a.close-reveal-modal &#215;
 
 
