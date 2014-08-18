@@ -3,7 +3,7 @@ http = require 'http'
 mongoose = require 'mongoose'
 mongoose.connect 'mongodb://localhost/crosswords'
 
-MultiplayerRoom = require '../shared/room'
+MultiplayerCrosswordRoom = require('./room').MultiplayerCrosswordRoom
 Player = require '../shared/player'
 
 
@@ -18,9 +18,6 @@ puzzleSchema = new mongoose.Schema
 Puzzle = mongoose.model 'Puzzle', puzzleSchema
 
 
-## Global rooms object
-rooms = {}
-
 ## Application configuration
 app = express()
 server = http.Server(app)
@@ -34,7 +31,11 @@ app.use '/static', express.static(__dirname + '/../client/static')
 cookieParser = require 'cookie-parser'
 session = require 'express-session'
 app.use cookieParser()
-app.use session({ secret: 'keyboard cat', resave: true, saveUninitialized: true })
+app.use session({
+  name: 'crosswords.sid'
+  secret: 'keyboard cat'
+  resave: true
+  saveUninitialized: true })
 
 ## Routes
 require('./routes') app, Puzzle
@@ -42,32 +43,36 @@ require('./routes') app, Puzzle
 server.listen 5557
 
 ####
-class CrosswordPlayer extends Player
-  constructor: (room, id) ->
-    super room, id
-
-
+class CrosswordUser
+  constructor: (@id) ->
+    @name = Math.random().toString(36).substr(2,5)
   emit: (event, data) ->
     io.sockets.socket(sock).emit(event, data)
 
+  metadata: ->
+    name: @name
+    id: @id
 
-class MultiplayerCrosswordRoom extends MultiplayerRoom
-  constructor: (id) ->
-    super id
-    @puzzle = require './default-puzzle.json'
+rooms = { foo: new MultiplayerCrosswordRoom('foo') }
 
-    @grid_changes = {}
-    @grid_corrects = []
-    @grid_owner_counts = {}
-    @grid_owners = {}
-
-  emit: (name, data) ->
-    io.sockets.in(@name).emit name, data
-
-
+users = {}
 
 
 # Load a room 
+
+cookie = require 'cookie'
+io.use (socket, next) ->
+  sid = cookie.parse(socket.request.headers.cookie)['crosswords.sid']
+  id = cookieParser.signedCookie sid, 'keyboard cat'
+  console.log 'user', id
+  if not users[id]
+    users[id] = new CrosswordUser(id)
+  socket.user = users[id]
+  socket.room = rooms.foo
+  socket.room.users[socket.user.id] = socket.user
+  socket.join socket.room.name
+
+  next()
 
 
 io.sockets.on 'connection', (socket) ->

@@ -59,3 +59,15 @@ $ ->
     )
 
   $(document).foundation()
+
+
+  membersBox = new Vue({
+    el: '#members_box'
+    data: {
+      users: [{
+        username: 'martin'
+      }, {
+        username: 'joseph'
+      }]
+    }
+  })
