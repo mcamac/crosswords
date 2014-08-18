@@ -193,6 +193,12 @@ class @PuzzleManager
   move: (direction) ->
     @_setHighlight 'user', @p.nextSquare([@g.ci, @g.cj], direction)
 
+  moveForwards: ->
+    @move @g.dir
+
+  moveBackwards: ->
+    @move [-@g.dir[0], -@g.dir[1]]
+
 
   moveToClue: (clueNumber) ->
     @_setHighlight 'user', @p.gridNumbersRev[clueNumber]
@@ -207,7 +213,9 @@ class @PuzzleManager
     console.error "#{arguments.callee.name} not implemented"
 
   backspace: ->
-    console.error "#{arguments.callee.name} not implemented"
+    # TODO: option for backspace not passing through black squares
+    @setCurrentSquare ''
+    @moveBackwards()
 
   _setHighlight: (id, [r, c]) ->
     if not @p.validSquare [r, c]
