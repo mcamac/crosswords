@@ -3,3 +3,6 @@ robots.txt
 static/js/room.js
 static/js/oldroom.js
 *.pyc
+venv
+*node_modules
+node_modules
