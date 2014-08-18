@@ -182,7 +182,7 @@ class @PuzzleManager
       @move @g.dir
 
   currentClue: ->
-    @p.clueNumberFor [@g.ci, @g.cj], @g.dir
+    @p.getClueNumberForCell [@g.ci, @g.cj], @g.dir
 
   currentClueObj: ->
     clueNum = @currentClue()
@@ -198,7 +198,7 @@ class @PuzzleManager
 
   # move in direction
   move: (direction) ->
-    @_setHighlight 'user', @p.nextSquare([@g.ci, @g.cj], direction)
+    @_setHighlight 'user', @p.getNextSquareInDirection([@g.ci, @g.cj], direction)
 
   moveForwards: ->
     @move @g.dir
@@ -211,10 +211,10 @@ class @PuzzleManager
     @_setHighlight 'user', @p.gridNumbersRev[clueNumber]
 
   moveToNextClue: ->
-    @moveToClue (@p.nextClueNumber @currentClue(), @g.dir, 1)
+    @moveToClue (@p.getNextClueNumber @currentClue(), @g.dir, 1)
 
   moveToPreviousClue: ->   
-    @moveToClue (@p.nextClueNumber @currentClue(), @g.dir, -1)
+    @moveToClue (@p.getNextClueNumber @currentClue(), @g.dir, -1)
 
   enterRebus: ->
     console.error "#{arguments.callee.name} not implemented"
@@ -225,7 +225,7 @@ class @PuzzleManager
     @moveBackwards()
 
   _setHighlight: (id, [r, c]) ->
-    if not @p.validSquare [r, c]
+    if not @p.isValidSquare [r, c]
       return
 
     @g.highlights.user[id]?.attr
@@ -243,15 +243,15 @@ class @PuzzleManager
 
     # update highlights
     [sr, er] = [@g.ci, @g.ci]
-    while @p.validSquare [sr - 1, @g.cj]
+    while @p.isValidSquare [sr - 1, @g.cj]
       sr--
-    while @p.validSquare [er + 1, @g.cj]
+    while @p.isValidSquare [er + 1, @g.cj]
       er++
 
     [sc, ec] = [@g.cj, @g.cj]
-    while @p.validSquare [@g.ci, sc - 1]
+    while @p.isValidSquare [@g.ci, sc - 1]
       sc--
-    while @p.validSquare [@g.ci, ec + 1]
+    while @p.isValidSquare [@g.ci, ec + 1]
       ec++
 
     @g.highlights.down.attr
