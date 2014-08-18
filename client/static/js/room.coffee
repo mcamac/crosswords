@@ -34,7 +34,7 @@ $ ->
     $('#browse_puzzles_a').trigger 'click'
 
   $.getJSON(
-    '/puzzles',
+    '/api/puzzles',
     (data) ->
       console.log data
       for puzzle in data
@@ -53,7 +53,7 @@ $ ->
 
   $('#browse_puzzles_modal').on 'click', '.load-puzzle-a', (e) ->
     $.getJSON(
-      "/puzzle/#{$(this).data('puzzle-id')}",
+      "/api/puzzles{$(this).data('puzzle-id')}",
       (puzzle) ->
         puzzleManager.loadPuzzle new Puzzle puzzle
     )
