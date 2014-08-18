@@ -1,5 +1,5 @@
 $ ->
-  SOCKET_URL = 'http://localhost:5558' 
+  SOCKET_URL = location.origin.replace(/http\//g, 'ws/')
 
   CROSSWORD_CANVAS_EL = '#crossword_canvas'
 
