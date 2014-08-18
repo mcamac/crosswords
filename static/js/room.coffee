@@ -250,7 +250,6 @@ $ ->
 
 		# console.log letters[i][j], i, j, char
 		char = char.toUpperCase()
-		#color = if (i == ci) and (j == cj) then 'white' else 'black'
 		xoffset = if puzzle_size >= 20 then 0.63 else 0.5
 		letters[i][j] = paper.text((j + xoffset) * square_size, Math.round((i + 0.55) * square_size), char)
 							 .attr(
@@ -258,7 +257,6 @@ $ ->
 							 	'text-anchor': 'middle'
 							 	'font-family': 'Source Sans'
 							 	'font-weight': '600'
-							 	#fill: color
 							 )
 			
 
@@ -424,22 +422,12 @@ $ ->
 		}
 		return
 
-		#if letters[ci][cj]
-		#	letters[ci][cj].attr 'fill', 'white'
-
-		#if numbers[ci][cj]
-		#	number_text[ci][cj].attr 'fill', 'white'
 
 	set_cursor = (i, j) ->
 		if p[i][j] == '_'
 			return
 
 		# console.log ci, cj, i, j
-		if letters[ci][cj] and not (ci == i and cj == j)
-			letters[ci][cj].attr 'fill', 'black'
-
-		if number_text[ci][cj]
-			number_text[ci][cj].attr 'fill', 'black'
 		ci = i
 		cj = j
 		# console.log 'set',ci,cj
