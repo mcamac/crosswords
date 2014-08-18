@@ -30,7 +30,7 @@ var app = express();
 
 app.set('views', __dirname + '/views');
 app.engine('html', require('ejs').renderFile);
-app.use('/static', express.static(__dirname + '/static'));
+app.use('/static', express.static(__dirname + '/../static'));
 
 app.use(cookieParser());
 app.use(bodyParser());
