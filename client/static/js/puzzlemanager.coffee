@@ -188,6 +188,17 @@ class @PuzzleManager
   currentClue: ->
     @p.clueNumberFor [@g.ci, @g.cj], @g.dir
 
+  currentClueObj: ->
+    clueNum = @currentClue()
+    if @g.dir == dir.DOWN
+      dir: 'down'
+      text: @p.clues.down[clueNum]
+      num: clueNum
+    else
+      dir: 'across'
+      text: @p.clues.across[clueNum]
+      num: clueNum
+
 
   # move in direction
   move: (direction) ->
@@ -231,6 +242,15 @@ class @PuzzleManager
     @_reHighlight()
 
   _reHighlight: ->
+    # update clue text
+    currentClue = @currentClueObj()
+
+    clueSymbols =
+      down: '▼'
+      across: '▶'
+    $('#current_clue').html "#{clueSymbols[currentClue.dir]} #{currentClue.num}: #{currentClue.text}"
+
+    # update highlights
     [sr, er] = [@g.ci, @g.ci]
     while @p.validSquare [sr - 1, @g.cj]
       sr--
