@@ -23,16 +23,34 @@
     socket.on('existing puzzle', function(data) {
       make_puzzle(data.puzzle);
       fill_existing_letters(data.grid);
+      fill_existing_colors(data.player_squares);
       window.start = client_start_time;
       if (data.complete) {
         return greenBG();
       }
     });
     socket.on('room members', function(data) {
+      var id, ids, _, _results;
       console.log(data);
-      return $('#members_box').html($.map(data, function(row) {
+      $('#members_box').html($.map(data, function(row) {
         return "<span class='member' style='border-color: " + row.color + ";'>" + row.name + "</span>";
       }).join(', '));
+      send_set_cursor(ci, cj);
+      ids = $.map(data, function(row) {
+        return row.id;
+      });
+      console.log(ids);
+      _results = [];
+      for (id in cursors) {
+        _ = cursors[id];
+        if ($.inArray(id, ids) === -1 && cursors[id]) {
+          cursors[id].remove();
+          _results.push(cursors[id] = void 0);
+        } else {
+          _results.push(void 0);
+        }
+      }
+      return _results;
     });
     socket.on('change square', function(data) {
       var char, i, j;
@@ -47,6 +65,12 @@
           return player_squares[i][j].remove();
         }
       }
+    });
+    socket.on('set cursor', function(data) {
+      return place_cursor(data.user.id, data.user.color, data.content[0], data.content[1]);
+    });
+    socket.on('want cursors', function(data) {
+      return send_set_cursor(ci, cj);
     });
     send_chat_message = function(message) {
       console.log('sending', message);
@@ -390,7 +414,9 @@
       return send_set_cursor(ci, cj);
     };
     send_set_cursor = function(i, j) {
-      return socket.emit('set cursor', [i, j]);
+      return socket.emit('set cursor', {
+        content: [i, j]
+      });
     };
     place_cursor = function(pid, color, i, j) {
       if (!cursors[pid]) {
@@ -398,15 +424,14 @@
           stroke: color,
           'stroke-width': STROKE_WIDTH_OTHER
         });
-        cursors[pid].node.classList.add('their-highlight-square');
+        return cursors[pid].node.classList.add('their-highlight-square');
       } else {
-        cursors[pid].attr({
+        return cursors[pid].attr({
           stroke: color,
           x: j * square_size + 0.5 + (STROKE_WIDTH_OTHER + 1) / 2,
           y: i * square_size + 0.5 + (STROKE_WIDTH_OTHER + 1) / 2
         });
       }
-      return console.log(cursors[pid]);
     };
     update_current_clue = function() {
       var clue, number, other_number;

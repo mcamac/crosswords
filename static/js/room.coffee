@@ -48,7 +48,7 @@ $ ->
 
 		make_puzzle data.puzzle
 		fill_existing_letters data.grid
-		# fill_existing_colors data.content.player_squares
+		fill_existing_colors data.player_squares
 
 		window.start = client_start_time
 		# do start_d3
@@ -72,14 +72,14 @@ $ ->
 		console.log data
 		$('#members_box').html $.map(data, (row) ->
 			"<span class='member' style='border-color: #{row.color};'>#{row.name}</span>").join(', ')
-		# send_set_cursor ci, cj
+		send_set_cursor ci, cj
 
-		# ids = $.map(data.content, (row) -> row.id)
-		# console.log ids
-		# for id, _ of cursors
-		# 	if $.inArray(id, ids) == -1 and cursors[id]
-		# 		cursors[id].remove()
-		# 		cursors[id] = undefined
+		ids = $.map(data, (row) -> row.id)
+		console.log ids
+		for id, _ of cursors
+			if $.inArray(id, ids) == -1 and cursors[id]
+				cursors[id].remove()
+				cursors[id] = undefined
 
 	socket.on 'change square', (data) -> 
 		i = data.i
@@ -92,7 +92,11 @@ $ ->
 			if player_squares[i][j]
 				player_squares[i][j].remove()
 
+	socket.on 'set cursor', (data) ->
+		place_cursor data.user.id, data.user.color, data.content[0], data.content[1]
 
+	socket.on 'want cursors', (data) ->
+		send_set_cursor ci, cj
 
 	# ws.onmessage = (msg) ->
 	# 	data = JSON.parse msg.data
@@ -159,8 +163,7 @@ $ ->
 	# 	if data.type == 'want cursors'
 	# 		send_set_cursor ci, cj
 
-	# 	if data.type == 'set cursor'
-	# 		place_cursor data.user.id, data.user.color, data.content[0], data.content[1]
+	# 	
 
 	# 	if data.type == 'puzzle finished'
 	# 		greenBG()
@@ -498,7 +501,8 @@ $ ->
 		send_set_cursor(ci, cj)
 
 	send_set_cursor = (i, j) ->
-		socket.emit 'set cursor', [i, j]
+		socket.emit 'set cursor',
+			content: [i, j]
 
 	place_cursor = (pid, color, i, j) ->
 		if not cursors[pid]
@@ -516,7 +520,6 @@ $ ->
 				x: j * square_size + 0.5 + (STROKE_WIDTH_OTHER + 1) / 2
 				y: i * square_size + 0.5 + (STROKE_WIDTH_OTHER + 1) / 2
 			}
-		console.log cursors[pid]
 
 
 	update_current_clue = ->
