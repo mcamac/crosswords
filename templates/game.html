@@ -68,7 +68,20 @@
             </div>
         </div>
 		<p id="current_clue"> Current clue </p>
-		<div id="crossword_canvas"></div>
+    <div id="crossword-container">
+      <svg id="crossword" style="overflow: hidden; position: relative;">
+        <!-- Back -->
+        <g id="black-squares" />
+        <g id="filled-squares" />
+        <g id="cursor" />
+        <g id="their-cursors" />
+        <g id="numbers" />
+        <g id="letters" />
+        <g id="gridlines" />
+        <g id="background" />
+        <!-- Front -->
+      </svg>
+    </div>
 	</div>
 	
 
