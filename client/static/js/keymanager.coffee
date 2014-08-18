@@ -23,7 +23,10 @@ class @KeyManager
 
     for bd in relevantDefaultBindingDomains
       for seq, fNameAndArgs of @bindings.default[bd]
-        @_key puzzleManager, seq, fNameAndArgs
+        if typeof fNameAndArgs is 'string'
+          @_key puzzleManager, seq, fNameAndArgs
+        else
+          @_key puzzleManager, seq, fNameAndArgs...
 
     # Bindings for arrows and letters are established by imperial fiat
     for k in ['right', 'left', 'up', 'down']
