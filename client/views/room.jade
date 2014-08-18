@@ -48,6 +48,8 @@ html
             div.small-10.columns
               h5
                 p#current_clue
+                  strong.current-clue-number {{ currentClue.dir | dir-symbol }} {{currentClue.num }}
+                  &nbsp;{{currentClue.text}}
             div.small-2.columns.timer
               h5#timer 0:00
             div#crossword_canvas
