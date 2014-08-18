@@ -111,9 +111,6 @@ $ ->
 			clearInterval timer
 			add_chat_message "<i>Puzzle finished in <b>#{timer_string false}</b>!</i>"
 
-		if background
-			background.toFront()
-
 	send_chat_message = (message) ->
 		ws.send JSON.stringify {
 			type: 'client chat message'
@@ -208,7 +205,6 @@ $ ->
 				 	fill: color
 				 )
 		player_squares[i][j].node.classList.add 'player-square'
-		player_squares[i][j].toBack()
 
 	has_number = (p, i, j) ->
 		# # console.log p[i][j]
