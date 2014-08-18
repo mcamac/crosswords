@@ -24,34 +24,34 @@ class @Puzzle
 
     currentNumber = 1
     @_loopGrid ([r, c]) =>
-      if @validSquare([r, c]) and (not @validSquare([r - 1, c]) or
-                                 not @validSquare([r, c - 1]))
+      if @isValidSquare([r, c]) and (not @isValidSquare([r - 1, c]) or
+                                 not @isValidSquare([r, c - 1]))
         @gridNumbersRev[currentNumber] = [r, c]
         @gridNumbers[r][c] = currentNumber++
 
-  validSquare: ([r, c]) ->
-    @inGrid([r, c]) and @grid[r][c] != '_'
+  isValidSquare: ([r, c]) ->
+    @isInsideGrid([r, c]) and @grid[r][c] != '_'
 
-  inGrid: ([r, c]) ->
+  isInsideGrid: ([r, c]) ->
     0 <= r < @height and 0 <= c < @width
 
-  nextSquare: ([r, c], [roff, coff]) ->
+  getNextSquareInDirection: ([r, c], [roff, coff]) ->
     # Returns the next square in the given direction, if there is any.
     [nr, nc] = [r + roff, c + coff]
-    while not @validSquare([nr, nc])
-      if not @inGrid([nr, nc])
+    while not @isValidSquare([nr, nc])
+      if not @isInsideGrid([nr, nc])
         return [r, c]
       nr += roff
       nc += coff
     return [nr, nc]
 
-  nextClueNumber: (num, d, offset) ->
+  getNextClueNumber: (num, d, offset) ->
     dirClueNumbers = if d == dir.ACROSS then @clueNumbers.across else @clueNumbers.down
     nextClueIndex = (dirClueNumbers.indexOf(num) + offset + dirClueNumbers.length) % dirClueNumbers.length
     return dirClueNumbers[nextClueIndex]
 
-  clueNumberFor: ([r, c], [roff, coff]) ->
-    while @validSquare [r - roff, c - coff]
+  getClueNumberForCell: ([r, c], [roff, coff]) ->
+    while @isValidSquare [r - roff, c - coff]
       r -= roff
       c -= coff
     return @gridNumbers[r][c]
