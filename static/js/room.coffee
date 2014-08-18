@@ -6,7 +6,7 @@ $ ->
 	timer = undefined
 
 	# ws = new WebSocket("ws://#{location.hostname}:#{location.port}#{location.pathname}/sub")
-	socket = window.io.connect "http://#{location.hostname}:5000"
+	socket = window.io.connect location.origin.replace(/^http/, 'ws')
 	console.log 'connecting to socket.io'
 
 	# localStorage namespace
