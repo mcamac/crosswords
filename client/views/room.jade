@@ -71,6 +71,6 @@ html
         a.close-reveal-modal &#215;
 
     script(type='x/template', id='clue-li').
-      <li class="li-clue {{ (num === current.num) ? 'active': ''}}"
+      <li class="li-clue {{ (num === current.num && dir == current.dir) ? 'active': ''}}"
            v-repeat="clues" value="{{ num }}"> {{ text }}</li>
 
