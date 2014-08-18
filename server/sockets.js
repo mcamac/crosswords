@@ -169,6 +169,7 @@ module.exports = function (app, server, sessionStore) {
       }
 
       socket.room.sendUsers();
+      socket.emit('self metadata', socket.room.userMetadata(socket.user));
     });
 
     socket.on('chat message', function (message) {

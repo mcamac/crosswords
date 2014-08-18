@@ -14,10 +14,16 @@ $ ->
 	uuid = localStorage[lsns + 'uuid'] or= null # since JSON.stringify is broken wrt undefined
 	room = 'foo'
 
+	sid = ''
+	scolor = ''
+
 	socket.emit 'initialize',
 		uuid: uuid
 		room: room
 
+	socket.on 'self metadata', (data) ->
+		sid = data.id
+		scolor = data.color
 	# ws.onopen = ->
 	# 	console.log uuid
 	# 	@send JSON.stringify
@@ -385,7 +391,9 @@ $ ->
 	alphanum = 'abcdefghijklmnopqrstuvwxyz0123456789'
 	for letter in alphanum
 		key letter, (e) ->
-			send_set_square_value ci, cj, String.fromCharCode(e.keyCode)
+			chr = String.fromCharCode(e.keyCode)
+			set_square_value ci, cj, chr
+			send_set_square_value ci, cj, chr
 			if dir == 'A' and valid(p, ci, cj + 1)
 				go_right()
 			else if dir == 'D' and valid(p, ci + 1, cj)
@@ -498,6 +506,7 @@ $ ->
 
 		# change current clue
 		update_current_clue()
+		place_cursor sid, scolor, i, j
 		send_set_cursor(ci, cj)
 
 	send_set_cursor = (i, j) ->
