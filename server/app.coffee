@@ -37,24 +37,7 @@ app.use cookieParser()
 app.use session({ secret: 'keyboard cat', resave: true, saveUninitialized: true })
 
 ## Routes
-app.get '/', (req, res) ->
-  res.redirect '/lobby'
-
-app.get '/lobby', (req, res) ->
-  res.send 'hello world'
-
-app.get '/play/:room_name', (req, res) ->
-  # res.send req.params.room_name
-  res.render 'room.jade', {}
-
-app.get '/puzzles', (req, res) ->
-  Puzzle.find().select('title author _id')
-        .skip(100).limit(50).exec (err, puzzles) ->
-    res.json puzzles
-
-app.get '/puzzle/:id', (req, res) ->
-  Puzzle.findOne({_id: req.params.id}).exec (err, puzzle) ->
-    res.json puzzle
+require('./routes') app, Puzzle
 
 server.listen 5557
 
