@@ -7,7 +7,7 @@
     window.client_start_time = void 0;
     window.fake_start = +new Date(2010, 0, 1, 0, 0, 0);
     timer = void 0;
-    socket = window.io.connect('http://localhost:5000');
+    socket = window.io.connect("http://" + location.hostname + ":5000");
     console.log('connecting to socket.io');
     lsns = 'mcamac:';
     uuid = localStorage[_name = lsns + 'uuid'] || (localStorage[_name] = null);
