@@ -14,6 +14,10 @@ body, h1, h2, h3, h4, h5, h6 {
 #members_box {
 	height: 80px;
 }
+#members_box .member {
+	border-bottom-width: 3px;
+	border-bottom-style: solid;
+}
 
 #chat_box {
 	height: 440px;
@@ -63,13 +67,6 @@ body, h1, h2, h3, h4, h5, h6 {
 	padding-right: 1em;
 }
 
-/* SVG */
-.grid-number {
-	font-family: 'Source Sans' !important;
-	font-weight: 300 !important;
-	color: #666 !important;
-}
-
 
 .clue-list li {
 	font-size: 0.8em;
@@ -106,4 +103,7 @@ body, h1, h2, h3, h4, h5, h6 {
 
 #timer {
 	text-align: right;
+}
+.deciseconds {
+	color: #aaa;
 }

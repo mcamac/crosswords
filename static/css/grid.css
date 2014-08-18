@@ -1,0 +1,55 @@
+/* Background */
+.background {
+	stroke: none;
+	fill: #62cb62;
+	opacity: 0;
+}
+.background.green {
+	opacity: 0.2;
+}
+
+/* Gridlines */
+.gridline {
+	stroke: #ddd;
+	stroke-width: 1px;
+}
+
+/* Black squares */
+.black {
+	fill: #333;
+}
+
+/* Grid numbers */
+.grid-number {
+	font-family: 'Source Sans' !important;
+	font-weight: 300 !important;
+	color: #666 !important;
+}
+
+/* My cursor */
+.highlight-square,
+.highlight-across,
+.highlight-down {
+	fill: none;
+}
+.highlight-square {
+	stroke: rgb(61,104,184);
+}
+.highlight-parallel {
+	stroke: rgba(61,104,184,0.55);
+}
+.highlight-perpendicular {
+	stroke: rgba(61,104,184,0.15);
+}
+
+/* Their cursor */
+.their-highlight-square {
+	fill: none;
+	opacity: 0.7;
+}
+
+/* Filled squares */
+.player-square {
+	stroke: none;
+	opacity: 0.4;
+}

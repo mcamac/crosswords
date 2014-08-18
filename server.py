@@ -71,8 +71,10 @@ class Room:
 
     def print_grid(self):
         for i in range(self.puzzle['height']):
-            print ''.join([self.grid[i][j] if self.grid[i][j] != '' else ' '
-                           for j in range(self.puzzle['width'])])
+            print ''.join([
+                (unicode.lower if self.puzzle['puzzle'][i][j] != self.grid[i][j] else unicode.upper)(self.grid[i][j])
+                if self.grid[i][j] != '' else ' '
+                for j in range(self.puzzle['width'])])
 
     def errors(self):
         errors = []
