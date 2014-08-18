@@ -1,16 +1,16 @@
 {
-    "name": "crosswords",
-    "version": "0.0.3",
-    "private": true,
-    "dependencies": {
-        "express": "3.0.0",
-        "jade": "0.33.0",
-        "mongoose": "3.6.15",
-        "socket.io": "0.9"
-    },
-    "devDependencies": {
-        "grunt": "~0.4.1",
-        "grunt-contrib-jshint": "~0.6.0",
-        "grunt-contrib-uglify": "~0.2.2"
-    }
+  "name": "crosswords",
+  "version": "0.0.3",
+  "private": true,
+  "dependencies": {
+    "express": "3.0.0",
+    "jade": "0.33.0",
+    "mongoose": "3.6.15",
+    "socket.io": "0.9"
+  },
+  "devDependencies": {
+    "gulp": "^3.8.7",
+    "gulp-coffee": "^2.1.1",
+    "gulp-concat": "^2.3.4"
+  }
 }
