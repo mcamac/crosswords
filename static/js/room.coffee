@@ -486,7 +486,7 @@ $ ->
 		# console.log clue, number, dir
 
 		clue = clues[dir][number]
-		$('#current_clue').html("<strong class='current-clue-number'> " + dir_arrows[dir] + " #{number}</strong> #{clue}")
+		$('#current_clue').html("<strong class='current-clue-number'>" + dir_arrows[dir] + " #{number}</strong> #{clue}")
 
 	make_puzzle = (contents) ->
 
@@ -508,9 +508,9 @@ $ ->
 		reset_puzzle()
 		
 		for num, clue of contents.clues.across
-			$('#A_clues').append "<li class='li-clue' data-clue-id=A#{num}><div class=\"num\"> #{num} </div> <div class=\"clue-text\"> #{clue} </div></li>"
+			$('#A_clues').append "<li class='li-clue' data-clue-id=A#{num}><div class=\"num\">#{num}</div> <div class=\"clue-text\">#{clue}</div></li>"
 		for num, clue of contents.clues.down
-			$('#D_clues').append "<li class='li-clue' data-clue-id=D#{num}><div class=\"num\"> #{num} </div> <div class=\"clue-text\"> #{clue} </div></li>"
+			$('#D_clues').append "<li class='li-clue' data-clue-id=D#{num}><div class=\"num\">#{num}</div> <div class=\"clue-text\">#{clue}</div></li>"
 
 		# set up events for clicking
 		$('.li-clue').on 'click', (e) ->
