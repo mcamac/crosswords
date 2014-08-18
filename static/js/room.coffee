@@ -124,25 +124,6 @@ $ ->
 
 	# 		do start_d3
 
-	# 	if data.type == 'existing puzzle'
-	# 		time_pong = +new Date
-	# 		time_roundtrip = time_pong - time_ping
-	# 		server_current_time = +new Date data.content.current_time
-	# 		window.time_delta = new Date - time_roundtrip / 2 - server_current_time
-
-	# 		server_start_time = +new Date data.content.start_time
-	# 		window.client_start_time = server_start_time + time_delta
-
-	# 		make_puzzle data.content.puzzle
-	# 		fill_existing_letters data.content.grid
-	# 		fill_existing_colors data.content.player_squares
-
-	# 		window.start = client_start_time
-	# 		do start_d3
-
-	# 		if data.content.complete
-	# 			greenBG()
-
 	# 	if data.type == 'change square'
 	# 		i = data.content.i
 	# 		j = data.content.j
@@ -176,8 +157,8 @@ $ ->
 	# 		clearInterval timer
 	# 		add_chat_message "<i>Puzzle finished in <b>#{timer_string false}</b>!</i>"
 
-	# 	if background
-	# 		background.toFront()
+		if background
+			background.toFront()
 
 	send_chat_message = (message) ->
 		console.log 'sending', message
@@ -321,6 +302,8 @@ $ ->
 							 	'font-weight': '600'
 							 	#fill: color
 							 )
+		if background
+			background.toFront()
 			
 
 	send_set_square_value = (i, j, char) ->

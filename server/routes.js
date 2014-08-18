@@ -29,7 +29,9 @@ module.exports = function (app, passport) {
   // });
 
   app.get('/play/:room', function(req, res) {
-    res.render('game.html');
+    res.render('game.html', {
+      room: { id : req.params.room }
+    });
   });
 
 };

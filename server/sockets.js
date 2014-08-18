@@ -122,8 +122,34 @@ var RoomHandler = {};
 
 var cookie = require('cookie');
 var cookieParser = require('cookie-parser');
+var fs = require('fs');
+var Transform = require('stream').Transform;
+var parser = new Transform({objectMode: true});
+parser._transform = function(data, encoding, done) {
+  console.log(data);
+  this.push(data);
+  done();
+};
 
 module.exports = function (app, server, sessionStore) {
+
+  app.post('/uploads/:room', function (req, res) {
+    console.log(req.busboy);
+    req.busboy.on('file', function(fieldname, file, filename, encoding, mimetype) {
+      console.log('File [' + fieldname + ']: filename: ' + filename + ', encoding: ' + encoding + ', mimetype: ' + mimetype);
+      file.on('data', function(data) {
+        console.log(data.toString());
+        console.log('File [' + fieldname + '] got ' + data.length + ' bytes');
+      });
+      file.on('end', function() {
+        console.log('File [' + fieldname + '] Finished');
+      });
+    });
+    req.pipe(req.busboy);
+  });
+
+
+
   io = require('socket.io')(server);
   // io.use(passportSocketIo.authorize({
   //   cookieParser: require('cookie-parser'),

@@ -20,7 +20,7 @@
 <link rel="stylesheet" href="/static/css/room.css">
 <link rel="stylesheet" href="/static/css/grid.css">
 
-<title>Crosswords - Room {{ id }}</title>
+<title>Crosswords - Room <%= room.id %></title>
 </head>
 <body>
 
@@ -113,7 +113,7 @@
   <p>Puzzle database coming soon!</p>
   <h5> Upload a Puzzle (.puz)</h5>
   <a class="close-reveal-modal">&#215;</a>
-  <input id="fileupload" type="file" name="puzzle" data-url="/uploads/{{room.id}}" multiple>
+  <input id="fileupload" type="file" name="puzzle" data-url="/uploads/<%= room.id%>" multiple>
 </div>
 
 <div id="help_modal" class="reveal-modal medium">

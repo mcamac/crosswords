@@ -76,7 +76,10 @@
       return place_cursor(data.user.id, data.user.color, data.content[0], data.content[1]);
     });
     socket.on('want cursors', function(data) {
-      return send_set_cursor(ci, cj);
+      send_set_cursor(ci, cj);
+      if (background) {
+        return background.toFront();
+      }
     });
     send_chat_message = function(message) {
       console.log('sending', message);
@@ -214,12 +217,15 @@
       }
       char = char.toUpperCase();
       xoffset = puzzle_size >= 20 ? 0.63 : 0.5;
-      return letters[i][j] = paper.text((j + xoffset) * square_size, Math.round((i + 0.55) * square_size), char).attr({
+      letters[i][j] = paper.text((j + xoffset) * square_size, Math.round((i + 0.55) * square_size), char).attr({
         'font-size': puzzle_size >= 20 ? 16 : 20,
         'text-anchor': 'middle',
         'font-family': 'Source Sans',
         'font-weight': '600'
       });
+      if (background) {
+        return background.toFront();
+      }
     };
     send_set_square_value = function(i, j, char) {
       return socket.emit('change square', {

@@ -1,13 +1,13 @@
 // server.js
 var express = require('express');
 var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
 var session = require('express-session');
 var logfmt = require('logfmt');
 var passport = require('passport');
 var mongoose = require('mongoose');
 var redis = require('redis');
 var RedisStore = require('connect-redis')(session);
+var busboy = require('connect-busboy');
 
 
 mongoose.connect(process.env.MONGOHQ_URL || 'mongodb://localhost');
@@ -33,7 +33,7 @@ app.engine('html', require('ejs').renderFile);
 app.use('/static', express.static(__dirname + '/../static'));
 
 app.use(cookieParser());
-app.use(bodyParser());
+app.use(busboy());
 app.use(session({ store: sessionStore, secret: 'keyboard cat', name:'crosswords.sid' }));
 app.use(passport.initialize());
 // app.use(passport.session());
