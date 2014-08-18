@@ -1,4 +1,41 @@
 $ ->
+  # Vue components
+
+  membersBox = new Vue({
+    el: '#members_box'
+    data: {
+      users: [{
+        username: 'martin'
+      }, {
+        username: 'joseph'
+      }]
+    }
+  })
+
+  ClueList = Vue.extend({
+    template: '<li v-repeat="clues" value="{{ $key }}"> {{ $value }}</li>',
+    data: {
+      dir: 'across'
+    }
+  })
+
+  Vue.component 'clue-list', ClueList
+
+  window.state = new Vue({
+    el: '#content',
+    data: {
+      clues: {
+        down: {
+          1: 'Example Clue'
+          3: 'Other clue'
+        }
+      }
+    }
+  })
+
+  console.log 'UI components initialized'
+
+
   SOCKET_URL = location.origin.replace(/http\//g, 'ws/')
 
   CROSSWORD_CANVAS_EL = '#crossword_canvas'
@@ -59,15 +96,3 @@ $ ->
     )
 
   $(document).foundation()
-
-
-  membersBox = new Vue({
-    el: '#members_box'
-    data: {
-      users: [{
-        username: 'martin'
-      }, {
-        username: 'joseph'
-      }]
-    }
-  })
