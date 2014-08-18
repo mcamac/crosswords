@@ -1,6 +1,5 @@
 <html>
 <head>
-
 <script src="/static/js/vendor/raphael-min.js" type="text/javascript"></script>
 <script src="/static/js/vendor/jquery.js" type="text/javascript"></script>
 <script src="/static/js/vendor/foundation.min.js" type="text/javascript"></script>
@@ -12,8 +11,6 @@
 <script src="/static/js/vendor/keymaster.min.js"></script>
 <script src="/static/js/vendor/jquery.scrollTo.min.js" type="text/javascript"></script>
 
-
-
 <link rel="stylesheet" href="/static/css/vendor/foundation.css">
 
 <link rel="stylesheet" href="/static/css/room.css">
@@ -22,7 +19,6 @@
 <title>Crosswords - Room {{ id }}</title>
 </head>
 <body>
-
 <nav class="top-bar">
 	<ul class="title-area">
 		<li class="name">
@@ -35,7 +31,6 @@
 			<li><a href="#" data-reveal-id="browse_modal">Browse Puzzles</a></li>
 			<li class="divider"></li>
 			<li class="has-dropdown"><a href="#">Actions</a>
-
 				<ul class="dropdown">
 					<li><a href="#">Coming Soon</a></li>
 					{#
@@ -49,7 +44,6 @@
 			<li><a href="#" data-reveal-id="help_modal">Help</a></li>
 		</ul>
 	</section>
-
 </nav>
 
 <div class="row game-area">
@@ -61,6 +55,7 @@
 
 		<input type="text" id="chat_input" />
 	</div>
+
 	<div class="large-6 crossword-column columns">
 		<div class="row">
 			<div class="small-10 columns">
@@ -74,7 +69,6 @@
 		<div id="crossword_canvas"></div>
 	</div>
 
-
 	<div class="large-3 columns clue-area">
 		<h5>Across</h5>
 		<ul id="A_clues" class="clue-list">
@@ -83,6 +77,7 @@
 		<h5>Down</h5>
 		<ul id="D_clues" class="clue-list">
 		</ul>
+
 		<div id="room_options">
 			<h6>Room Options</h6>
 			<form class="custom">
@@ -138,9 +133,7 @@
 {% include "progress_plot_rickshaw.html" %}
 </body>
 
-
 <script type="text/javascript">
-
 var _gaq = _gaq || [];
 _gaq.push(['_setAccount', 'UA-33953736-1']);
 _gaq.push(['_setDomainName', 'mcamac.com']);
@@ -151,7 +144,5 @@ _gaq.push(['_trackPageview']);
 	ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
 	var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
 })();
-
 </script>
-
 </html>
