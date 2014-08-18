@@ -73,7 +73,7 @@ $ ->
 				set_player_square i, j, data.color
 			else
 				if player_squares[i][j]
-					player_squares[i][j].remove()
+					remove player_squares[i][j]
 
 			c = 0
 			window.graph.series[c++] = {
@@ -97,7 +97,7 @@ $ ->
 			console.log ids
 			for id, _ of cursors
 				if $.inArray(id, ids) == -1 and cursors[id]
-					cursors[id].remove()
+					remove cursors[id]
 					cursors[id] = undefined
 
 		if data.type == 'want cursors'
@@ -178,9 +178,11 @@ $ ->
 		D: '▼' # ▽
 
 	## UI Code
+	remove = (el) -> el.remove()
+
 	blacken_square = (i, j) ->
 		if black_squares[i][j]
-			black_squares[i][j].remove()
+			remove black_squares[i][j]
 
 		black_squares[i][j] = 
 			paper.rect(j * square_size+0.5, i * square_size+0.5, square_size, square_size)
@@ -188,7 +190,7 @@ $ ->
 
 	set_player_square = (i, j, color) ->
 		if player_squares[i][j]
-			player_squares[i][j].remove()
+			remove player_squares[i][j]
 
 		xoffset = if puzzle_size >= 20 then 0.33 else 0.2
 
@@ -232,19 +234,19 @@ $ ->
 		for i in [0..puzzle_size-1]
 			for j in [0..puzzle_size-1]
 				if letters[i][j]
-					letters[i][j].remove()
+					remove letters[i][j]
 				letters[i][j] = new_letter i, j, grid[i][j]
 
 	fill_existing_colors = (grid_colors) ->
 		for i in [0..puzzle_size-1]
 			for j in [0..puzzle_size-1]
 				if player_squares[i][j]
-					player_squares[i][j].remove()
+					remove player_squares[i][j]
 				set_player_square i, j, grid_colors[i][j]
 
 	set_square_value = (i, j, char, broadcast) ->
 		if letters[i][j]
-			letters[i][j].remove()
+			remove letters[i][j]
 
 		# console.log letters[i][j], i, j, char
 		char = char.toUpperCase()
@@ -556,7 +558,7 @@ $ ->
 					current_number += 1
 
 		if background
-			background.remove()
+			remove background
 
 		background = paper.rect(0, 0, grid_size, grid_size)
 		background.node.classList.add 'background'
@@ -591,19 +593,19 @@ $ ->
 	reset_puzzle = ->
 		# clear gridlines
 		for line in grid_lines
-			line.remove()
+			remove line
 
 		# Clear black squares
 		for i,_ of letters
 			for j, _ of letters[i]
 				if black_squares[i] and black_squares[i][j]
-					black_squares[i][j].remove()
+					remove black_squares[i][j]
 				if letters[i] and letters[i][j]
 					set_square_value i,j,'',false
 				if number_text[i] and number_text[i][j]
-					number_text[i][j].remove()
+					remove number_text[i][j]
 				if player_squares[i] and player_squares[i][j]
-					player_squares[i][j].remove()
+					remove player_squares[i][j]
 
 		# Initialize black squares
 		for i in [0..puzzle_size - 1]
@@ -624,7 +626,7 @@ $ ->
 		
 
 		if across_highlight
-			across_highlight.remove()
+			remove across_highlight
 		across_highlight = paper.rect(-50,
 									  -50,
 									  square_size,
@@ -635,7 +637,7 @@ $ ->
 		across_highlight.node.classList.add 'highlight-across', 'highlight-parallel'
 		
 		if down_highlight
-			down_highlight.remove()
+			remove down_highlight
 		down_highlight = paper.rect(-50,
 									  -50,
 									  square_size - STROKE_WIDTH_PLAYER - 1,
@@ -646,7 +648,7 @@ $ ->
 		down_highlight.node.classList.add 'highlight-down', 'highlight-perpendicular'
 
 		if square_highlight
-			square_highlight.remove()
+			remove square_highlight
 		square_highlight = paper.rect(-50,
 									  -50,
 									  square_size - STROKE_WIDTH_PLAYER - 1,
