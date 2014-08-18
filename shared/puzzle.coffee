@@ -45,9 +45,13 @@ class @Puzzle
       nc += coff
     return [nr, nc]
 
-  getNextClueNumber: (num, d, offset) ->
-    dirClueNumbers = if d == dir.ACROSS then @clueNumbers.across else @clueNumbers.down
-    nextClueIndex = (dirClueNumbers.indexOf(num) + offset + dirClueNumbers.length) % dirClueNumbers.length
+  getNextClueNumber: (clueNumber, direction, offset) ->
+    dirKey = if direction == dir.ACROSS then 'across' else 'down'
+    dirClueNumbers = @clueNumbers[dirKey]
+
+    currentClueIndex = dirClueNumbers.indexOf(clueNumber)
+    nextClueIndex = (currentClueIndex + offset + dirClueNumbers.length) % dirClueNumbers.length
+
     return dirClueNumbers[nextClueIndex]
 
   getClueNumberForCell: ([r, c], [roff, coff]) ->
