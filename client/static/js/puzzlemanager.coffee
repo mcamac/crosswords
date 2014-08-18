@@ -134,7 +134,10 @@ class @PuzzleManager
     $('.puzzle-title').html @p.title
 
     # load clue lists
-    @ui.clues = @p.clues
+    acrossClues = ({ num: num, text: clue} for num, clue of @p.clues.across)
+    downClues = ({ num: num, text: clue} for num, clue of @p.clues.down)
+    @ui.clues.across = acrossClues
+    @ui.clues.down = downClues
 
     # initialize user highlights
     @g.highlights.user['user'] = @g.paper.rect(

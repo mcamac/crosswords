@@ -13,10 +13,10 @@ $ ->
   })
 
   ClueList = Vue.extend({
-    template: '<li v-repeat="clues" value="{{ $key }}"> {{ $value }}</li>',
+    template: '<li v-repeat="clues" value="{{ num }}"> {{ text }}</li>',
     data: {
       dir: 'across',
-      clues: { across: {}, down: {} }
+      clues: { across: [], down: [] }
     }
   })
 
@@ -31,7 +31,7 @@ $ ->
   uiState = new Vue({
     el: '#content',
     data:
-      clues: { across: {}, down: {} },
+      clues: { across: [], down: [] },
       currentClue: {}
   })
 
@@ -75,7 +75,6 @@ $ ->
   $.getJSON(
     '/api/puzzles',
     (data) ->
-      console.log data
       for puzzle in data
         $('#browse_puzzles_modal ul').append(
           """
@@ -92,7 +91,7 @@ $ ->
 
   $('#browse_puzzles_modal').on 'click', '.load-puzzle-a', (e) ->
     $.getJSON(
-      "/api/puzzles{$(this).data('puzzle-id')}",
+      "/api/puzzles/#{$(this).data('puzzle-id')}",
       (puzzle) ->
         puzzleManager.loadPuzzle new Puzzle puzzle
     )

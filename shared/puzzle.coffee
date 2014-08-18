@@ -16,7 +16,6 @@ class @Puzzle
     @clueNumbers = {}
     for d, dClues of @clues
       @clueNumbers[d] = (parseInt(num) for num, clue of dClues)
-    console.log @clueNumbers
 
     # compute where numbers are
     @gridNumbers = (null for r in [0...@height] for c in [0...@width])
