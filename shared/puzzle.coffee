@@ -29,6 +29,17 @@ class @Puzzle
         @gridNumbersRev[currentNumber] = [r, c]
         @gridNumbers[r][c] = currentNumber++
 
+
+  getNextClueNumber: (clueNumber, direction, offset) ->
+    dirKey = if direction == dir.ACROSS then 'across' else 'down'
+    dirClueNumbers = @clueNumbers[dirKey]
+
+    currentClueIndex = dirClueNumbers.indexOf(clueNumber)
+    nextClueIndex = (currentClueIndex + offset + dirClueNumbers.length) % dirClueNumbers.length
+
+    return dirClueNumbers[nextClueIndex]
+
+
   isValidSquare: ([r, c]) ->
     @isInsideGrid([r, c]) and @grid[r][c] != '_'
 
@@ -44,15 +55,6 @@ class @Puzzle
       nr += roff
       nc += coff
     return [nr, nc]
-
-  getNextClueNumber: (clueNumber, direction, offset) ->
-    dirKey = if direction == dir.ACROSS then 'across' else 'down'
-    dirClueNumbers = @clueNumbers[dirKey]
-
-    currentClueIndex = dirClueNumbers.indexOf(clueNumber)
-    nextClueIndex = (currentClueIndex + offset + dirClueNumbers.length) % dirClueNumbers.length
-
-    return dirClueNumbers[nextClueIndex]
 
   getClueNumberForCell: ([r, c], [roff, coff]) ->
     while @isValidSquare [r - roff, c - coff]
@@ -73,6 +75,7 @@ class @Puzzle
       ec++
 
     return [sr, er, sc, ec]
+
 
   _loopGrid: (callback) ->
     for r in [0...@height]    
