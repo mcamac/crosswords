@@ -234,9 +234,10 @@ class @PuzzleManager
   enterRebus: ->
     console.error "#{arguments.callee.name} not implemented"
 
-  backspace: (remainOnThisClue) ->
+  backspace: (remainOnThisClue, moveBackwards) ->
     @setCurrentSquare ''
-    @moveBackwards remainOnThisClue
+    if moveBackwards
+      @moveBackwards remainOnThisClue
 
   _setHighlight: (id, [r, c]) ->
     if not @p.isValidSquare [r, c]
