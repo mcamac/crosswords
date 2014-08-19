@@ -204,19 +204,17 @@ class @PuzzleManager
   moveInDirection: (direction, remainOnThisClue) ->
     @moveToCell @p.getNextSquareInDirection([@g.ci, @g.cj], direction, remainOnThisClue)
 
-  moveForwards: (remainOnThisClue) ->
-    @moveInDirection @g.dir, remainOnThisClue
-
-  moveBackwards: (remainOnThisClue) ->
-    @moveInDirection dir.reflect(@g.dir), remainOnThisClue
-
-
   moveToClue: (clueNumber) ->
     @moveToCell @p.gridNumbersRev[clueNumber]
 
+
+  moveForwards: (remainOnThisClue) ->
+    @moveInDirection @g.dir, remainOnThisClue
+  moveBackwards: (remainOnThisClue) ->
+    @moveInDirection dir.reflect(@g.dir), remainOnThisClue
+
   moveToNextClue: ->
     @moveToClue (@p.getNextClueNumber @currentClue(), @g.dir, 1)
-
   moveToPreviousClue: ->   
     @moveToClue (@p.getNextClueNumber @currentClue(), @g.dir, -1)
 
@@ -224,7 +222,6 @@ class @PuzzleManager
     console.error "#{arguments.callee.name} not implemented"
 
   backspace: (remainOnThisClue) ->
-    # TODO: option for backspace not passing through black squares
     @setCurrentSquare ''
     @moveBackwards remainOnThisClue
 
