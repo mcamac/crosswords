@@ -29,7 +29,10 @@ class @Puzzle
                                  not @isValidSquare([r, c - 1]))
         @gridNumbersRev[currentNumber] = [r, c]
         @gridNumbers[r][c] = currentNumber++
+      return
 
+    @firstWhiteCell = @_loopGrid @isValidSquare, false
+    @lastWhiteCell = @_loopGrid @isValidSquare, true
 
   getNextClueNumber: (clueNumber, direction, offset) ->
     dirKey = if direction == dir.ACROSS then 'across' else 'down'
@@ -95,4 +98,5 @@ class @Puzzle
 
     for r in rows
       for c in cols
-        callback.bind(@) [r, c]
+        if callback.bind(@) [r, c]
+          return [r, c]
