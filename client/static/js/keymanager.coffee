@@ -7,7 +7,7 @@ class @KeyManager
         'tab':         'moveToNextClue'
         'shift+tab':   'moveToPreviousClue'
         'space':       'flipDir'
-        'backspace':   'backspace'
+        'backspace':   ['backspace', false]
       'Mac':
         'shift+enter': 'enterRebus'
       'Win':
