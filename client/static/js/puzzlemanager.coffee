@@ -179,7 +179,7 @@ class @PuzzleManager
       text: value
 
     if move
-      @move @g.dir, false
+      @moveInDirection @g.dir, false
 
   currentClue: ->
     @p.getClueNumberForCell [@g.ci, @g.cj], @g.dir
@@ -197,18 +197,22 @@ class @PuzzleManager
 
 
   # move in direction
-  move: (direction, remainOnThisClue) ->
-    @_setHighlight 'user', @p.getNextSquareInDirection([@g.ci, @g.cj], direction, remainOnThisClue)
+  moveToCell: (cell) ->
+    @_setHighlight 'user', cell
+
+
+  moveInDirection: (direction, remainOnThisClue) ->
+    @moveToCell @p.getNextSquareInDirection([@g.ci, @g.cj], direction, remainOnThisClue)
 
   moveForwards: (remainOnThisClue) ->
-    @move @g.dir, remainOnThisClue
+    @moveInDirection @g.dir, remainOnThisClue
 
   moveBackwards: (remainOnThisClue) ->
-    @move [-@g.dir[0], -@g.dir[1]], remainOnThisClue
+    @moveInDirection [-@g.dir[0], -@g.dir[1]], remainOnThisClue
 
 
   moveToClue: (clueNumber) ->
-    @_setHighlight 'user', @p.gridNumbersRev[clueNumber]
+    @moveToCell @p.gridNumbersRev[clueNumber]
 
   moveToNextClue: ->
     @moveToClue (@p.getNextClueNumber @currentClue(), @g.dir, 1)

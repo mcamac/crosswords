@@ -30,7 +30,7 @@ class @KeyManager
 
     # Bindings for arrows and letters are established by imperial fiat
     for k in ['right', 'left', 'up', 'down']
-      @_key puzzleManager, k, 'move', dir[k.toUpperCase()], false
+      @_key puzzleManager, k, 'moveInDirection', dir[k.toUpperCase()], false
 
     for char in "abcdefghijklmnopqrstuvwxyz1234567890"
       @_key puzzleManager, char, 'setCurrentSquare', char.toUpperCase(), true
