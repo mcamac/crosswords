@@ -20,10 +20,8 @@ class @KeyManager
         'insert':      'enterRebus'
 
   registerBindings: (puzzleManager) ->
-    # Haunted by syntactic theory
     relevantDefaultBindingDomains = ['all']
     for os in @oses
-      # Javascript's new snake operator
       if ~window.navigator.appVersion.indexOf os
         relevantDefaultBindingDomains.push os
 
@@ -34,7 +32,6 @@ class @KeyManager
         else
           @_key puzzleManager, seq, fNameAndArgs...
 
-    # Bindings for arrows and letters are established by imperial fiat
     for k in ['right', 'left', 'up', 'down']
       @_key puzzleManager, k, 'moveInDirection', dir[k.toUpperCase()], false
       @_key puzzleManager, 'shift+' + k, 'moveToFarthestValidCellInDirection', dir[k.toUpperCase()]
