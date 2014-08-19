@@ -45,9 +45,7 @@ $ ->
 
   socket = io.connect SOCKET_URL
 
-  # What about hashtags in the URL? #bug
-  urlFragments = window.location.href.split('/')
-  roomName = urlFragments[urlFragments.length - 1]
+  roomName = window.location.pathname.substr 1 + window.location.pathname.lastIndexOf '/'
   console.log 'roomName', roomName
 
   # after server acknowledges handshake, send room name to join
