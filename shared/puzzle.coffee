@@ -41,8 +41,11 @@ class @Puzzle
     return dirClueNumbers[nextClueIndex]
 
 
-  isValidSquare: ([r, c]) ->
-    @isInsideGrid([r, c]) and @grid[r][c] != '_'
+  isValidSquare: (cell) ->
+    @isInsideGrid(cell) and @isWhite(cell)
+
+  isWhite: ([r, c]) ->
+    @grid[r][c] != '_'
 
   isInsideGrid: ([r, c]) ->
     0 <= r < @height and 0 <= c < @width
