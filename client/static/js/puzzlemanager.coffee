@@ -221,6 +221,11 @@ class @PuzzleManager
   moveToPreviousClue: ->   
     @moveToClue (@p.getNextClueNumber @currentClue(), @g.dir, -1)
 
+  moveToStartOfCurrentClue: ->
+    @moveToFarthestValidCellInDirection dir.reflect(@g.dir)
+  moveToEndOfCurrentClue: ->
+    @moveToFarthestValidCellInDirection @g.dir
+
   enterRebus: ->
     console.error "#{arguments.callee.name} not implemented"
 
