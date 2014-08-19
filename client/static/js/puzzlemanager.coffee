@@ -241,6 +241,12 @@ class @PuzzleManager
     @setCurrentSquare '', false
     if moveBackwards
       @moveBackwards remainOnThisClue
+  eraseToStartOfCurrentClue: ->
+    @moveToCell @p.getFarthestValidCellInDirection [@g.ci, @g.cj], dir.reflect(@g.dir),
+      (cell) => @setSquare cell, '', false
+  eraseToEndOfCurrentClue: ->
+    @p.getFarthestValidCellInDirection [@g.ci, @g.cj], @g.dir,
+      (cell) => @setSquare cell, '', false
 
   _setHighlight: (id, [r, c]) ->
     if not @p.isValidSquare [r, c]
