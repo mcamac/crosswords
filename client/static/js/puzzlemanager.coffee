@@ -226,6 +226,11 @@ class @PuzzleManager
   moveToEndOfCurrentClue: ->
     @moveToFarthestValidCellInDirection @g.dir
 
+  moveToFirstWhiteCell: ->
+    @moveToCell @p.firstWhiteCell
+  moveToLastWhiteCell: ->
+    @moveToCell @p.lastWhiteCell
+
   enterRebus: ->
     console.error "#{arguments.callee.name} not implemented"
 
