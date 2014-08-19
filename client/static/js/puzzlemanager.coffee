@@ -174,12 +174,15 @@ class @PuzzleManager
     @resetGrid()
     @render()
 
-  setCurrentSquare: (value, moveForwards) ->
-    @g.letters[@g.ci][@g.cj].attr
+  setSquare: ([r, c], value, moveForwards) ->
+    @g.letters[r][c].attr
       text: value
 
     if moveForwards
       @moveForwards true
+
+  setCurrentSquare: (value, moveForwards) ->
+    @setSquare [@g.ci, @g.cj], arguments...
 
   currentClue: ->
     @p.getClueNumberForCell [@g.ci, @g.cj], @g.dir
