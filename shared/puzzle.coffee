@@ -85,7 +85,14 @@ class @Puzzle
     return [sr, er, sc, ec]
 
 
-  _loopGrid: (callback) ->
-    for r in [0...@height]    
-      for c in [0...@width]
+  _loopGrid: (callback, reverse) ->
+    rows = [0...@height]
+    cols = [0...@width]
+
+    if reverse
+      rows = rows.reverse()
+      cols = cols.reverse()
+
+    for r in rows
+      for c in cols
         callback.bind(@) [r, c]
