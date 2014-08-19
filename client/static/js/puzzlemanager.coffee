@@ -174,12 +174,12 @@ class @PuzzleManager
     @resetGrid()
     @render()
 
-  setCurrentSquare: (value, move) ->
+  setCurrentSquare: (value, moveForwards) ->
     @g.letters[@g.ci][@g.cj].attr
       text: value
 
-    if move
-      @moveInDirection @g.dir, false
+    if moveForwards
+      @moveForwards true
 
   currentClue: ->
     @p.getClueNumberForCell [@g.ci, @g.cj], @g.dir
@@ -235,7 +235,7 @@ class @PuzzleManager
     console.error "#{arguments.callee.name} not implemented"
 
   backspace: (remainOnThisClue, moveBackwards) ->
-    @setCurrentSquare ''
+    @setCurrentSquare '', false
     if moveBackwards
       @moveBackwards remainOnThisClue
 
