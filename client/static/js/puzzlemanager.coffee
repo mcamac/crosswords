@@ -177,12 +177,15 @@ class @PuzzleManager
     @resetGrid()
     @render()
 
-  setCurrentSquare: (value, move) ->
-    @g.letters[@g.ci][@g.cj].attr
+  setSquare: ([r, c], value, moveForwards) ->
+    @g.letters[r][c].attr
       text: value
 
-    if move
-      @move @g.dir, false
+    if moveForwards
+      @moveForwards true
+
+  setCurrentSquare: (value, moveForwards) ->
+    @setSquare [@g.ci, @g.cj], arguments...
 
   currentClue: ->
     @p.getClueNumberForCell [@g.ci, @g.cj], @g.dir
@@ -200,32 +203,47 @@ class @PuzzleManager
 
 
   # move in direction
-  move: (direction, remainOnThisClue) ->
-    @_setHighlight 'user', @p.getNextSquareInDirection([@g.ci, @g.cj], direction, remainOnThisClue)
+  moveToCell: (cell) ->
+    @_setHighlight 'user', cell
 
-  moveForwards: (remainOnThisClue) ->
-    @move @g.dir, remainOnThisClue
 
-  moveBackwards: (remainOnThisClue) ->
-    @move [-@g.dir[0], -@g.dir[1]], remainOnThisClue
+  moveInDirection: (direction, remainOnThisClue) ->
+    @moveToCell @p.getNextSquareInDirection([@g.ci, @g.cj], direction, remainOnThisClue)
 
+  moveToFarthestValidCellInDirection: (direction) ->
+    @moveToCell @p.getFarthestValidCellInDirection [@g.ci, @g.cj], direction
 
   moveToClue: (clueNumber) ->
-    @_setHighlight 'user', @p.gridNumbersRev[clueNumber]
+    @moveToCell @p.gridNumbersRev[clueNumber]
+
+
+  moveForwards: (remainOnThisClue) ->
+    @moveInDirection @g.dir, remainOnThisClue
+  moveBackwards: (remainOnThisClue) ->
+    @moveInDirection dir.reflect(@g.dir), remainOnThisClue
 
   moveToNextClue: ->
     @moveToClue (@p.getNextClueNumber @currentClue(), @g.dir, 1)
-
   moveToPreviousClue: ->   
     @moveToClue (@p.getNextClueNumber @currentClue(), @g.dir, -1)
+
+  moveToStartOfCurrentClue: ->
+    @moveToFarthestValidCellInDirection dir.reflect(@g.dir)
+  moveToEndOfCurrentClue: ->
+    @moveToFarthestValidCellInDirection @g.dir
+
+  moveToFirstWhiteCell: ->
+    @moveToCell @p.firstWhiteCell
+  moveToLastWhiteCell: ->
+    @moveToCell @p.lastWhiteCell
 
   enterRebus: ->
     console.error "#{arguments.callee.name} not implemented"
 
-  backspace: (remainOnThisClue) ->
-    # TODO: option for backspace not passing through black squares
-    @setCurrentSquare ''
-    @moveBackwards remainOnThisClue
+  erase: (remainOnThisClue, moveBackwards) ->
+    @setCurrentSquare '', false
+    if moveBackwards
+      @moveBackwards remainOnThisClue
 
   _setHighlight: (id, [r, c]) ->
     if not @p.isValidSquare [r, c]
@@ -245,17 +263,7 @@ class @PuzzleManager
     @ui.currentClue = @currentClueObj()
 
     # update highlights
-    [sr, er] = [@g.ci, @g.ci]
-    while @p.isValidSquare [sr - 1, @g.cj]
-      sr--
-    while @p.isValidSquare [er + 1, @g.cj]
-      er++
-
-    [sc, ec] = [@g.cj, @g.cj]
-    while @p.isValidSquare [@g.ci, sc - 1]
-      sc--
-    while @p.isValidSquare [@g.ci, ec + 1]
-      ec++
+    [sr, er, sc, ec] = @p.getCursorRanges [@g.ci, @g.cj]
 
     @g.highlights.down.attr
       x: @g.grid.squareSize * @g.cj + 3

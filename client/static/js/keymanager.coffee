@@ -6,18 +6,29 @@ class @KeyManager
       'all':
         'tab':         'moveToNextClue'
         'shift+tab':   'moveToPreviousClue'
+
+        # On Mac, home = fn+left and end = fn+right. I expect that Mac users
+        # will probably ignore these bindings and instead use shift+arrow.
+        'home':        'moveToStartOfCurrentClue'
+        'end':         'moveToEndOfCurrentClue'
+
         'space':       'flipDir'
-        'backspace':   ['backspace', true]
+        'backspace':   ['erase', true, true]
+        'delete':      ['erase', true, false]
       'Mac':
+        'command+up':  'moveToFirstWhiteCell'
+        'command+down':'moveToLastWhiteCell'
+
         'shift+enter': 'enterRebus'
       'Win':
+        'ctrl+home':   'moveToFirstWhiteCell'
+        'ctrl+end':    'moveToLastWhiteCell'
+
         'insert':      'enterRebus'
 
   registerBindings: (puzzleManager) ->
-    # Haunted by syntactic theory
     relevantDefaultBindingDomains = ['all']
     for os in @oses
-      # Javascript's new snake operator
       if ~window.navigator.appVersion.indexOf os
         relevantDefaultBindingDomains.push os
 
@@ -28,9 +39,9 @@ class @KeyManager
         else
           @_key puzzleManager, seq, fNameAndArgs...
 
-    # Bindings for arrows and letters are established by imperial fiat
     for k in ['right', 'left', 'up', 'down']
-      @_key puzzleManager, k, 'move', dir[k.toUpperCase()], false
+      @_key puzzleManager, k, 'moveInDirection', dir[k.toUpperCase()], false
+      @_key puzzleManager, 'shift+' + k, 'moveToFarthestValidCellInDirection', dir[k.toUpperCase()]
 
     for char in "abcdefghijklmnopqrstuvwxyz1234567890"
       @_key puzzleManager, char, 'setCurrentSquare', char.toUpperCase(), true
