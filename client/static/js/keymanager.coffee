@@ -13,7 +13,8 @@ class @KeyManager
         'end':         'moveToEndOfCurrentClue'
 
         'space':       'flipDir'
-        'backspace':   ['backspace', true]
+        'backspace':   ['backspace', true, true]
+        'delete':      ['backspace', true, false]
       'Mac':
         'command+up':  'moveToFirstWhiteCell'
         'command+down':'moveToLastWhiteCell'
