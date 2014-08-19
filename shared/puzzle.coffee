@@ -24,7 +24,7 @@ class @Puzzle
     @gridNumbersRev = {}
 
     currentNumber = 1
-    @_loopGrid ([r, c]) =>
+    @_loopGrid ([r, c]) ->
       if @isValidSquare([r, c]) and (not @isValidSquare([r - 1, c]) or
                                  not @isValidSquare([r, c - 1]))
         @gridNumbersRev[currentNumber] = [r, c]
@@ -85,4 +85,4 @@ class @Puzzle
   _loopGrid: (callback) ->
     for r in [0...@height]    
       for c in [0...@width]
-        callback [r, c]
+        callback.bind(@) [r, c]
