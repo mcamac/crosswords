@@ -242,17 +242,7 @@ class @PuzzleManager
     @ui.currentClue = @currentClueObj()
 
     # update highlights
-    [sr, er] = [@g.ci, @g.ci]
-    while @p.isValidSquare [sr - 1, @g.cj]
-      sr--
-    while @p.isValidSquare [er + 1, @g.cj]
-      er++
-
-    [sc, ec] = [@g.cj, @g.cj]
-    while @p.isValidSquare [@g.ci, sc - 1]
-      sc--
-    while @p.isValidSquare [@g.ci, ec + 1]
-      ec++
+    [sr, er, sc, ec] = @p.getCursorRanges [@g.ci, @g.cj]
 
     @g.highlights.down.attr
       x: @g.grid.squareSize * @g.cj + 3

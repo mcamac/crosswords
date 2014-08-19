@@ -60,6 +60,19 @@ class @Puzzle
       c -= coff
     return @gridNumbers[r][c]
 
+  getCursorRanges: ([r, c]) ->
+    [sr, er, sc, ec] = [r, r, c, c]
+
+    while @isValidSquare [sr - 1, c]
+      sr--
+    while @isValidSquare [er + 1, c]
+      er++
+    while @isValidSquare [r, sc - 1]
+      sc--
+    while @isValidSquare [r, ec + 1]
+      ec++
+
+    return [sr, er, sc, ec]
 
   _loopGrid: (callback) ->
     for r in [0...@height]    
