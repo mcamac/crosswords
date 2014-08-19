@@ -35,11 +35,11 @@ class @Puzzle
   isInsideGrid: ([r, c]) ->
     0 <= r < @height and 0 <= c < @width
 
-  getNextSquareInDirection: ([r, c], [roff, coff]) ->
+  getNextSquareInDirection: ([r, c], [roff, coff], remainOnThisClue) ->
     # Returns the next square in the given direction, if there is any.
     [nr, nc] = [r + roff, c + coff]
     while not @isValidSquare([nr, nc])
-      if not @isInsideGrid([nr, nc])
+      if not @isInsideGrid([nr, nc]) or remainOnThisClue
         return [r, c]
       nr += roff
       nc += coff

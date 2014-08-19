@@ -179,7 +179,7 @@ class @PuzzleManager
       text: value
 
     if move
-      @move @g.dir
+      @move @g.dir, false
 
   currentClue: ->
     @p.getClueNumberForCell [@g.ci, @g.cj], @g.dir
@@ -197,14 +197,14 @@ class @PuzzleManager
 
 
   # move in direction
-  move: (direction) ->
-    @_setHighlight 'user', @p.getNextSquareInDirection([@g.ci, @g.cj], direction)
+  move: (direction, remainOnThisClue) ->
+    @_setHighlight 'user', @p.getNextSquareInDirection([@g.ci, @g.cj], direction, remainOnThisClue)
 
-  moveForwards: ->
-    @move @g.dir
+  moveForwards: (remainOnThisClue) ->
+    @move @g.dir, remainOnThisClue
 
-  moveBackwards: ->
-    @move [-@g.dir[0], -@g.dir[1]]
+  moveBackwards: (remainOnThisClue) ->
+    @move [-@g.dir[0], -@g.dir[1]], remainOnThisClue
 
 
   moveToClue: (clueNumber) ->
@@ -222,7 +222,7 @@ class @PuzzleManager
   backspace: ->
     # TODO: option for backspace not passing through black squares
     @setCurrentSquare ''
-    @moveBackwards()
+    @moveBackwards false
 
   _setHighlight: (id, [r, c]) ->
     if not @p.isValidSquare [r, c]
