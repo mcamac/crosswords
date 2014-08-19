@@ -57,11 +57,15 @@ class @Puzzle
       nc += coff
     return [nr, nc]
 
-  getClueNumberForCell: ([r, c], [roff, coff]) ->
-    while @isValidSquare [r - roff, c - coff]
-      r -= roff
-      c -= coff
-    return @gridNumbers[r][c]
+  getClueNumberForCell: ([r, c], direction) ->
+    [sr, sc] = @getFarthestValidCellInDirection [r, c], dir.reflect(direction)
+    return @gridNumbers[sr][sc]
+
+  getFarthestValidCellInDirection: ([r, c], [roff, coff]) ->
+    while @isValidSquare [r + roff, c + coff]
+      r += roff
+      c += coff
+    return [r, c]
 
   getCursorRanges: ([r, c]) ->
     [sr, er, sc, ec] = [r, r, c, c]
