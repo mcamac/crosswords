@@ -39,7 +39,7 @@ $ ->
   console.log 'UI components initialized'
 
 
-  SOCKET_URL = location.origin.replace(/http\//g, 'ws/')
+  SOCKET_URL = location.origin.replace(/^http/, 'ws')
 
   CROSSWORD_CANVAS_EL = '#crossword_canvas'
 
