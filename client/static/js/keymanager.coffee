@@ -15,8 +15,14 @@ class @KeyManager
         'space':       'flipDir'
         'backspace':   ['backspace', true]
       'Mac':
+        'command+up':  'moveToFirstWhiteCell'
+        'command+down':'moveToLastWhiteCell'
+
         'shift+enter': 'enterRebus'
       'Win':
+        'ctrl+home':   'moveToFirstWhiteCell'
+        'ctrl+end':    'moveToLastWhiteCell'
+
         'insert':      'enterRebus'
 
   registerBindings: (puzzleManager) ->
