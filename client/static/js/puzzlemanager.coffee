@@ -204,6 +204,9 @@ class @PuzzleManager
   moveInDirection: (direction, remainOnThisClue) ->
     @moveToCell @p.getNextSquareInDirection([@g.ci, @g.cj], direction, remainOnThisClue)
 
+  moveToFarthestValidCellInDirection: (direction) ->
+    @moveToCell @p.getFarthestValidCellInDirection [@g.ci, @g.cj], direction
+
   moveToClue: (clueNumber) ->
     @moveToCell @p.gridNumbersRev[clueNumber]
 
