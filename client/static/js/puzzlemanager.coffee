@@ -208,7 +208,7 @@ class @PuzzleManager
     @moveInDirection @g.dir, remainOnThisClue
 
   moveBackwards: (remainOnThisClue) ->
-    @moveInDirection [-@g.dir[0], -@g.dir[1]], remainOnThisClue
+    @moveInDirection dir.reflect(@g.dir), remainOnThisClue
 
 
   moveToClue: (clueNumber) ->

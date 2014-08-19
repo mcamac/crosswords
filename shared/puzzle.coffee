@@ -4,6 +4,7 @@
   DOWN: [1, 0]
   UP: [-1, 0]
   ACROSS: [0, 1]
+  reflect: ([r, c]) -> [-r, -c]
 
 class @Puzzle
   constructor: (puzzle) ->
