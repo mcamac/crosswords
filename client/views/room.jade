@@ -11,7 +11,6 @@ html
 
     link(rel='stylesheet', type='text/css', href='/static/css/vendor/foundation.css')
     link(rel='stylesheet', type='text/css', href='/static/css/room.css')
-    //- script(src='/static/css/room.css')
     title Crosswords
   body
     #content
@@ -26,10 +25,8 @@ html
             li
               a#browse_puzzles_a.reveal-link(href='#', data-reveal-id='browse_puzzles_modal')
                 | Browse Puzzles
-            //- li.divider
             li
               a(href='#') Room Options
-            //- li.divider
             li
               a(a href='#') Help
             li
@@ -59,14 +56,9 @@ html
 
         section.large-3.columns.clue-area
           h5 Across
-          //- ol#A_clues.clue-list
           ol.clue-list(v-component="clue-list", v-with="clues: clues.across, current: currentClue")
           h5 Down
           ol.clue-list(v-component="clue-list", v-with="clues: clues.down, current: currentClue")
-
-          div#score_box
-            | Graph could go here
-
 
       dialog#browse_puzzles_modal.reveal-modal
         h3 Browse Puzzles (# puzzles)
