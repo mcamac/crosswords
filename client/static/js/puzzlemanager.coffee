@@ -252,7 +252,8 @@ class @PuzzleManager
     if moveBackwards
       @moveBackwards remainOnThisClue
   eraseToStartOfCurrentClue: ->
-    @moveToCell @p.getFarthestValidCellInDirection @currentCell(), dir.reflect(@g.dir), false,
+    skipFirstBlackCells = '' == @getSquare @currentCell()
+    @moveToCell @p.getFarthestValidCellInDirection @currentCell(), dir.reflect(@g.dir), skipFirstBlackCells,
       (cell) => @setSquare cell, '', false
   eraseToEndOfCurrentClue: ->
     @p.getFarthestValidCellInDirection @currentCell(), @g.dir, false,
