@@ -39,7 +39,9 @@ html
         div.large-3.columns
           h6.puzzle-title NY Times, Monday, Jun 3
           #members_box
-            span(v-repeat="users") {{ username }}
+            ul
+              li(v-repeat="users")
+                span.member {{ username }}
           h6 Chat
           #chat_box
           input#chat_input(type="text")
