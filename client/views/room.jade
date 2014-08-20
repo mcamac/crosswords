@@ -41,7 +41,7 @@ html
           #members_box
             ul
               li(v-repeat="users")
-                span.member {{ username }}
+                span.member(style="border-color: {{ color }}") {{ username }}
           h6 Chat
           #chat_box
           input#chat_input(type="text")
