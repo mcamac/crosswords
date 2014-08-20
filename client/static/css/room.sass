@@ -10,7 +10,7 @@ body, h1, h2, h3, h4, h5, h6
 .clue-list
   font-size: 13px
   height: 200px
-  overflow: scroll
+  overflow-y: scroll
 
   margin-left: 0
   padding-left: 2em
@@ -19,7 +19,14 @@ body, h1, h2, h3, h4, h5, h6
   .active
     background-color: steelblue
 
-#members_box
+#current-clue
+  .dir-number
+    font-weight: 700
+    display: inline-block
+    width: 4em
+    padding-right: 1em
+
+#players
   height: 250px
 
   ul
@@ -36,11 +43,11 @@ body, h1, h2, h3, h4, h5, h6
       .member
         border-bottom: 3px solid transparent
 
-#chat_box
+#chat
   background-color: #FAFAFA
   height: 275px
 
-#crossword_canvas
+#crossword-container
   margin: 0px 10px 0
 
 .timer

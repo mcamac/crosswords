@@ -1,3 +1,4 @@
+doctype html
 html
   head
     script(src='/socket.io/socket.io.js')
@@ -10,8 +11,9 @@ html
     script(src='/static/js/all.js')
 
     link(rel='stylesheet', type='text/css', href='/static/css/vendor/foundation.css')
+
     link(rel='stylesheet', type='text/css', href='/static/css/room.css')
-    //- script(src='/static/css/room.css')
+
     title Crosswords
   body
     #content
@@ -23,57 +25,53 @@ html
         section.top-bar-section
           ul.left
             li.divider
-            li
-              a#browse_puzzles_a.reveal-link(href='#', data-reveal-id='browse_puzzles_modal')
-                | Browse Puzzles
-            //- li.divider
-            li
-              a(href='#') Room Options
-            //- li.divider
-            li
-              a(a href='#') Help
-            li
-              a(a href='#') Constructor
+            li: a#browse_puzzles_a.reveal-link(href='#', data-reveal-id='browse_puzzles_modal') Browse Puzzles
+            li: a(href='#') Room Options
+            li: a(a href='#') Help
+            li: a(a href='#') Constructor
 
-      div.row.game-area
-        div.large-3.columns
-          h6.puzzle-title NY Times, Monday, Jun 3
-          #members_box
+      main.row.game-area
+        //- Left
+        section.large-3.columns
+          h5.puzzle-title NY Times, Monday, Jun 3
+
+          h6 Players
+          #players
             ul
               li(v-repeat="users")
                 span.member(style="border-color: {{ color }}") {{ username }}
+
           h6 Chat
-          #chat_box
+          #chat
           input#chat_input(type="text")
-        div.large-6.columns.crossword-column
-          div.row
-            div.small-10.columns
+
+        //- Middle
+        section.large-6.columns.crossword-column
+          .row
+            .small-10.columns
               h5
-                p#current_clue
-                  strong.current-clue-number {{ currentClue.dir | dir-symbol }} {{currentClue.num }}
-                  &nbsp;{{currentClue.text}}
-            div.small-2.columns.timer
+                p#current-clue
+                  span.dir-number {{ currentClue.dir | dir-symbol }} {{ currentClue.num }}
+                  span.text {{ currentClue.text }}
+            .small-2.columns.timer
               h5#timer 0:00
                 small.deciseconds .0
-            div#crossword_canvas
 
-        div.large-3.columns.clue-area
+            #crossword-container
+
+        //- Right
+        section.large-3.columns.clue-area
           h5 Across
-          //- ol#A_clues.clue-list
           ol.clue-list(v-component="clue-list", v-with="clues: clues.across, current: currentClue")
           h5 Down
           ol.clue-list(v-component="clue-list", v-with="clues: clues.down, current: currentClue")
 
-          div#score_box
-            | Graph could go here
-
-
-      div#browse_puzzles_modal.reveal-modal
+      dialog#browse_puzzles_modal.reveal-modal
         h3 Browse Puzzles (# puzzles)
         ul.puzzle-list
         a.close-reveal-modal &#215;
 
     script(type='x/template', id='clue-li').
-      <li class="li-clue {{ (num === current.num && dir == current.dir) ? 'active': ''}}"
+      <li class="li-clue {{ (num === current.num && dir == current.dir) ? 'active': '' }}"
            v-repeat="clues" value="{{ num }}"> {{ text }}</li>
 
