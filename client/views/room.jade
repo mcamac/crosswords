@@ -35,8 +35,8 @@ html
             li
               a(a href='#') Constructor
 
-      div.row.game-area
-        div.large-3.columns
+      main.row.game-area
+        section.large-3.columns
           h6.puzzle-title NY Times, Monday, Jun 3
           #players
             ul
@@ -45,7 +45,7 @@ html
           h6 Chat
           #chat
           input#chat_input(type="text")
-        div.large-6.columns.crossword-column
+        section.large-6.columns.crossword-column
           div.row
             div.small-10.columns
               h5
@@ -57,7 +57,7 @@ html
                 small.deciseconds .0
             div#crossword-container
 
-        div.large-3.columns.clue-area
+        section.large-3.columns.clue-area
           h5 Across
           //- ol#A_clues.clue-list
           ol.clue-list(v-component="clue-list", v-with="clues: clues.across, current: currentClue")
@@ -68,7 +68,7 @@ html
             | Graph could go here
 
 
-      div#browse_puzzles_modal.reveal-modal
+      dialog#browse_puzzles_modal.reveal-modal
         h3 Browse Puzzles (# puzzles)
         ul.puzzle-list
         a.close-reveal-modal &#215;
