@@ -33,7 +33,9 @@ html
       main.row.game-area
         //- Left
         section.large-3.columns
-          h6.puzzle-title NY Times, Monday, Jun 3
+          h5.puzzle-title NY Times, Monday, Jun 3
+
+          h6 Players
           #players
             ul
               li(v-repeat="users")
@@ -49,8 +51,8 @@ html
             .small-10.columns
               h5
                 p#current-clue
-                  strong.current-clue-number {{ currentClue.dir | dir-symbol }} {{ currentClue.num }}
-                  &nbsp;{{ currentClue.text }}
+                  span.dir-number {{ currentClue.dir | dir-symbol }} {{ currentClue.num }}
+                  span.text {{ currentClue.text }}
             .small-2.columns.timer
               h5#timer 0:00
                 small.deciseconds .0
