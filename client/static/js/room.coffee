@@ -2,7 +2,7 @@ $ ->
   # Vue components
 
   membersBox = new Vue {
-    el: '#members_box'
+    el: '#players'
     data: {
       users: [{
         username: 'martin'
@@ -41,7 +41,7 @@ $ ->
 
   SOCKET_URL = location.origin.replace(/^http/, 'ws')
 
-  CROSSWORD_CANVAS_EL = '#crossword_canvas'
+  CROSSWORD_CANVAS_EL = '#crossword-container'
 
   socket = io.connect SOCKET_URL
 
