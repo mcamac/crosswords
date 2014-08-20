@@ -177,6 +177,10 @@ class @PuzzleManager
     @resetGrid()
     @render()
 
+  # FIXME don't store puzzle state in svg
+  getSquare: ([r, c]) ->
+    @g.letters[r][c].attr 'text'
+
   setSquare: ([r, c], value, moveForwards) ->
     @g.letters[r][c].attr
       text: value
