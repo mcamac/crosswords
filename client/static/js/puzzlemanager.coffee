@@ -182,7 +182,7 @@ class @PuzzleManager
       @moveForwards true
 
   setCurrentSquare: (value, moveForwards) ->
-    @setSquare [@g.ci, @g.cj], arguments...
+    @setSquare [@g.ci, @g.cj], value, moveForwards
 
   currentClue: ->
     @p.getClueNumberForCell [@g.ci, @g.cj], @g.dir
