@@ -182,10 +182,13 @@ class @PuzzleManager
       @moveForwards true
 
   setCurrentSquare: (value, moveForwards) ->
-    @setSquare [@g.ci, @g.cj], value, moveForwards
+    @setSquare @currentCell(), value, moveForwards
+
+  currentCell: ->
+    [@g.ci, @g.cj]
 
   currentClue: ->
-    @p.getClueNumberForCell [@g.ci, @g.cj], @g.dir
+    @p.getClueNumberForCell @currentCell(), @g.dir
 
   currentClueObj: ->
     clueNum = @currentClue()
@@ -205,10 +208,10 @@ class @PuzzleManager
 
 
   moveInDirection: (direction, remainOnThisClue) ->
-    @moveToCell @p.getNextSquareInDirection([@g.ci, @g.cj], direction, remainOnThisClue)
+    @moveToCell @p.getNextSquareInDirection @currentCell(), direction, remainOnThisClue
 
   moveToFarthestValidCellInDirection: (direction) ->
-    @moveToCell @p.getFarthestValidCellInDirection [@g.ci, @g.cj], direction
+    @moveToCell @p.getFarthestValidCellInDirection @currentCell(), direction
 
   moveToClue: (clueNumber) ->
     @moveToCell @p.gridNumbersRev[clueNumber]
@@ -241,6 +244,12 @@ class @PuzzleManager
     @setCurrentSquare '', false
     if moveBackwards
       @moveBackwards remainOnThisClue
+  eraseToStartOfCurrentClue: ->
+    @moveToCell @p.getFarthestValidCellInDirection @currentCell(), dir.reflect(@g.dir),
+      (cell) => @setSquare cell, '', false
+  eraseToEndOfCurrentClue: ->
+    @p.getFarthestValidCellInDirection @currentCell(), @g.dir,
+      (cell) => @setSquare cell, '', false
 
   _setHighlight: (id, [r, c]) ->
     if not @p.isValidSquare [r, c]
@@ -260,7 +269,7 @@ class @PuzzleManager
     @ui.currentClue = @currentClueObj()
 
     # update highlights
-    [sr, er, sc, ec] = @p.getCursorRanges [@g.ci, @g.cj]
+    [sr, er, sc, ec] = @p.getCursorRanges @currentCell()
 
     @g.highlights.down.attr
       x: @g.grid.squareSize * @g.cj + 3
