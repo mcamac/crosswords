@@ -213,8 +213,8 @@ class @PuzzleManager
   moveInDirection: (direction, remainOnThisClue) ->
     @moveToCell @p.getNextSquareInDirection @currentCell(), direction, remainOnThisClue
 
-  moveToFarthestValidCellInDirection: (direction) ->
-    @moveToCell @p.getFarthestValidCellInDirection @currentCell(), direction
+  moveToFarthestValidCellInDirection: (direction, skipFirstBlackCells) ->
+    @moveToCell @p.getFarthestValidCellInDirection @currentCell(), direction, skipFirstBlackCells
 
   moveToClue: (clueNumber) ->
     @moveToCell @p.gridNumbersRev[clueNumber]
@@ -231,9 +231,9 @@ class @PuzzleManager
     @moveToClue (@p.getNextClueNumber @currentClue(), @g.dir, -1)
 
   moveToStartOfCurrentClue: ->
-    @moveToFarthestValidCellInDirection dir.reflect(@g.dir)
+    @moveToFarthestValidCellInDirection dir.reflect(@g.dir), false
   moveToEndOfCurrentClue: ->
-    @moveToFarthestValidCellInDirection @g.dir
+    @moveToFarthestValidCellInDirection @g.dir, false
 
   moveToFirstWhiteCell: ->
     @moveToCell @p.firstWhiteCell
@@ -248,10 +248,10 @@ class @PuzzleManager
     if moveBackwards
       @moveBackwards remainOnThisClue
   eraseToStartOfCurrentClue: ->
-    @moveToCell @p.getFarthestValidCellInDirection @currentCell(), dir.reflect(@g.dir),
+    @moveToCell @p.getFarthestValidCellInDirection @currentCell(), dir.reflect(@g.dir), false,
       (cell) => @setSquare cell, '', false
   eraseToEndOfCurrentClue: ->
-    @p.getFarthestValidCellInDirection @currentCell(), @g.dir,
+    @p.getFarthestValidCellInDirection @currentCell(), @g.dir, false,
       (cell) => @setSquare cell, '', false
 
   _setHighlight: (id, [r, c]) ->
