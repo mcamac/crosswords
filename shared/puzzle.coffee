@@ -63,10 +63,10 @@ class @Puzzle
     return [nr, nc]
 
   getClueNumberForCell: ([r, c], direction) ->
-    [sr, sc] = @getFarthestValidCellInDirection [r, c], dir.reflect(direction)
+    [sr, sc] = @getFarthestValidCellInDirection [r, c], dir.reflect(direction), false
     return @gridNumbers[sr][sc]
 
-  getFarthestValidCellInDirection: ([r, c], [roff, coff], f) ->
+  getFarthestValidCellInDirection: ([r, c], [roff, coff], skipFirstBlackCells, f) ->
     allBlackSoFar = true
     loop
       [pr, pc] = [r, c]
@@ -77,7 +77,7 @@ class @Puzzle
       nextCellIsInvalid = not @isValidSquare nextCell
       allBlackSoFar &= nextCellIsBlack = nextCellIsInvalid and @isInsideGrid nextCell
 
-      break if nextCellIsInvalid
+      break if nextCellIsInvalid and not (skipFirstBlackCells and allBlackSoFar)
     return [pr, pc]
 
   getCursorRanges: ([r, c]) ->

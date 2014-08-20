@@ -47,7 +47,7 @@ class @KeyManager
 
     for k in ['right', 'left', 'up', 'down']
       @_key puzzleManager, k, 'moveInDirection', dir[k.toUpperCase()], false
-      @_key puzzleManager, 'shift+' + k, 'moveToFarthestValidCellInDirection', dir[k.toUpperCase()]
+      @_key puzzleManager, 'shift+' + k, 'moveToFarthestValidCellInDirection', dir[k.toUpperCase()], true
 
     for char in "abcdefghijklmnopqrstuvwxyz1234567890"
       @_key puzzleManager, char, 'setCurrentSquare', char.toUpperCase(), true
