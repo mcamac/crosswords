@@ -38,24 +38,24 @@ html
       div.row.game-area
         div.large-3.columns
           h6.puzzle-title NY Times, Monday, Jun 3
-          #members_box
+          #players
             ul
               li(v-repeat="users")
                 span.member(style="border-color: {{ color }}") {{ username }}
           h6 Chat
-          #chat_box
+          #chat
           input#chat_input(type="text")
         div.large-6.columns.crossword-column
           div.row
             div.small-10.columns
               h5
-                p#current_clue
+                p#current-clue
                   strong.current-clue-number {{ currentClue.dir | dir-symbol }} {{currentClue.num }}
                   &nbsp;{{currentClue.text}}
             div.small-2.columns.timer
               h5#timer 0:00
                 small.deciseconds .0
-            div#crossword_canvas
+            div#crossword-container
 
         div.large-3.columns.clue-area
           h5 Across

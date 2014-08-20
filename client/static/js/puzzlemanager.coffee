@@ -49,7 +49,7 @@ class @PuzzleManager
     }
 
     # initialize Raphael canvas
-    @g.paper = Raphael 'crossword_canvas',
+    @g.paper = Raphael 'crossword-container',
       @g.grid.width + @g.grid.margin, @g.grid.height + @g.grid.margin
 
     @g.overlay = null
