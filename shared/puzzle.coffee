@@ -67,11 +67,17 @@ class @Puzzle
     return @gridNumbers[sr][sc]
 
   getFarthestValidCellInDirection: ([r, c], [roff, coff], f) ->
+    allBlackSoFar = true
     loop
       [pr, pc] = [r, c]
       if f
         f [r, c]
-      break if not @isValidSquare [r += roff, c += coff]
+
+      nextCell = [r += roff, c += coff]
+      nextCellIsInvalid = not @isValidSquare nextCell
+      allBlackSoFar &= nextCellIsBlack = nextCellIsInvalid and @isInsideGrid nextCell
+
+      break if nextCellIsInvalid
     return [pr, pc]
 
   getCursorRanges: ([r, c]) ->
