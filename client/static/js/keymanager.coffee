@@ -19,10 +19,16 @@ class @KeyManager
         'command+up':  'moveToFirstWhiteCell'
         'command+down':'moveToLastWhiteCell'
 
+        'option+backspace': 'eraseToStartOfCurrentClue'
+        'option+delete': 'eraseToEndOfCurrentClue'
+
         'shift+enter': 'enterRebus'
       'Win':
         'ctrl+home':   'moveToFirstWhiteCell'
         'ctrl+end':    'moveToLastWhiteCell'
+
+        'ctrl+backspace': 'eraseToStartOfCurrentClue'
+        'ctrl+delete': 'eraseToEndOfCurrentClue'
 
         'insert':      'enterRebus'
 
