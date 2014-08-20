@@ -67,11 +67,13 @@ class @Puzzle
     [sr, sc] = @getFarthestValidCellInDirection [r, c], dir.reflect(direction)
     return @gridNumbers[sr][sc]
 
-  getFarthestValidCellInDirection: ([r, c], [roff, coff]) ->
-    while @isValidSquare [r + roff, c + coff]
-      r += roff
-      c += coff
-    return [r, c]
+  getFarthestValidCellInDirection: ([r, c], [roff, coff], f) ->
+    loop
+      [pr, pc] = [r, c]
+      if f
+        f [r, c]
+      break if not @isValidSquare [r += roff, c += coff]
+    return [pr, pc]
 
   getCursorRanges: ([r, c]) ->
     [sr, er, sc, ec] = [r, r, c, c]
