@@ -24,7 +24,7 @@ class @PuzzleManager
     # settings object (for constants)
     @c = {}
 
-    @g.grid = {
+    @g.grid =
       lines: []
       height: 600
       width: 600
@@ -35,9 +35,8 @@ class @PuzzleManager
           'font-size': '11px'
           'font-family': 'Source Sans'
           'text-anchor': 'start'
-    }
 
-    @g.highlights = {
+    @g.highlights =
       across: null
       down: null
       user: {}
@@ -46,7 +45,6 @@ class @PuzzleManager
           color: 'rgba(61,104,184,0.55)'
         perp:
           color: 'rgba(61,104,184,0.15)'
-    }
 
     # initialize Raphael canvas
     @g.paper = Raphael 'crossword-container',
