@@ -57,6 +57,17 @@ html
                 small.deciseconds .0
 
             #crossword-container
+              svg#crossword(style="overflow: hidden; position: relative;")
+                //- Back
+                g#black-squares
+                g#filled-squares
+                g#cursor
+                g#their-cursors
+                g#numbers
+                g#letters
+                g#gridlines
+                g#background
+                //- Front
 
         //- Right
         section.large-3.columns.clue-area
