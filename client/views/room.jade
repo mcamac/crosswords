@@ -43,16 +43,16 @@ html
           #chat
           input#chat_input(type="text")
         section.large-6.columns.crossword-column
-          div.row
-            div.small-10.columns
+          .row
+            .small-10.columns
               h5
                 p#current-clue
                   strong.current-clue-number {{ currentClue.dir | dir-symbol }} {{currentClue.num }}
                   &nbsp;{{currentClue.text}}
-            div.small-2.columns.timer
+            .small-2.columns.timer
               h5#timer 0:00
                 small.deciseconds .0
-            div#crossword-container
+            #crossword-container
 
         section.large-3.columns.clue-area
           h5 Across
