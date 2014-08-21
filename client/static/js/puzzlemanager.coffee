@@ -30,21 +30,11 @@ class @PuzzleManager
       width: 600
       margin: 2
       squareSize: 600 / 15.0
-      numbers:
-        style:
-          'font-size': '11px'
-          'font-family': 'Source Sans'
-          'text-anchor': 'start'
 
     @g.highlights =
       across: null
       down: null
       user: {}
-      style:
-        active:
-          color: 'rgba(61,104,184,0.55)'
-        perp:
-          color: 'rgba(61,104,184,0.15)'
 
     # initialize Raphael canvas
     @g.paper = Raphael 'crossword-container',
@@ -71,7 +61,6 @@ class @PuzzleManager
             @g.grid.squareSize * c + 3,
             @g.grid.squareSize * r + 8.5,
             @p.gridNumbers[r][c]
-            .attr @g.grid.numbers.style
         if @p.grid[r][c] == '_'
           @g.blackSquares[r][c] = @g.paper.rect \
             @g.grid.squareSize * c + 0.5,
@@ -258,11 +247,13 @@ class @PuzzleManager
       y: @g.grid.squareSize * sr + 3
       width: @g.grid.squareSize - 5
       height: @g.grid.squareSize * (er - sr + 1) - 5
-      stroke: (if @g.dir == dir.DOWN then @g.highlights.style.active.color else @g.highlights.style.perp.color)
+    @g.highlights.down.classList[if @g.dir == dir.DOWN then 'add' else 'remove'] 'highlight-parallel'
+    @g.highlights.down.classList[if @g.dir == dir.DOWN then 'remove' else 'add'] 'highlight-perpendicular'
 
     @g.highlights.across.attr
       x: @g.grid.squareSize * sc + 3
       y: @g.grid.squareSize * @g.ci + 3
       width: @g.grid.squareSize * (ec - sc + 1) - 5
       height: @g.grid.squareSize - 5 
-      stroke: (if @g.dir == dir.ACROSS then @g.highlights.style.active.color else @g.highlights.style.perp.color)
+    @g.highlights.across.classList[if @g.dir == dir.ACROSS then 'add' else 'remove'] 'highlight-parallel'
+    @g.highlights.across.classList[if @g.dir == dir.ACROSS then 'remove' else 'add'] 'highlight-perpendicular'
