@@ -4,7 +4,6 @@ html
     script(src='/socket.io/socket.io.js')
     script(src='/static/js/vendor/vue.js')
     script(src='/static/js/vendor/jquery.js')
-    script(src='/static/js/vendor/raphael.min.js')
     script(src='/static/js/vendor/keymaster.min.js')
     script(src='/static/js/vendor/foundation.min.js')
 
@@ -13,6 +12,7 @@ html
     link(rel='stylesheet', type='text/css', href='/static/css/vendor/foundation.css')
 
     link(rel='stylesheet', type='text/css', href='/static/css/room.css')
+    link(rel='stylesheet', type='text/css', href='/static/css/svg.css')
 
     title Crosswords
   body
@@ -58,6 +58,17 @@ html
                 small.deciseconds .0
 
             #crossword-container
+              svg#crossword(style="overflow: hidden; position: relative;")
+                //- Back
+                g#black-squares
+                g#filled-squares
+                g#cursor
+                g#their-cursors
+                g#numbers
+                g#letters
+                g#gridlines
+                g#background
+                //- Front
 
         //- Right
         section.large-3.columns.clue-area
