@@ -178,6 +178,9 @@ class @PuzzleManager
       num: clueNum
 
 
+  it = (desc, f) -> f.desc = desc; f
+
+
   setCurrentSquare: (value, moveForwards) ->
     @setSquare @currentCell(), value, moveForwards
 
