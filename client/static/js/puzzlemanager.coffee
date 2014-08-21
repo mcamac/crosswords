@@ -37,7 +37,7 @@ class @PuzzleManager
       user: {}
 
     # initialize Raphael canvas
-    @g.paper = Raphael 'crossword-container',
+    Render.setDims('crossword') \
       @g.grid.width + @g.grid.margin, @g.grid.height + @g.grid.margin
 
     @g.overlay = null
@@ -52,40 +52,49 @@ class @PuzzleManager
     @g.numbers = {}
     @g.blackSquares = {}
     currentNumber = 1
+
+    addNumber = Render.text 'numbers'
+    addBlackSquare = Render.rect 'black-squares'
+
     for r in [0...@p.height]
       @g.numbers[r] = {}
       @g.blackSquares[r] = {}
       for c in [0...@p.width]
         if @p.gridNumbers[r][c]
-          @g.numbers[r][c] = @g.paper.text \
+          @g.numbers[r][c] = addNumber \
             @g.grid.squareSize * c + 3,
             @g.grid.squareSize * r + 8.5,
             @p.gridNumbers[r][c]
         if @p.grid[r][c] == '_'
-          @g.blackSquares[r][c] = @g.paper.rect \
+          @g.blackSquares[r][c] = addBlackSquare \
             @g.grid.squareSize * c + 0.5,
             @g.grid.squareSize * r + 0.5,
             @g.grid.squareSize,
             @g.grid.squareSize
 
-    @g.letters = {}    
+    @g.letters = {}
+
+    addLetter = Render.text 'letters'
+
     for r in [0...@p.height]
       @g.letters[r] = {}
       for c in [0...@p.width]
-        @g.letters[r][c] = @g.paper.text \
+        @g.letters[r][c] = addLetter \
           (c + 0.5) * @g.grid.squareSize,
           (r + 0.55) * @g.grid.squareSize,
           ''
 
     # add grid lines
+    addGridline = Render.path 'gridlines'
+
     for offset in [0..@p.height]
       pxoff = @g.grid.squareSize * offset + 0.5   
-      @g.grid.lines.push @g.paper.path "M#{pxoff},0.5v#{@g.grid.height}"
-      @g.grid.lines.push @g.paper.path "M0.5,#{pxoff}h#{@g.grid.width}"
+      @g.grid.lines.push \
+        addGridline "M#{pxoff},0.5v#{@g.grid.height}",
+        addGridline "M0.5,#{pxoff}h#{@g.grid.width}"
 
-    @g.overlay = @g.paper.rect 0, 0, @g.grid.width, @g.grid.height
-    @g.overlay.toFront()
-    @g.overlay.click (e) =>
+    @g.overlay = Render.rect('background') 0, 0, @g.grid.width, @g.grid.height
+    @g.overlay.addEventListener 'click', (e) =>
       ei = ~~(e.layerY / @g.grid.squareSize)
       ej = ~~(e.layerX / @g.grid.squareSize)
       # flip directions if same square is clicked
@@ -107,14 +116,19 @@ class @PuzzleManager
     @ui.clues.down = downClues
 
     # initialize user highlights
-    @g.highlights.user['user'] = @g.paper.rect \
-      3, 3,
-      @g.grid.squareSize - 5, @g.grid.squareSize - 5
-    .attr
-      'stroke-width': 4
+    addCursor = Render.rect 'cursor'
 
-    @g.highlights.down = @g.highlights.user['user'].clone()
-    @g.highlights.across = @g.highlights.user['user'].clone() 
+    @g.highlights.user['user'] = addCursor \
+      3, 3,
+      @g.grid.squareSize - 5, @g.grid.squareSize - 5,
+      'class': 'highlight-square'
+      'stroke-width': 4
+    @g.highlights.down = addCursor 0, 0, 0, 0,
+      'class': 'highlight-down'
+      'stroke-width': 4
+    @g.highlights.across = addCursor 0, 0, 0, 0,
+      'class': 'highlight-across'
+      'stroke-width': 4
 
     console.log 'rendered'
 
