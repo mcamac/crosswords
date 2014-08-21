@@ -145,10 +145,6 @@ class @PuzzleManager
     @g.highlights.across?.remove()
     @g.highlights.down?.remove()
 
-  flipDir: ->
-    @g.dir = if @g.dir == dir.ACROSS then dir.DOWN else dir.ACROSS
-    @_reHighlight()
-
   loadPuzzle: (@p) ->  
     # load puzzle data into manager and render
     @resetGrid()
@@ -163,9 +159,6 @@ class @PuzzleManager
 
     if moveForwards
       @moveForwards true
-
-  setCurrentSquare: (value, moveForwards) ->
-    @setSquare @currentCell(), value, moveForwards
 
   currentCell: ->
     [@g.ci, @g.cj]
@@ -184,6 +177,13 @@ class @PuzzleManager
       text: @p.clues.across[clueNum]
       num: clueNum
 
+
+  setCurrentSquare: (value, moveForwards) ->
+    @setSquare @currentCell(), value, moveForwards
+
+  flipDir: ->
+    @g.dir = if @g.dir == dir.ACROSS then dir.DOWN else dir.ACROSS
+    @_reHighlight()
 
   # move in direction
   moveToCell: (cell) ->
