@@ -239,7 +239,7 @@ class @PuzzleManager
     if not @p.isValidSquare [r, c]
       return
 
-    @g.highlights.user[id]?.attr
+    Render._setAttributes @g.highlights.user[id],
       x: @g.grid.squareSize * c + 3
       y: @g.grid.squareSize * r + 3
 
@@ -255,7 +255,7 @@ class @PuzzleManager
     # update highlights
     [sr, er, sc, ec] = @p.getCursorRanges @currentCell()
 
-    @g.highlights.down.attr
+    Render._setAttributes @g.highlights.down,
       x: @g.grid.squareSize * @g.cj + 3
       y: @g.grid.squareSize * sr + 3
       width: @g.grid.squareSize - 5
@@ -263,7 +263,7 @@ class @PuzzleManager
     @g.highlights.down.classList[if @g.dir == dir.DOWN then 'add' else 'remove'] 'highlight-parallel'
     @g.highlights.down.classList[if @g.dir == dir.DOWN then 'remove' else 'add'] 'highlight-perpendicular'
 
-    @g.highlights.across.attr
+    Render._setAttributes @g.highlights.across,
       x: @g.grid.squareSize * sc + 3
       y: @g.grid.squareSize * @g.ci + 3
       width: @g.grid.squareSize * (ec - sc + 1) - 5
