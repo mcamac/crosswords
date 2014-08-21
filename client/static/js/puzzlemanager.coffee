@@ -67,35 +67,33 @@ class @PuzzleManager
       @g.blackSquares[r] = {}
       for c in [0...@p.width]
         if @p.gridNumbers[r][c]
-          @g.numbers[r][c] = @g.paper.text(
+          @g.numbers[r][c] = @g.paper.text \
             @g.grid.squareSize * c + 3,
             @g.grid.squareSize * r + 8.5,
-            @p.gridNumbers[r][c])
+            @p.gridNumbers[r][c]
             .attr @g.grid.numbers.style
         if @p.grid[r][c] == '_'
-          @g.blackSquares[r][c] = @g.paper.rect(
+          @g.blackSquares[r][c] = @g.paper.rect \
             @g.grid.squareSize * c + 0.5,
             @g.grid.squareSize * r + 0.5,
             @g.grid.squareSize,
-            @g.grid.squareSize)
-          .attr {
+            @g.grid.squareSize
+          .attr
             fill: 'black'
-          }
 
     @g.letters = {}    
     for r in [0...@p.height]
       @g.letters[r] = {}
       for c in [0...@p.width]
-        @g.letters[r][c] = @g.paper.text(
+        @g.letters[r][c] = @g.paper.text \
           (c + 0.5) * @g.grid.squareSize,
           (r + 0.55) * @g.grid.squareSize,
-          '',
-        ).attr {
+          ''
+        .attr
           'font-family': 'Source Sans'
           'font-size': 24
           'font-weight': 600
           'text-anchor': 'middle'
-        }
 
     # add grid lines
     for offset in [0..@p.height]
@@ -104,17 +102,15 @@ class @PuzzleManager
       @g.grid.lines.push @g.paper.path "M0.5,#{pxoff}h#{@g.grid.width}"
 
     for line in @g.grid.lines
-      line.attr {
+      line.attr
         stroke: '#dddddd'
         'stroke-width': 1
-      }
 
-    @g.overlay = @g.paper.rect(0, 0, @g.grid.width, @g.grid.height)
-      .attr {
+    @g.overlay = @g.paper.rect 0, 0, @g.grid.width, @g.grid.height
+      .attr
         stroke: 'none'
         fill: '#ffffff'
         opacity: 0.0
-      }
     @g.overlay.toFront()
     @g.overlay.click (e) =>
       ei = ~~(e.layerY / @g.grid.squareSize)
@@ -138,15 +134,14 @@ class @PuzzleManager
     @ui.clues.down = downClues
 
     # initialize user highlights
-    @g.highlights.user['user'] = @g.paper.rect(
+    @g.highlights.user['user'] = @g.paper.rect \
       3, 3,
       @g.grid.squareSize - 5, @g.grid.squareSize - 5
-    ).attr {
+    .attr
       stroke: 'rgb(61,104,184)' 
       'stroke-width': 4
       fill: 'none'
       opacity: 1
-    }
 
     @g.highlights.down = @g.highlights.user['user'].clone()
     @g.highlights.across = @g.highlights.user['user'].clone() 
