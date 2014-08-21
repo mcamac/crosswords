@@ -156,11 +156,10 @@ class @PuzzleManager
 
   # FIXME don't store puzzle state in svg
   getSquare: ([r, c]) ->
-    @g.letters[r][c].attr 'text'
+    @g.letters[r][c].firstChild.textContent
 
   setSquare: ([r, c], value, moveForwards) ->
-    @g.letters[r][c].attr
-      text: value
+    @g.letters[r][c].firstChild.textContent = value
 
     if moveForwards
       @moveForwards true
