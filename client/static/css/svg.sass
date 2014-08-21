@@ -1,0 +1,57 @@
+// Background
+#background
+  stroke: none
+  fill: #62cb62
+  opacity: 0
+
+  &.green
+    opacity: 0.2
+
+// Black squares
+#black-squares
+  fill: #333
+
+// Gridlines
+#gridlines
+  stroke: #ddd
+  stroke-width: 1px
+
+// Grid numbers
+#numbers text, #letters text
+  // Chrome requires a selector like g text (instead of g) for this to work
+  dominant-baseline: central
+  font-family: 'Source Sans'
+
+#numbers
+  font-size: 11px
+  font-weight: 300
+  color: #666
+  text-anchor: start
+
+#letters
+  font-size: 24px
+  font-weight: 600
+  text-anchor: middle
+
+// My cursor
+.highlight-square, .highlight-across, .highlight-down
+  fill: none
+
+.highlight-square
+  stroke: rgb(61, 104, 184)
+
+.highlight-parallel
+  stroke: rgba(61, 104, 184, 0.55)
+
+.highlight-perpendicular
+  stroke: rgba(61, 104, 184, 0.15)
+
+// Their cursor
+#their-cursors
+  fill: none
+  opacity: 0.7
+
+// Filled squares
+#filled-squares
+  stroke: none
+  opacity: 0.4

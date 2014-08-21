@@ -78,8 +78,6 @@ class @PuzzleManager
             @g.grid.squareSize * r + 0.5,
             @g.grid.squareSize,
             @g.grid.squareSize
-          .attr
-            fill: 'black'
 
     @g.letters = {}    
     for r in [0...@p.height]
@@ -89,11 +87,6 @@ class @PuzzleManager
           (c + 0.5) * @g.grid.squareSize,
           (r + 0.55) * @g.grid.squareSize,
           ''
-        .attr
-          'font-family': 'Source Sans'
-          'font-size': 24
-          'font-weight': 600
-          'text-anchor': 'middle'
 
     # add grid lines
     for offset in [0..@p.height]
@@ -101,16 +94,7 @@ class @PuzzleManager
       @g.grid.lines.push @g.paper.path "M#{pxoff},0.5v#{@g.grid.height}"
       @g.grid.lines.push @g.paper.path "M0.5,#{pxoff}h#{@g.grid.width}"
 
-    for line in @g.grid.lines
-      line.attr
-        stroke: '#dddddd'
-        'stroke-width': 1
-
     @g.overlay = @g.paper.rect 0, 0, @g.grid.width, @g.grid.height
-      .attr
-        stroke: 'none'
-        fill: '#ffffff'
-        opacity: 0.0
     @g.overlay.toFront()
     @g.overlay.click (e) =>
       ei = ~~(e.layerY / @g.grid.squareSize)
@@ -138,10 +122,7 @@ class @PuzzleManager
       3, 3,
       @g.grid.squareSize - 5, @g.grid.squareSize - 5
     .attr
-      stroke: 'rgb(61,104,184)' 
       'stroke-width': 4
-      fill: 'none'
-      opacity: 1
 
     @g.highlights.down = @g.highlights.user['user'].clone()
     @g.highlights.across = @g.highlights.user['user'].clone() 
