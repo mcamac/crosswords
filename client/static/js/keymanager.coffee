@@ -46,10 +46,11 @@ class @KeyManager
         else
           @_key puzzleManager, seq, fNameAndArgs...
 
+    # TODO per OS
     for k in ['right', 'left', 'up', 'down']
       direction = dir[k.toUpperCase()]
       @_key puzzleManager,              k, 'moveInDirection',                                  direction, false
-      @_key puzzleManager,   'shift+' + k, 'moveToFarthestValidCellInDirection',               direction, true
+      @_key puzzleManager, 'command+' + k, 'moveToFarthestValidCellInDirection',               direction, true
       @_key puzzleManager,  'option+' + k, 'moveToBoundaryOfCurrentLetterSequenceInDirection', direction, true
 
     for char in "abcdefghijklmnopqrstuvwxyz1234567890"
