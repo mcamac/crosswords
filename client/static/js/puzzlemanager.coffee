@@ -178,10 +178,13 @@ class @PuzzleManager
       num: clueNum
 
 
-  setCurrentSquare: (value, moveForwards) ->
+  it = (desc, f) -> f.desc = desc; f
+
+
+  setCurrentSquare: it 'writes the given letter in the current cell', (value, moveForwards) ->
     @setSquare @currentCell(), value, moveForwards
 
-  flipDir: ->
+  flipDir: it 'switches direction', ->
     @g.dir = if @g.dir == dir.ACROSS then dir.DOWN else dir.ACROSS
     @_reHighlight()
 
@@ -190,10 +193,10 @@ class @PuzzleManager
     @_setHighlight 'user', cell
 
 
-  moveInDirection: (direction, remainOnThisClue) ->
+  moveInDirection: it 'moves in the given direction', (direction, remainOnThisClue) ->
     @moveToCell @p.getNextSquareInDirection @currentCell(), direction, remainOnThisClue
 
-  moveToFarthestValidCellInDirection: (direction, skipFirstBlackCells) ->
+  moveToFarthestValidCellInDirection: it 'moves to the boundary of the current clue in the given direction', (direction, skipFirstBlackCells) ->
     @moveToCell @p.getFarthestValidCellInDirection @currentCell(), direction, skipFirstBlackCells
 
   moveToClue: (clueNumber) ->
@@ -205,38 +208,39 @@ class @PuzzleManager
   moveBackwards: (remainOnThisClue) ->
     @moveInDirection dir.reflect(@g.dir), remainOnThisClue
 
-  moveToNextClue: ->
+  moveToNextClue: it 'moves to the start of the next clue', ->
     @moveToClue (@p.getNextClueNumber @currentClue(), @g.dir, 1)
-  moveToPreviousClue: ->   
+  moveToPreviousClue: it 'moves to the start of the previous clue', ->
     @moveToClue (@p.getNextClueNumber @currentClue(), @g.dir, -1)
 
-  moveToStartOfCurrentClue: ->
+  moveToStartOfCurrentClue: it 'moves to the start of the current clue', ->
     @moveToFarthestValidCellInDirection dir.reflect(@g.dir), false
-  moveToEndOfCurrentClue: ->
+  moveToEndOfCurrentClue: it 'moves to the end of the current clue', ->
     @moveToFarthestValidCellInDirection @g.dir, false
 
-  moveToFirstWhiteCell: ->
+  moveToFirstWhiteCell: it 'moves to the first white cell', ->
     @moveToCell @p.firstWhiteCell
-  moveToLastWhiteCell: ->
+  moveToLastWhiteCell: it 'moves to the last white cell', ->
     @moveToCell @p.lastWhiteCell
 
-  enterRebus: ->
+  enterRebus: it 'allows writing multiple letters in a single cell', ->
     console.error "#{arguments.callee.name} not implemented"
 
   erase: (remainOnThisClue, moveBackwards) ->
     @setCurrentSquare '', false
     if moveBackwards
       @moveBackwards remainOnThisClue
-  backspace: ->
+  backspace: it 'erases the current cell, then moves backwards', ->
     @erase true, true
-  delete: ->
+  delete: it 'erases the current cell, without moving backwards', ->
     @erase true, false
 
-  eraseToStartOfCurrentClue: ->
+  eraseToStartOfCurrentClue: it 'erases to the start of the current clue;
+    or, if the current cell is blank and at the start of a clue, erases to the start of the previous clue', ->
     skipFirstBlackCells = '' == @getSquare @currentCell()
     @moveToCell @p.getFarthestValidCellInDirection @currentCell(), dir.reflect(@g.dir), skipFirstBlackCells,
       (cell) => @setSquare cell, '', false
-  eraseToEndOfCurrentClue: ->
+  eraseToEndOfCurrentClue: it 'erases to the end of the current clue, without moving', ->
     @p.getFarthestValidCellInDirection @currentCell(), @g.dir, false,
       (cell) => @setSquare cell, '', false
 
@@ -251,15 +255,16 @@ class @PuzzleManager
       if erase
         @setSquare cell, '', false
 
-  moveToBoundaryOfCurrentLetterSequenceInDirection: (direction, skipFirstBlackCells) ->
+  moveToBoundaryOfCurrentLetterSequenceInDirection: it 'moves to the end of the sequence of letters in the given direction', (direction, skipFirstBlackCells) ->
     @moveToCell @p.getFarthestValidCellInDirection @currentCell(), direction, skipFirstBlackCells,
       @_skipAllEmptySoFar false
 
-  eraseToStartOfCurrentLetterSequence: ->
+  eraseToStartOfCurrentLetterSequence: it 'erases to the start of the current sequence of letters;
+    or, if the current cell is blank, erases to the start of the previous sequence of letters', ->
     skipFirstBlackCells = '' == @getSquare @currentCell()
     @moveToCell @p.getFarthestValidCellInDirection @currentCell(), dir.reflect(@g.dir), skipFirstBlackCells,
       @_skipAllEmptySoFar true
-  eraseToEndOfCurrentLetterSequence: ->
+  eraseToEndOfCurrentLetterSequence: it 'erases to the end of the current sequence of letters, without moving', ->
     @p.getFarthestValidCellInDirection @currentCell(), @g.dir, false,
       @_skipAllEmptySoFar true
 
