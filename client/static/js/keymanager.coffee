@@ -14,6 +14,8 @@ class @KeyManager
         'home':              'moveToFirstWhiteCell'
         'end':               'moveToLastWhiteCell'
 
+        # moveToStartOfCurrentClue
+        # moveToEndOfCurrentClue
         'command+backspace': 'eraseToStartOfCurrentClue'
         'command+delete':    'eraseToEndOfCurrentClue'
 
@@ -27,6 +29,8 @@ class @KeyManager
 
         'home':              'moveToStartOfCurrentClue'
         'end':               'moveToEndOfCurrentClue'
+        # eraseToStartOfCurrentClue
+        # eraseToEndOfCurrentClue
 
         'ctrl+backspace':    'eraseToStartOfCurrentLetterSequence'
         'ctrl+delete':       'eraseToEndOfCurrentLetterSequence'
