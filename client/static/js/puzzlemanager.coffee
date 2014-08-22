@@ -43,11 +43,6 @@ class @PuzzleManager
     @g.overlay = null
 
   render: ->
-    # Remove and reset everything
-    for line in @g.grid.lines
-      line.remove()
-    @g.grid.lines = []
-
     # Draw and format puzzle numbers
     @g.numbers = {}
     @g.blackSquares = {}
@@ -90,8 +85,8 @@ class @PuzzleManager
     for offset in [0..@p.height]
       pxoff = @g.grid.squareSize * offset + 0.5   
       @g.grid.lines.push \
-        addGridline "M#{pxoff},0.5v#{@g.grid.height}",
-        addGridline "M0.5,#{pxoff}h#{@g.grid.width}"
+        addGridline("M#{pxoff},0.5v#{@g.grid.height}"),
+        addGridline("M0.5,#{pxoff}h#{@g.grid.width}")
 
     @g.overlay = Render.rect('background') 0, 0, @g.grid.width, @g.grid.height
     @g.overlay.addEventListener 'click', (e) =>
@@ -144,6 +139,10 @@ class @PuzzleManager
     @g.highlights.user['user']?.remove()
     @g.highlights.across?.remove()
     @g.highlights.down?.remove()
+
+    for line in @g.grid.lines
+      line.remove()
+    @g.grid.lines = []
 
   flipDir: ->
     @g.dir = if @g.dir == dir.ACROSS then dir.DOWN else dir.ACROSS
