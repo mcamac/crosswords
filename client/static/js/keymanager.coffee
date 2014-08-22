@@ -7,17 +7,12 @@ class @KeyManager
         'tab':               'moveToNextClue'
         'shift+tab':         'moveToPreviousClue'
 
-        # On Mac, home = fn+left and end = fn+right. I expect that Mac users
-        # will probably ignore these bindings and instead use shift+arrow.
-        'home':              'moveToStartOfCurrentClue'
-        'end':               'moveToEndOfCurrentClue'
-
         'space':             'flipDir'
         'backspace':         'backspace'
         'delete':            'delete'
       'Mac':
-        'command+up':        'moveToFirstWhiteCell'
-        'command+down':      'moveToLastWhiteCell'
+        'home':              'moveToFirstWhiteCell'
+        'end':               'moveToLastWhiteCell'
 
         'command+backspace': 'eraseToStartOfCurrentClue'
         'command+delete':    'eraseToEndOfCurrentClue'
@@ -29,6 +24,9 @@ class @KeyManager
       'Win':
         'ctrl+home':         'moveToFirstWhiteCell'
         'ctrl+end':          'moveToLastWhiteCell'
+
+        'home':              'moveToStartOfCurrentClue'
+        'end':               'moveToEndOfCurrentClue'
 
         'ctrl+backspace':    'eraseToStartOfCurrentClue'
         'ctrl+delete':       'eraseToEndOfCurrentClue'
