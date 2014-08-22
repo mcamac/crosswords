@@ -28,8 +28,8 @@ class @KeyManager
         'home':              'moveToStartOfCurrentClue'
         'end':               'moveToEndOfCurrentClue'
 
-        'ctrl+backspace':    'eraseToStartOfCurrentClue'
-        'ctrl+delete':       'eraseToEndOfCurrentClue'
+        'ctrl+backspace':    'eraseToStartOfCurrentLetterSequence'
+        'ctrl+delete':       'eraseToEndOfCurrentLetterSequence'
 
         'insert':            'enterRebus'
 
