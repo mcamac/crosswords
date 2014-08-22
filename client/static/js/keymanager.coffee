@@ -22,6 +22,9 @@ class @KeyManager
         'command+backspace': 'eraseToStartOfCurrentClue'
         'command+delete': 'eraseToEndOfCurrentClue'
 
+        'option+backspace': 'eraseToStartOfCurrentLetterSequence'
+        'option+delete': 'eraseToEndOfCurrentLetterSequence'
+
         'shift+enter': 'enterRebus'
       'Win':
         'ctrl+home':   'moveToFirstWhiteCell'
@@ -49,6 +52,7 @@ class @KeyManager
       direction = dir[k.toUpperCase()]
       @_key puzzleManager, k, 'moveInDirection', direction, false
       @_key puzzleManager, 'shift+' + k, 'moveToFarthestValidCellInDirection', direction, true
+      @_key puzzleManager, 'option+' + k, 'moveToBoundaryOfCurrentLetterSequenceInDirection', direction, true
 
     for char in "abcdefghijklmnopqrstuvwxyz1234567890"
       @_key puzzleManager, char, 'setCurrentSquare', char.toUpperCase(), true
