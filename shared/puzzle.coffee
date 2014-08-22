@@ -69,9 +69,12 @@ class @Puzzle
   getFarthestValidCellInDirection: ([r, c], [roff, coff], skipFirstBlackCells, f) ->
     allBlackSoFar = true
     loop
-      [pr, pc] = [r, c]
       if f
-        f [r, c]
+        try
+          f [r, c]
+        catch
+          return [pr, pc]
+      [pr, pc] = [r, c]
 
       nextCell = [r += roff, c += coff]
       nextCellIsInvalid = not @isValidSquare nextCell
