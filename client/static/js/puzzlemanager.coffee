@@ -243,8 +243,9 @@ class @PuzzleManager
   _skipAllEmptySoFar: (erase) ->
     allEmptySoFar = first = true
     (cell) =>
-      if not first
+      if not first or erase
         allEmptySoFar &= currentIsEmpty = '' == @getSquare cell
+      else
         first = false
       throw true if currentIsEmpty and not allEmptySoFar
       if erase
