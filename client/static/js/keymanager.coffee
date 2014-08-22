@@ -19,8 +19,8 @@ class @KeyManager
         'command+up':  'moveToFirstWhiteCell'
         'command+down':'moveToLastWhiteCell'
 
-        'option+backspace': 'eraseToStartOfCurrentClue'
-        'option+delete': 'eraseToEndOfCurrentClue'
+        'command+backspace': 'eraseToStartOfCurrentClue'
+        'command+delete': 'eraseToEndOfCurrentClue'
 
         'shift+enter': 'enterRebus'
       'Win':
