@@ -254,15 +254,16 @@ class @PuzzleManager
       if erase
         @setSquare cell, '', false
 
-  moveToBoundaryOfCurrentLetterSequenceInDirection: (direction, skipFirstBlackCells) ->
+  moveToBoundaryOfCurrentLetterSequenceInDirection: it 'moves to the end of the sequence of letters in the given direction', (direction, skipFirstBlackCells) ->
     @moveToCell @p.getFarthestValidCellInDirection @currentCell(), direction, skipFirstBlackCells,
       @_skipAllEmptySoFar false
 
-  eraseToStartOfCurrentLetterSequence: ->
+  eraseToStartOfCurrentLetterSequence: it 'erases to the start of the current sequence of letters;
+    or, if the current cell is blank, erases to the start of the previous sequence of letters', ->
     skipFirstBlackCells = '' == @getSquare @currentCell()
     @moveToCell @p.getFarthestValidCellInDirection @currentCell(), dir.reflect(@g.dir), skipFirstBlackCells,
       @_skipAllEmptySoFar true
-  eraseToEndOfCurrentLetterSequence: ->
+  eraseToEndOfCurrentLetterSequence: it 'erases to the end of the current sequence of letters, without moving', ->
     @p.getFarthestValidCellInDirection @currentCell(), @g.dir, false,
       @_skipAllEmptySoFar true
 
