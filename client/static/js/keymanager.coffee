@@ -4,33 +4,38 @@ class @KeyManager
   bindings:
     'default':
       'all':
-        'tab':         'moveToNextClue'
-        'shift+tab':   'moveToPreviousClue'
+        'tab':               'moveToNextClue'
+        'shift+tab':         'moveToPreviousClue'
 
-        # On Mac, home = fn+left and end = fn+right. I expect that Mac users
-        # will probably ignore these bindings and instead use shift+arrow.
-        'home':        'moveToStartOfCurrentClue'
-        'end':         'moveToEndOfCurrentClue'
-
-        'space':       'flipDir'
-        'backspace':   'backspace'
-        'delete':      'delete'
+        'space':             'flipDir'
+        'backspace':         'backspace'
+        'delete':            'delete'
       'Mac':
-        'command+up':  'moveToFirstWhiteCell'
-        'command+down':'moveToLastWhiteCell'
+        'home':              'moveToFirstWhiteCell'
+        'end':               'moveToLastWhiteCell'
 
-        'option+backspace': 'eraseToStartOfCurrentClue'
-        'option+delete': 'eraseToEndOfCurrentClue'
+        # moveToStartOfCurrentClue
+        # moveToEndOfCurrentClue
+        'command+backspace': 'eraseToStartOfCurrentClue'
+        'command+delete':    'eraseToEndOfCurrentClue'
 
-        'shift+enter': 'enterRebus'
+        'option+backspace':  'eraseToStartOfCurrentLetterSequence'
+        'option+delete':     'eraseToEndOfCurrentLetterSequence'
+
+        'shift+enter':       'enterRebus'
       'Win':
-        'ctrl+home':   'moveToFirstWhiteCell'
-        'ctrl+end':    'moveToLastWhiteCell'
+        'ctrl+home':         'moveToFirstWhiteCell'
+        'ctrl+end':          'moveToLastWhiteCell'
 
-        'ctrl+backspace': 'eraseToStartOfCurrentClue'
-        'ctrl+delete': 'eraseToEndOfCurrentClue'
+        'home':              'moveToStartOfCurrentClue'
+        'end':               'moveToEndOfCurrentClue'
+        # eraseToStartOfCurrentClue
+        # eraseToEndOfCurrentClue
 
-        'insert':      'enterRebus'
+        'ctrl+backspace':    'eraseToStartOfCurrentLetterSequence'
+        'ctrl+delete':       'eraseToEndOfCurrentLetterSequence'
+
+        'insert':            'enterRebus'
 
   registerBindings: (puzzleManager) ->
     relevantDefaultBindingDomains = ['all']
@@ -45,9 +50,12 @@ class @KeyManager
         else
           @_key puzzleManager, seq, fNameAndArgs...
 
+    # TODO per OS
     for k in ['right', 'left', 'up', 'down']
-      @_key puzzleManager, k, 'moveInDirection', dir[k.toUpperCase()], false
-      @_key puzzleManager, 'shift+' + k, 'moveToFarthestValidCellInDirection', dir[k.toUpperCase()], true
+      direction = dir[k.toUpperCase()]
+      @_key puzzleManager,              k, 'moveInDirection',                                  direction, false
+      @_key puzzleManager, 'command+' + k, 'moveToFarthestValidCellInDirection',               direction, true
+      @_key puzzleManager,  'option+' + k, 'moveToBoundaryOfCurrentLetterSequenceInDirection', direction, true
 
     for char in "abcdefghijklmnopqrstuvwxyz1234567890"
       @_key puzzleManager, char, 'setCurrentSquare', char.toUpperCase(), true

@@ -244,6 +244,29 @@ class @PuzzleManager
     @p.getFarthestValidCellInDirection @currentCell(), @g.dir, false,
       (cell) => @setSquare cell, '', false
 
+  _skipAllEmptySoFar: (erase) ->
+    allEmptySoFar = first = true
+    (cell) =>
+      if not first
+        allEmptySoFar &= currentIsEmpty = '' == @getSquare cell
+        first = false
+      throw true if currentIsEmpty and not allEmptySoFar
+      if erase
+        @setSquare cell, '', false
+
+  moveToBoundaryOfCurrentLetterSequenceInDirection: (direction, skipFirstBlackCells) ->
+    @moveToCell @p.getFarthestValidCellInDirection @currentCell(), direction, skipFirstBlackCells,
+      @_skipAllEmptySoFar false
+
+  eraseToStartOfCurrentLetterSequence: ->
+    skipFirstBlackCells = '' == @getSquare @currentCell()
+    @moveToCell @p.getFarthestValidCellInDirection @currentCell(), dir.reflect(@g.dir), skipFirstBlackCells,
+      @_skipAllEmptySoFar true
+  eraseToEndOfCurrentLetterSequence: ->
+    @p.getFarthestValidCellInDirection @currentCell(), @g.dir, false,
+      @_skipAllEmptySoFar true
+
+
   _setHighlight: (id, [r, c]) ->
     if not @p.isValidSquare [r, c]
       return
