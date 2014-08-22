@@ -3,3 +3,14 @@ robots.txt
 static/js/room.js
 static/js/oldroom.js
 *.pyc
+scraper
+node_modules
+
+*/app.js
+client/static/js/*.js
+shared/room.js
+*/player.js
+Gruntfile.js
+*.map
+
+client/static/css/room.css

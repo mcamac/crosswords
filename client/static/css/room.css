@@ -1,0 +1,37 @@
+@import url(fonts.css);
+body, h1, h2, h3, h4, h5, h6 {
+  font-family: "Source Sans", sans-serif; }
+
+.game-area {
+  margin-top: -20px;
+  max-width: 1240px; }
+
+.clue-list {
+  font-size: 13px;
+  height: 200px;
+  overflow: scroll;
+  margin-left: 0;
+  padding-left: 2em;
+  list-style-position: outside; }
+  .clue-list .active {
+    background-color: steelblue; }
+
+#members_box {
+  height: 250px; }
+
+#chat_box {
+  background-color: #fafafa;
+  height: 275px; }
+
+#crossword_canvas {
+  margin: 0px 10px 0; }
+
+.timer {
+  text-align: right; }
+
+svg {
+  shape-rendering: geometricPrecision; }
+
+ul.puzzle-list {
+  height: 400px;
+  overflow: scroll; }

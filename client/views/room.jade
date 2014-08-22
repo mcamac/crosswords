@@ -1,0 +1,88 @@
+doctype html
+html
+  head
+    script(src='/socket.io/socket.io.js')
+    script(src='/static/js/vendor/vue.js')
+    script(src='/static/js/vendor/jquery.js')
+    script(src='/static/js/vendor/keymaster.min.js')
+    script(src='/static/js/vendor/foundation.min.js')
+
+    script(src='/static/js/all.js')
+
+    link(rel='stylesheet', type='text/css', href='/static/css/vendor/foundation.css')
+
+    link(rel='stylesheet', type='text/css', href='/static/css/room.css')
+    link(rel='stylesheet', type='text/css', href='/static/css/svg.css')
+
+    title Crosswords
+  body
+    #content
+      nav.top-bar
+        ul.title-area
+          li.name
+            h1
+              a(href='#') Crosswords
+        section.top-bar-section
+          ul.left
+            li.divider
+            li: a#browse_puzzles_a.reveal-link(href='#', data-reveal-id='browse_puzzles_modal') Browse Puzzles
+            li: a(href='#') Room Options
+            li: a(a href='#') Help
+            li: a(a href='#') Constructor
+
+      main.row.game-area
+        //- Left
+        section.large-3.columns
+          h5.puzzle-title NY Times, Monday, Jun 3
+
+          h6 Players
+          #players
+            ul
+              li(v-repeat="users")
+                span.member(style="border-color: {{ color }}") {{ username }}
+
+          h6 Chat
+          #chat
+          input#chat_input(type="text")
+
+        //- Middle
+        section.large-6.columns.crossword-column
+          .row
+            .small-10.columns
+              h5
+                p#current-clue
+                  span.dir-number {{ currentClue.dir | dir-symbol }} {{ currentClue.num }}
+                  span.text {{ currentClue.text }}
+            .small-2.columns.timer
+              h5#timer 0:00
+                small.deciseconds .0
+
+            #crossword-container
+              svg#crossword(style="overflow: hidden; position: relative;")
+                //- Back
+                g#black-squares
+                g#filled-squares
+                g#cursor
+                g#their-cursors
+                g#numbers
+                g#letters
+                g#gridlines
+                g#background
+                //- Front
+
+        //- Right
+        section.large-3.columns.clue-area
+          h5 Across
+          ol.clue-list(v-component="clue-list", v-with="clues: clues.across, current: currentClue")
+          h5 Down
+          ol.clue-list(v-component="clue-list", v-with="clues: clues.down, current: currentClue")
+
+      dialog#browse_puzzles_modal.reveal-modal
+        h3 Browse Puzzles (# puzzles)
+        ul.puzzle-list
+        a.close-reveal-modal &#215;
+
+    script(type='x/template', id='clue-li').
+      <li class="li-clue {{ (num === current.num && dir == current.dir) ? 'active': '' }}"
+           v-repeat="clues" value="{{ num }}"> {{ text }}</li>
+
