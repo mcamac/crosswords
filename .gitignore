@@ -5,6 +5,7 @@ static/js/oldroom.js
 *.pyc
 scraper
 node_modules
+.sass-cache
 
 */app.js
 client/static/js/*.js
