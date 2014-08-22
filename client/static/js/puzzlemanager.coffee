@@ -43,11 +43,6 @@ class @PuzzleManager
     @g.overlay = null
 
   render: ->
-    # Remove and reset everything
-    for line in @g.grid.lines
-      line.remove()
-    @g.grid.lines = []
-
     # Draw and format puzzle numbers
     @g.numbers = {}
     @g.blackSquares = {}
@@ -144,6 +139,10 @@ class @PuzzleManager
     @g.highlights.user['user']?.remove()
     @g.highlights.across?.remove()
     @g.highlights.down?.remove()
+
+    for line in @g.grid.lines
+      line.remove()
+    @g.grid.lines = []
 
   flipDir: ->
     @g.dir = if @g.dir == dir.ACROSS then dir.DOWN else dir.ACROSS
