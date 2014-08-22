@@ -90,8 +90,8 @@ class @PuzzleManager
     for offset in [0..@p.height]
       pxoff = @g.grid.squareSize * offset + 0.5   
       @g.grid.lines.push \
-        addGridline "M#{pxoff},0.5v#{@g.grid.height}",
-        addGridline "M0.5,#{pxoff}h#{@g.grid.width}"
+        addGridline("M#{pxoff},0.5v#{@g.grid.height}"),
+        addGridline("M0.5,#{pxoff}h#{@g.grid.width}")
 
     @g.overlay = Render.rect('background') 0, 0, @g.grid.width, @g.grid.height
     @g.overlay.addEventListener 'click', (e) =>
