@@ -4,6 +4,10 @@ class @KeyManager
   bindings:
     'default':
       'all':
+        'alphanum':          ['setCurrentSquare', true]
+
+        'arrow':             ['moveInDirection', false]
+
         'tab':               'moveToNextClue'
         'shift+tab':         'moveToPreviousClue'
 
@@ -14,11 +18,13 @@ class @KeyManager
         'home':              'moveToFirstWhiteCell'
         'end':               'moveToLastWhiteCell'
 
+        'command+arrow':     ['moveToFarthestValidCellInDirection', true]
         # moveToStartOfCurrentClue
         # moveToEndOfCurrentClue
         'command+backspace': 'eraseToStartOfCurrentClue'
         'command+delete':    'eraseToEndOfCurrentClue'
 
+        'option+arrow':      ['moveToBoundaryOfCurrentLetterSequenceInDirection', true]
         'option+backspace':  'eraseToStartOfCurrentLetterSequence'
         'option+delete':     'eraseToEndOfCurrentLetterSequence'
 
@@ -32,10 +38,43 @@ class @KeyManager
         # eraseToStartOfCurrentClue
         # eraseToEndOfCurrentClue
 
+        'ctrl+arrow':        ['moveToBoundaryOfCurrentLetterSequenceInDirection', true]
         'ctrl+backspace':    'eraseToStartOfCurrentLetterSequence'
         'ctrl+delete':       'eraseToEndOfCurrentLetterSequence'
 
         'insert':            'enterRebus'
+
+  aliases:
+    'alphanum':
+      'substitutes': 'abcdefghijklmnopqrstuvwxyz1234567890'.split ''
+      'prependArgs': (letter) -> [letter.toUpperCase()]
+    'arrow':
+      'substitutes': ['right', 'left', 'up', 'down']
+      'prependArgs': (direction) -> [dir[direction.toUpperCase()]]
+
+  constructor: ->
+    @expandAliases()
+
+  expandAliases: ->
+    aliasPattern = new RegExp '\\b(?:' + Object.keys(@aliases).join('|') + ')\\b'
+
+    for os, osBindings of @bindings.default
+      for seq, fNameAndArgs of osBindings
+        matches = aliasPattern.exec seq
+
+        if matches?
+          if typeof fNameAndArgs is 'string'
+            fNameAndArgs = [fNameAndArgs]
+          [fName, fArgs...] = fNameAndArgs
+
+          {substitutes, prependArgs} = @aliases[alias = matches[0]]
+
+          for substitute in substitutes
+            substitutedSeq = seq.replace aliasPattern, substitute
+            osBindings[substitutedSeq] = [fName, (prependArgs substitute)..., fArgs...]
+
+          delete osBindings[seq]
+
 
   registerBindings: (puzzleManager) ->
     relevantDefaultBindingDomains = ['all']
@@ -49,16 +88,6 @@ class @KeyManager
           @_key puzzleManager, seq, fNameAndArgs
         else
           @_key puzzleManager, seq, fNameAndArgs...
-
-    # TODO per OS
-    for k in ['right', 'left', 'up', 'down']
-      direction = dir[k.toUpperCase()]
-      @_key puzzleManager,              k, 'moveInDirection',                                  direction, false
-      @_key puzzleManager, 'command+' + k, 'moveToFarthestValidCellInDirection',               direction, true
-      @_key puzzleManager,  'option+' + k, 'moveToBoundaryOfCurrentLetterSequenceInDirection', direction, true
-
-    for char in "abcdefghijklmnopqrstuvwxyz1234567890"
-      @_key puzzleManager, char, 'setCurrentSquare', char.toUpperCase(), true
 
     return
 
