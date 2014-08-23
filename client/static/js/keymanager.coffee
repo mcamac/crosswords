@@ -37,6 +37,14 @@ class @KeyManager
 
         'insert':            'enterRebus'
 
+  aliases:
+    'alphanum':
+      'substitutes': 'abcdefghijklmnopqrstuvwxyz1234567890'.split ''
+      'prependArgs': (letter) -> [letter.toUpperCase()]
+    'arrow':
+      'substitutes': ['right', 'left', 'up', 'down']
+      'prependArgs': (direction) -> [dir[direction.toUpperCase()]]
+
   registerBindings: (puzzleManager) ->
     relevantDefaultBindingDomains = ['all']
     for os in @oses
