@@ -4,7 +4,7 @@ var concat = require('gulp-concat');
 var sass = require('gulp-ruby-sass');
 
 var paths = {
-  scripts: ['client/static/js/**/*.coffee', 'shared/**/*.coffee'],
+  scripts: ['shared/**/*.coffee', 'client/static/js/**/*.coffee'],
   styles: ['client/static/css/**/*.sass']
 };
 
