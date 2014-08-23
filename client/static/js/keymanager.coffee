@@ -45,6 +45,30 @@ class @KeyManager
       'substitutes': ['right', 'left', 'up', 'down']
       'prependArgs': (direction) -> [dir[direction.toUpperCase()]]
 
+  constructor: ->
+    @expandAliases()
+
+  expandAliases: ->
+    aliasPattern = new RegExp '\\b(?:' + Object.keys(@aliases).join('|') + ')\\b'
+
+    for os, osBindings of @bindings.default
+      for seq, fNameAndArgs of osBindings
+        matches = aliasPattern.exec seq
+
+        if matches?
+          if typeof fNameAndArgs is 'string'
+            fNameAndArgs = [fNameAndArgs]
+          [fName, fArgs...] = fNameAndArgs
+
+          {substitutes, prependArgs} = @aliases[alias = matches[0]]
+
+          for substitute in substitutes
+            substitutedSeq = seq.replace aliasPattern, substitute
+            osBindings[substitutedSeq] = [fName, (prependArgs substitute)..., fArgs...]
+
+          delete osBindings[seq]
+
+
   registerBindings: (puzzleManager) ->
     relevantDefaultBindingDomains = ['all']
     for os in @oses
