@@ -5,14 +5,14 @@ var sass = require('gulp-ruby-sass');
 
 var paths = {
   scripts: ['shared/**/*.coffee', 'client/static/js/**/*.coffee'],
-  styles: ['client/static/css/**/*.sass']
+  styles: ['client/static/css/**/*.sass'],
 };
 
 gulp.task('scripts', function () {
   return gulp.src(paths.scripts)
     .pipe(concat('all.coffee'))
     .pipe(coffee())
-    .pipe(gulp.dest('client/static/js'))
+    .pipe(gulp.dest('client/static/js'));
 });
 
 gulp.task('sass', function () {
