@@ -33,6 +33,7 @@ class @KeyManager
         'ctrl+home':         'moveToFirstWhiteCell'
         'ctrl+end':          'moveToLastWhiteCell'
 
+        # moveToFarthestValidCellInDirection
         'home':              'moveToStartOfCurrentClue'
         'end':               'moveToEndOfCurrentClue'
         # eraseToStartOfCurrentClue
