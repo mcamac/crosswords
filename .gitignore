@@ -6,6 +6,7 @@ static/js/oldroom.js
 scraper
 node_modules
 .sass-cache
+client/static/css/*.css
 
 */app.js
 client/static/js/*.js
