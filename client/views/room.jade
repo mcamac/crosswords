@@ -73,9 +73,9 @@ html
         //- Right
         section.large-3.columns.clue-area
           h5 Across
-          ol.clue-list(v-component="clue-list", v-with="clues: clues.across, current: currentClue")
+          ol.clue-list(v-component="clue-list", v-with="str: 'across', clues: clues.across, current: currentClue")
           h5 Down
-          ol.clue-list(v-component="clue-list", v-with="clues: clues.down, current: currentClue")
+          ol.clue-list(v-component="clue-list", v-with="str: 'down', clues: clues.down, current: currentClue")
 
       dialog#browse_puzzles_modal.reveal-modal
         h3 Browse Puzzles (# puzzles)
@@ -83,6 +83,6 @@ html
         a.close-reveal-modal &#215;
 
     script(type='x/template', id='clue-li').
-      <li class="li-clue {{ (num === current.num && dir == current.dir) ? 'active': '' }}"
+      <li class="li-clue {{ (num === current.clueNumber[str]) ? ((current.direction === str) ? 'active' : 'inactive'): '' }}"
            v-repeat="clues" value="{{ num }}"> {{ text }}</li>
 
