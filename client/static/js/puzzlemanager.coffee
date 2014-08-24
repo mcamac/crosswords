@@ -116,13 +116,13 @@ class @PuzzleManager
     @g.highlights.user['user'] = addCursor \
       3, 3,
       @g.grid.squareSize - 5, @g.grid.squareSize - 5,
-      'class': 'highlight-square'
+      'id': 'highlight-square'
       'stroke-width': 4
     @g.highlights.down = addCursor 0, 0, 0, 0,
-      'class': 'highlight-down'
+      'id': 'highlight-down'
       'stroke-width': 4
     @g.highlights.across = addCursor 0, 0, 0, 0,
-      'class': 'highlight-across'
+      'id': 'highlight-across'
       'stroke-width': 4
 
     console.log 'rendered'
@@ -281,6 +281,9 @@ class @PuzzleManager
 
     @_reHighlight()
 
+  _highlightClass: (direction) ->
+    if @g.dir == direction then 'highlight-parallel' else 'highlight-perpendicular'
+
   _reHighlight: ->
     # update clue text
     @ui.currentClue = @currentClueObj()
@@ -293,13 +296,11 @@ class @PuzzleManager
       y: @g.grid.squareSize * sr + 3
       width: @g.grid.squareSize - 5
       height: @g.grid.squareSize * (er - sr + 1) - 5
-    @g.highlights.down.classList[if @g.dir == dir.DOWN then 'add' else 'remove'] 'highlight-parallel'
-    @g.highlights.down.classList[if @g.dir == dir.DOWN then 'remove' else 'add'] 'highlight-perpendicular'
+    @g.highlights.down.className.baseVal = @_highlightClass dir.DOWN
 
     Render._setAttributes @g.highlights.across,
       x: @g.grid.squareSize * sc + 3
       y: @g.grid.squareSize * @g.ci + 3
       width: @g.grid.squareSize * (ec - sc + 1) - 5
       height: @g.grid.squareSize - 5 
-    @g.highlights.across.classList[if @g.dir == dir.ACROSS then 'add' else 'remove'] 'highlight-parallel'
-    @g.highlights.across.classList[if @g.dir == dir.ACROSS then 'remove' else 'add'] 'highlight-perpendicular'
+    @g.highlights.across.className.baseVal = @_highlightClass dir.ACROSS
