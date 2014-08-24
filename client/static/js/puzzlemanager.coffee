@@ -24,12 +24,14 @@ class @PuzzleManager
     # settings object (for constants)
     @c = {}
 
+    defaultSquareSize = 36
+    defaultWidth = defaultSquareSize * 15
     @g.grid =
       lines: []
-      height: 600
-      width: 600
+      squareSize: defaultSquareSize
+      height: defaultWidth
+      width: defaultWidth
       margin: 2
-      squareSize: 600 / 15.0
 
     @g.highlights =
       across: null
