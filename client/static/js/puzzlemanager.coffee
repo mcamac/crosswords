@@ -70,15 +70,15 @@ class @PuzzleManager
             @p.gridNumbers[r][c]
         if @p.grid[r][c] == '_'
           @g.blackSquares[r][c] = addBlackSquare \
-            @g.grid.squareSize * c + 0.5,
-            @g.grid.squareSize * r + 0.5,
-            @g.grid.squareSize,
-            @g.grid.squareSize
+            @g.grid.squareSize * c + 1,
+            @g.grid.squareSize * r + 1,
+            @g.grid.squareSize - 1,
+            @g.grid.squareSize - 1
         @g.filledSquares[r][c] = addFilledSquare \
-          @g.grid.squareSize * c,
-          @g.grid.squareSize * r,
-          @g.grid.squareSize,
-          @g.grid.squareSize
+          @g.grid.squareSize * c + 1,
+          @g.grid.squareSize * r + 1,
+          @g.grid.squareSize - 1,
+          @g.grid.squareSize - 1
 
     @g.letters = {}
 
