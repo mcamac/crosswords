@@ -24,6 +24,9 @@ class @PuzzleManager
     # settings object (for constants)
     @c = {}
 
+    @user =
+      color: 'rgb(232,157, 52)'
+
     defaultSquareSize = 36
     defaultWidth = defaultSquareSize * 15
     @g.grid =
@@ -163,11 +166,19 @@ class @PuzzleManager
   getSquare: ([r, c]) ->
     @g.letters[r][c].firstChild.textContent
 
-  setSquare: ([r, c], value, moveForwards) ->
-    @g.letters[r][c].firstChild.textContent = value
+  setSquare: (cell, value, moveForwards) ->
+    @_setUserSquare @user, cell, value
 
     if moveForwards
       @moveForwards true
+
+  _setUserSquare: (user, [r, c], value) ->
+    @g.letters[r][c].firstChild.textContent = value
+    color = if value then user.color else 'none'
+    @_setSquareColor color, [r, c]
+
+  _setSquareColor: (color, [r, c]) ->
+    @g.filledSquares[r][c].setAttribute 'fill', color
 
   currentCell: ->
     [@g.ci, @g.cj]
