@@ -32,8 +32,16 @@ $ ->
   uiState = new Vue({
     el: '#content',
     data:
-      clues: { across: [], down: [] },
+      clues: { across: [], down: [] }
+      cluesObj: {}
       currentClue: {}
+    computed:
+      currentClueDirection: ->
+        @currentClue.direction
+      currentClueNumber: ->
+        @currentClue.clueNumber?[@currentClueDirection]
+      currentClueText: ->
+        @cluesObj?[@currentClueDirection]?[@currentClueNumber]
   })
 
   console.log 'UI components initialized'
