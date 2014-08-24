@@ -51,8 +51,8 @@ html
             .small-10.columns
               h5
                 p#current-clue
-                  span.dir-number {{ currentClue.dir | dir-symbol }} {{ currentClue.num }}
-                  span.text {{ currentClue.text }}
+                  span.dir-number {{ currentClueDirection | dir-symbol }} {{ currentClueNumber }}
+                  span.text {{ currentClueText }}
             .small-2.columns.timer
               h5#timer 0:00
                 small.deciseconds .0

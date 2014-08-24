@@ -111,6 +111,7 @@ class @PuzzleManager
     downClues = ({ num: parseInt(num), text: clue, dir: 'down' } for num, clue of @p.clues.down)
     @ui.clues.across = acrossClues
     @ui.clues.down = downClues
+    @ui.cluesObj = @p.clues
 
     # initialize user highlights
     addCursor = Render.rect 'cursor'
@@ -164,20 +165,14 @@ class @PuzzleManager
   currentCell: ->
     [@g.ci, @g.cj]
 
-  currentClue: ->
-    @p.getClueNumberForCell @currentCell(), @g.dir
+  currentClue: (direction = @g.dir) ->
+    @p.getClueNumberForCell @currentCell(), direction
 
   currentClueObj: ->
-    clueNum = @currentClue()
-    if @g.dir == dir.DOWN
-      dir: 'down'
-      text: @p.clues.down[clueNum]
-      num: clueNum
-    else
-      dir: 'across'
-      text: @p.clues.across[clueNum]
-      num: clueNum
-
+    direction: if @g.dir == dir.DOWN then 'down' else 'across'
+    clueNumber:
+      down: @currentClue dir.DOWN
+      across: @currentClue dir.ACROSS
 
   it = (desc, f) -> f.desc = desc; f
 
