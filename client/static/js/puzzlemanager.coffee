@@ -48,14 +48,17 @@ class @PuzzleManager
     # Draw and format puzzle numbers
     @g.numbers = {}
     @g.blackSquares = {}
+    @g.filledSquares = {}
     currentNumber = 1
 
     addNumber = Render.text 'numbers'
     addBlackSquare = Render.rect 'black-squares'
+    addFilledSquare = Render.rect 'filled-squares'
 
     for r in [0...@p.height]
       @g.numbers[r] = {}
       @g.blackSquares[r] = {}
+      @g.filledSquares[r] = {}
       for c in [0...@p.width]
         if @p.gridNumbers[r][c]
           @g.numbers[r][c] = addNumber \
@@ -68,6 +71,11 @@ class @PuzzleManager
             @g.grid.squareSize * r + 0.5,
             @g.grid.squareSize,
             @g.grid.squareSize
+        @g.filledSquares[r][c] = addFilledSquare \
+          @g.grid.squareSize * c,
+          @g.grid.squareSize * r,
+          @g.grid.squareSize,
+          @g.grid.squareSize
 
     @g.letters = {}
 
