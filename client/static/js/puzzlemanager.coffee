@@ -15,8 +15,7 @@ class @PuzzleManager
     if options.puzzle
       @p = options.puzzle
 
-    @keyManager = new KeyManager
-    @keyManager.registerBindings @
+    @keyManager = new KeyManager @
 
     # graphics object
     @g = {}
