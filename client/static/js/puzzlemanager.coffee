@@ -192,7 +192,11 @@ class @PuzzleManager
       down: @currentClue dir.DOWN
       across: @currentClue dir.ACROSS
 
-  it = (desc, f) -> f.desc = desc; f
+  it = -> new Action arguments... # probably a bad idea
+  class Action # suit
+    constructor: (desc, f) ->
+      f.desc = desc
+      return f
 
 
   setCurrentSquare: it 'writes the given letter in the current cell', (value, moveForwards) ->
