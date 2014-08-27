@@ -24,14 +24,15 @@ class @Puzzle
 
     currentNumber = 1
     @_loopGrid ([r, c]) ->
-      if @isValidSquare([r, c]) and (not @isValidSquare([r - 1, c]) or
-                                 not @isValidSquare([r, c - 1]))
-        @gridNumbersRev[currentNumber] = [r, c]
-        @gridNumbers[r][c] = currentNumber++
+      if @isWhite [r, c]
+        unless @isValidSquare([r - 1, c]) and
+               @isValidSquare([r, c - 1])
+          @gridNumbersRev[currentNumber] = [r, c]
+          @gridNumbers[r][c] = currentNumber++
       return
 
-    @firstWhiteCell = @_loopGrid @isValidSquare, false
-    @lastWhiteCell = @_loopGrid @isValidSquare, true
+    @firstWhiteCell = @_loopGrid @isWhite, false
+    @lastWhiteCell  = @_loopGrid @isWhite, true
 
   getNextClueNumber: (clueNumber, direction, offset) ->
     dirKey = if direction == dir.ACROSS then 'across' else 'down'
@@ -66,6 +67,7 @@ class @Puzzle
     [sr, sc] = @getFarthestValidCellInDirection [r, c], dir.reflect(direction), false
     return @gridNumbers[sr][sc]
 
+  # Careful! this may return an invalid cell
   getFarthestValidCellInDirection: ([r, c], [roff, coff], skipFirstBlackCells, f) ->
     allBlackSoFar = true
     loop

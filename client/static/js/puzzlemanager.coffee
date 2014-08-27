@@ -140,7 +140,7 @@ class @PuzzleManager
 
     console.log 'rendered'
 
-    @moveToClue 1
+    @moveToFirstWhiteCell()
 
   renderKeyBindings: (bindings) ->
     html = ''
