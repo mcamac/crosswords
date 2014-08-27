@@ -13,13 +13,18 @@ $ ->
   }
 
 
-  ClueList = Vue.extend {
-    template: '#clue-li',
+  ClueList = Vue.extend
+    template: '#clue-li'
     data: {
       dir: 'across',
       clues: { across: [], down: [] }
     }
-  }
+    ready: ->
+      @$watch 'current', (current) ->
+        clueNumber = current.clueNumber[@.str]
+        listOffset = $(@$el).scrollTop()
+        activeCluePosition = $(@$el).find("li[value=#{clueNumber}]").position().top
+        $(@$el).stop().animate(scrollTop: activeCluePosition + listOffset, 50)
 
   clueSymbols =
     down: '▼'
