@@ -81,5 +81,10 @@ io.sockets.on 'connection', (socket) ->
   socket.on 'join room', ({roomName, userId}) ->
     console.log roomName, userId
 
+  socket.on 'chat message', (message) ->
+    io.to(socket.room.name).emit 'chat message',
+      user: socket.user.name,
+      text: message
+
   socket.on 'disconnect', ->
     console.log 'disconn'

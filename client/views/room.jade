@@ -42,8 +42,13 @@ html
                 span.member(style="border-color: {{ color }}") {{ username }}
 
           h6 Chat
-          #chat
-          input#chat_input(type="text")
+          #chat_box
+            #chat
+              p(v-repeat="messages")
+                span.username
+                  b {{ user }}:
+                {{ text }}
+            input#chat_input(type="text", v-model="text", v-on="keyup:onEnter | key enter")
 
         //- Middle
         section.large-6.columns.crossword-column

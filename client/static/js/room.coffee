@@ -1,4 +1,9 @@
 $ ->
+  SOCKET_URL = location.origin.replace(/^http/, 'ws')
+
+  CROSSWORD_CANVAS_EL = '#crossword-container'
+
+  socket = io.connect SOCKET_URL
   # Vue components
 
   membersBox = new Vue {
@@ -11,6 +16,16 @@ $ ->
       }]
     }
   }
+
+  ChatBox = new Vue
+    el: '#chat_box'
+    data:
+      messages: []
+      text: "chat here"
+    methods:
+      onEnter: ->
+        socket.emit 'chat message', @text
+        @text = ''
 
 
   ClueList = Vue.extend
@@ -51,13 +66,6 @@ $ ->
 
   console.log 'UI components initialized'
 
-
-  SOCKET_URL = location.origin.replace(/^http/, 'ws')
-
-  CROSSWORD_CANVAS_EL = '#crossword-container'
-
-  socket = io.connect SOCKET_URL
-
   roomName = window.location.pathname.substr 1 + window.location.pathname.lastIndexOf '/'
   console.log 'roomName', roomName
 
@@ -66,6 +74,9 @@ $ ->
     socket.emit 'join room', 
       roomName: roomName
       userId: 'foo'
+
+  socket.on 'chat message', (message) ->
+    ChatBox.messages.push message
 
   puzzleManager = new PuzzleManager {
     elements:
