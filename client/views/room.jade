@@ -48,7 +48,7 @@ html
                 span.username
                   b {{ user }}:
                 {{ text }}
-            input#chat_input(type="text", v-model="text", v-on="keyup:onEnter | key enter")
+            input#chat_input(type="text", v-model="text", v-on="keyup:onEnter | key enter", placeholder="Chat here.")
 
         //- Middle
         section.large-6.columns.crossword-column

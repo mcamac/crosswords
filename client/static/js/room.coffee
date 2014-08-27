@@ -21,7 +21,7 @@ $ ->
     el: '#chat_box'
     data:
       messages: []
-      text: "chat here"
+      text: ""
     methods:
       onEnter: ->
         socket.emit 'chat message', @text
