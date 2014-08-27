@@ -77,7 +77,12 @@ html
           h5 Down
           ol.clue-list(v-component="clue-list", v-with="str: 'down', clues: clues.down, current: currentClue")
 
-      dialog#browse_puzzles_modal.reveal-modal
+      #key-bindings-dialog.reveal-modal
+        h3 Keyboard shortcuts
+        #key-bindings
+        a.close-reveal-modal(onclick='this.parentNode.close()') ×
+
+      #browse_puzzles_modal.reveal-modal
         h3 Browse Puzzles (# puzzles)
         ul.puzzle-list
         a.close-reveal-modal &#215;
