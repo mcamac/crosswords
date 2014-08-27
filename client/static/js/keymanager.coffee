@@ -14,6 +14,8 @@ class @KeyManager
         'space':             'flipDir'
         'backspace':         'backspace'
         'delete':            'delete'
+
+        'shift+/':           'help'
       'Mac':
         'home':              'moveToFirstWhiteCell'
         'end':               'moveToLastWhiteCell'
@@ -53,42 +55,45 @@ class @KeyManager
       'substitutes': ['right', 'left', 'up', 'down']
       'prependArgs': (direction) -> [dir[direction.toUpperCase()]]
 
-  constructor: ->
+  constructor: (puzzleManager) ->
+    @setRelevantBindings()
+    puzzleManager.renderKeyBindings @relevantBindings
     @expandAliases()
+    @registerBindings puzzleManager
+
+  setRelevantBindings: ->
+    @relevantDefaultBindingDomains = ['all']
+    for os in @oses
+      if ~window.navigator.appVersion.indexOf os
+        @relevantDefaultBindingDomains.push os
+
+    @relevantBindings = {}
+    for bd in @relevantDefaultBindingDomains
+      for seq, fNameAndArgs of @bindings.default[bd]
+        if typeof fNameAndArgs is 'string'
+          fNameAndArgs = [fNameAndArgs]
+        @relevantBindings[seq] = fNameAndArgs
 
   expandAliases: ->
     aliasPattern = new RegExp '\\b(?:' + Object.keys(@aliases).join('|') + ')\\b'
 
-    for os, osBindings of @bindings.default
-      for seq, fNameAndArgs of osBindings
-        matches = aliasPattern.exec seq
+    for seq, fNameAndArgs of @relevantBindings
+      matches = aliasPattern.exec seq
 
-        if matches?
-          if typeof fNameAndArgs is 'string'
-            fNameAndArgs = [fNameAndArgs]
-          [fName, fArgs...] = fNameAndArgs
+      if matches?
+        [fName, fArgs...] = fNameAndArgs
 
-          {substitutes, prependArgs} = @aliases[alias = matches[0]]
+        {substitutes, prependArgs} = @aliases[alias = matches[0]]
 
-          for substitute in substitutes
-            substitutedSeq = seq.replace aliasPattern, substitute
-            osBindings[substitutedSeq] = [fName, (prependArgs substitute)..., fArgs...]
+        for substitute in substitutes
+          substitutedSeq = seq.replace aliasPattern, substitute
+          @relevantBindings[substitutedSeq] = [fName, (prependArgs substitute)..., fArgs...]
 
-          delete osBindings[seq]
-
+        delete @relevantBindings[seq]
 
   registerBindings: (puzzleManager) ->
-    relevantDefaultBindingDomains = ['all']
-    for os in @oses
-      if ~window.navigator.appVersion.indexOf os
-        relevantDefaultBindingDomains.push os
-
-    for bd in relevantDefaultBindingDomains
-      for seq, fNameAndArgs of @bindings.default[bd]
-        if typeof fNameAndArgs is 'string'
-          @_key puzzleManager, seq, fNameAndArgs
-        else
-          @_key puzzleManager, seq, fNameAndArgs...
+    for seq, fNameAndArgs of @relevantBindings
+      @_key puzzleManager, seq, fNameAndArgs...
 
     return
 
