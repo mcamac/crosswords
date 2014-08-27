@@ -201,6 +201,8 @@ class @PuzzleManager
       return f
 
 
+  help: it 'shows this list of keyboard shortcuts', 'misc', false, ->
+
   setCurrentSquare: it 'writes the given letter in the current cell', 'cell', true, (value, moveForwards) ->
     @setSquare @currentCell(), value, moveForwards
 

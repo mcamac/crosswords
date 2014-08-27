@@ -14,6 +14,8 @@ class @KeyManager
         'space':             'flipDir'
         'backspace':         'backspace'
         'delete':            'delete'
+
+        'shift+/':           'help'
       'Mac':
         'home':              'moveToFirstWhiteCell'
         'end':               'moveToLastWhiteCell'
