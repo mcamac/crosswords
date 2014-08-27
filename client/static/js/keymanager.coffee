@@ -57,6 +57,7 @@ class @KeyManager
 
   constructor: (puzzleManager) ->
     @setRelevantBindings()
+    puzzleManager.renderKeyBindings @relevantBindings
     @expandAliases()
     @registerBindings puzzleManager
 

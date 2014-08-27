@@ -142,6 +142,31 @@ class @PuzzleManager
 
     @moveToClue 1
 
+  renderKeyBindings: (bindings) ->
+    html = ''
+
+    categories = {}
+    categoryOrder = ['basic', 'cell', 'misc', 'clue', 'word', 'puzzle']
+    for category in categoryOrder
+      categories[category] = []
+
+    for seq, [fName, ...] of bindings
+      f = @[fName]
+      seqAndF = [seq, f]
+      categories[f.category].push seqAndF
+      categories['basic'].push seqAndF if f.basic
+
+    for category in categoryOrder
+      html += '<h5>' + category + '</h5><table>'
+      html += '<tr><th class="c1">Shortcut</th><th class="c3">Description</th></tr>'
+      for [seq, f] in categories[category]
+        kbd = '<kbd>' + seq + '</kbd>'
+        html += '<tr><td class="c1">' + kbd + '</td><td class="c3">' + f.desc + '</td></tr>'
+      html += '</table>'
+
+    el = document.getElementById 'key-bindings'
+    el.innerHTML = html
+
   resetGrid: ->
     for r in [0...@p.height]
       for c in [0...@p.width]
@@ -202,6 +227,7 @@ class @PuzzleManager
 
 
   help: it 'shows this list of keyboard shortcuts', 'misc', false, ->
+    $('#key-bindings-dialog').foundation 'reveal', 'open'
 
   setCurrentSquare: it 'writes the given letter in the current cell', 'cell', true, (value, moveForwards) ->
     @setSquare @currentCell(), value, moveForwards
