@@ -51,41 +51,39 @@ class @PuzzleManager
     @g.numbers = {}
     @g.blackSquares = {}
     @g.filledSquares = {}
-    currentNumber = 1
+    @g.letters = {}
 
     addNumber = Render.text 'numbers'
     addBlackSquare = Render.rect 'black-squares'
     addFilledSquare = Render.rect 'filled-squares'
+    addLetter = Render.text 'letters'
 
     for r in [0...@p.height]
       @g.numbers[r] = {}
       @g.blackSquares[r] = {}
       @g.filledSquares[r] = {}
+      @g.letters[r] = {}
+
       for c in [0...@p.width]
         if @p.gridNumbers[r][c]
           @g.numbers[r][c] = addNumber \
             @g.grid.squareSize * c + 3,
             @g.grid.squareSize * r + 8.5,
             @p.gridNumbers[r][c]
+
         if @p.grid[r][c] == '_'
           @g.blackSquares[r][c] = addBlackSquare \
             @g.grid.squareSize * c + 1,
             @g.grid.squareSize * r + 1,
             @g.grid.squareSize - 1,
             @g.grid.squareSize - 1
+
         @g.filledSquares[r][c] = addFilledSquare \
           @g.grid.squareSize * c + 1,
           @g.grid.squareSize * r + 1,
           @g.grid.squareSize - 1,
           @g.grid.squareSize - 1
 
-    @g.letters = {}
-
-    addLetter = Render.text 'letters'
-
-    for r in [0...@p.height]
-      @g.letters[r] = {}
-      for c in [0...@p.width]
         @g.letters[r][c] = addLetter \
           (c + 0.5) * @g.grid.squareSize,
           (r + 0.55) * @g.grid.squareSize,
