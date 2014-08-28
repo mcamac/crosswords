@@ -14,14 +14,21 @@ body, h1, h2, h3, h4, h5, h6
   overflow-y: scroll
 
   margin-left: 0
-  padding-left: 2em
+  padding-left: 0.5em
   position: relative
-  list-style-position: outside
+  list-style: none
 
   .active
     background-color: $highlight-parallel
   .inactive
     background-color: $highlight-perpendicular
+
+  .clue-num
+    display: inline-block
+    margin-right: 5px
+    font-style: bold
+    text-align: right
+    width: 15px
 
 #current-clue
   .dir-number

@@ -78,9 +78,9 @@ html
         //- Right
         section.large-3.columns.clue-area
           h5 Across
-          ol.clue-list(v-component="clue-list", v-with="str: 'across', clues: clues.across, current: currentClue")
+          ul.clue-list(v-component="clue-list", v-with="str: 'across', clues: clues.across, current: currentClue")
           h5 Down
-          ol.clue-list(v-component="clue-list", v-with="str: 'down', clues: clues.down, current: currentClue")
+          ul.clue-list(v-component="clue-list", v-with="str: 'down', clues: clues.down, current: currentClue")
 
       #key-bindings-dialog.reveal-modal
         h3 Keyboard shortcuts
@@ -94,5 +94,5 @@ html
 
     script(type='x/template', id='clue-li').
       <li class="li-clue {{ (num === current.clueNumber[str]) ? ((current.direction === str) ? 'active' : 'inactive'): '' }}"
-           v-repeat="clues" value="{{ num }}"> {{ text }}</li>
+           v-repeat="clues" value="{{ num }}"><div class="clue-num"><b>{{ num }}</b></div> {{ text }}</li>
 
