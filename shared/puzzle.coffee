@@ -100,7 +100,7 @@ class @Puzzle
     return [sr, er, sc, ec]
 
 
-  _loopGrid: (callback, reverse) ->
+  _loopGrid: (callback, reverse, transpose) ->
     rows = [0...@height]
     cols = [0...@width]
 
@@ -108,7 +108,12 @@ class @Puzzle
       rows = rows.reverse()
       cols = cols.reverse()
 
+    if transpose
+      [rows, cols] = [cols, rows]
+
     for r in rows
       for c in cols
-        if callback.bind(@) [r, c]
-          return [r, c]
+        cell = unless transpose then [r, c] else [c, r]
+
+        if callback.bind(@) cell
+          return cell
