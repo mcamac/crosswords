@@ -31,6 +31,16 @@ class @Puzzle
           @gridNumbers[r][c] = currentNumber++
       return
 
+    @cellNumbers = ({ across: null, down: null } for r in [0...@height] for c in [0...@width])
+    cellNumberCallback = (dirName, [roff, coff]) ->
+      currentNumber = null
+      ([r, c]) ->
+        currentNumber = @gridNumbers[r][c] if not @isValidSquare [r - roff, c - coff]
+        @cellNumbers[r][c][dirName] = currentNumber if @isWhite [r, c]
+        return
+    @_loopGrid cellNumberCallback('across', dir.ACROSS)
+    @_loopGrid cellNumberCallback('down', dir.DOWN), false, true
+
     @firstWhiteCell = @_loopGrid @isWhite, false
     @lastWhiteCell  = @_loopGrid @isWhite, true
 
@@ -64,8 +74,8 @@ class @Puzzle
     return [nr, nc]
 
   getClueNumberForCell: ([r, c], direction) ->
-    [sr, sc] = @getFarthestValidCellInDirection [r, c], dir.reflect(direction), false
-    return @gridNumbers[sr][sc]
+    dirKey = if direction == dir.ACROSS then 'across' else 'down'
+    return @cellNumbers[r][c][dirKey]
 
   # Careful! this may return an invalid cell
   getFarthestValidCellInDirection: ([r, c], [roff, coff], skipFirstBlackCells, f) ->
