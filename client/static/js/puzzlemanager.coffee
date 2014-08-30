@@ -5,7 +5,7 @@ class @PuzzleManager
     @el = options.elements.gridEl
     @$el = $(@el)
 
-    socket = options.socket
+    @socket = options.socket
 
     if options.title
       @title = options.title
@@ -45,6 +45,12 @@ class @PuzzleManager
       @g.grid.width + @g.grid.margin, @g.grid.height + @g.grid.margin
 
     @g.overlay = null
+
+    @setUpEvents()
+
+  setUpEvents: ->
+    @socket.on 'square set', ([id, [i, j], val]) ->
+      console.log id, [i, j], val
 
   render: ->
     # Draw and format puzzle numbers
@@ -193,7 +199,7 @@ class @PuzzleManager
 
   setSquare: (cell, value, moveForwards) ->
     @_setUserSquare @user, cell, value
-
+    @socket.emit 'set square', [cell, value]
     if moveForwards
       @moveForwards true
 

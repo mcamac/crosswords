@@ -1,3 +1,5 @@
+Puzzle = require '../shared/puzzle'
+
 uuid = ->
   Math.random().toString(36).substr(2,9)
 
@@ -24,19 +26,25 @@ class MultiplayerRoom
 
 
 class MultiplayerCrosswordRoom extends MultiplayerRoom
-  constructor: (id) ->
+  constructor: (@io, id) ->
     super id
-    @puzzle = require './default-puzzle.json'
+    @puzzle = new Puzzle(require './default-puzzle.json')
 
-    @grid_changes = {}
-    @grid_corrects = []
-    @grid_owner_counts = {}
-    @grid_owners = {}
+    @grid = @puzzle.map -> ''
+    @gridOwners = @puzzle.map -> ''
+    @gridChanges = {}
+    @gridCorrects = []
+    @gridOwnerCounts = {}
 
   emit: (name, data) ->
-    io.sockets.in(@name).emit name, data
+    @io.sockets.in(@name).emit name, data
 
-  
+  setSquare: (user, [i, j], val) ->
+    if @grid[i][j] != val
+      @grid[i][j] = val
+      @gridOwners[i][j] = user.id
+      @emit 'square set', [user.id, [i, j], val]
+
 
 exports.MultiplayerRoom = MultiplayerRoom if exports?
 exports.MultiplayerCrosswordRoom = MultiplayerCrosswordRoom if exports?
