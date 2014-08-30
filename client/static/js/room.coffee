@@ -6,16 +6,12 @@ $ ->
   socket = io.connect SOCKET_URL
   # Vue components
 
-  membersBox = new Vue {
-    el: '#players'
-    data: {
-      users: [{
-        username: 'martin'
-      }, {
-        username: 'joseph'
-      }]
-    }
-  }
+  MembersBox = Vue.extend
+    template: '#members-box'
+    data:
+      users: []
+
+  Vue.component 'members-box', MembersBox
 
   ChatBox = new Vue
     el: '#chat_box'
@@ -30,10 +26,9 @@ $ ->
 
   ClueList = Vue.extend
     template: '#clue-li'
-    data: {
+    data:
       dir: 'across',
       clues: { across: [], down: [] }
-    }
     ready: ->
       @$watch 'current', (current) ->
         clueNumber = current.clueNumber[@.str]
@@ -55,6 +50,8 @@ $ ->
       clues: { across: [], down: [] }
       cluesObj: {}
       currentClue: {}
+      users: []
+      id: ''
     computed:
       currentClueDirection: ->
         @currentClue.direction
@@ -70,7 +67,8 @@ $ ->
   console.log 'roomName', roomName
 
   # after server acknowledges handshake, send room name to join
-  socket.on 'connection acknowledged', (data) ->
+  socket.on 'user id', (id) ->
+    uiState.id = id
     socket.emit 'join room', 
       roomName: roomName
       userId: 'foo'
