@@ -57,6 +57,9 @@ class @PuzzleManager
       self = (users.filter (user) => user.id == @ui.id)[0]
       @user.color = self.color
 
+    @socket.on 'existing puzzle', (puzzle) =>
+      @loadPuzzle new Puzzle puzzle
+
   render: ->
     # Draw and format puzzle numbers
     @g.numbers = {}

@@ -13,6 +13,7 @@ class @Puzzle
     @height = puzzle.height
     @width = puzzle.width
     @clues = puzzle.clues
+    @json = puzzle
 
     @clueNumbers = {}
     for d, dClues of @clues

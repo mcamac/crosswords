@@ -82,6 +82,7 @@ io.sockets.on 'connection', (socket) ->
   socket.on 'join room', ({roomName, userId}) ->
     console.log roomName, userId
     socket.room.sendUsers()
+    socket.emit 'existing puzzle', socket.room.puzzle.json
 
   socket.on 'chat message', (message) ->
     socket.room.emit 'chat message',
