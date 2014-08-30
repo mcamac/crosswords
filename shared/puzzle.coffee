@@ -110,3 +110,17 @@ class @Puzzle
       for c in cols
         if callback.bind(@) [r, c]
           return [r, c]
+
+  map: (fn) ->
+    rows = [0...@height]
+    cols = [0...@width]
+
+    ret = []
+    for r in rows
+      row = []
+      for c in cols
+        row.push fn([r, c])
+      ret.push row
+    return ret
+
+module?.exports = @Puzzle

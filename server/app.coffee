@@ -53,7 +53,7 @@ class CrosswordUser
     name: @name
     id: @id
 
-rooms = { foo: new MultiplayerCrosswordRoom('foo') }
+rooms = { foo: new MultiplayerCrosswordRoom(io, 'foo') }
 
 users = {}
 
@@ -68,23 +68,28 @@ io.use (socket, next) ->
   if not users[id]
     users[id] = new CrosswordUser(id)
   socket.user = users[id]
+  socket.user.socket = socket
   socket.room = rooms.foo
-  socket.room.users[socket.user.id] = socket.user
+  socket.room.addUser socket.user
   socket.join socket.room.name
 
   next()
 
 
 io.sockets.on 'connection', (socket) ->
-  socket.emit 'connection acknowledged', ''
+  socket.emit 'user id', socket.user.id
 
   socket.on 'join room', ({roomName, userId}) ->
     console.log roomName, userId
+    socket.room.sendUsers()
 
   socket.on 'chat message', (message) ->
-    io.to(socket.room.name).emit 'chat message',
+    socket.room.emit 'chat message',
       user: socket.user.name,
       text: message
+
+  socket.on 'set square', ([[i, j], val]) ->
+    socket.room.setSquare(socket.user, [i, j], val)
 
   socket.on 'disconnect', ->
     console.log 'disconn'
