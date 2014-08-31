@@ -5,6 +5,7 @@
   UP: [-1, 0]
   ACROSS: [0, 1]
   reflect: ([r, c]) -> [-r, -c]
+global.dir = @dir if global?
 
 class @Puzzle
   constructor: (puzzle) ->
