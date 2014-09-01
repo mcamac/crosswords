@@ -5,6 +5,7 @@
   UP: [-1, 0]
   ACROSS: [0, 1]
   reflect: ([r, c]) -> [-r, -c]
+global.dir = @dir if global?
 
 class @Puzzle
   constructor: (puzzle) ->
@@ -25,14 +26,25 @@ class @Puzzle
 
     currentNumber = 1
     @_loopGrid ([r, c]) ->
-      if @isValidSquare([r, c]) and (not @isValidSquare([r - 1, c]) or
-                                 not @isValidSquare([r, c - 1]))
-        @gridNumbersRev[currentNumber] = [r, c]
-        @gridNumbers[r][c] = currentNumber++
+      if @isWhite [r, c]
+        unless @isValidSquare([r - 1, c]) and
+               @isValidSquare([r, c - 1])
+          @gridNumbersRev[currentNumber] = [r, c]
+          @gridNumbers[r][c] = currentNumber++
       return
 
-    @firstWhiteCell = @_loopGrid @isValidSquare, false
-    @lastWhiteCell = @_loopGrid @isValidSquare, true
+    @cellNumbers = ({ across: null, down: null } for r in [0...@height] for c in [0...@width])
+    cellNumberCallback = (dirName, [roff, coff]) ->
+      currentNumber = null
+      ([r, c]) ->
+        currentNumber = @gridNumbers[r][c] if not @isValidSquare [r - roff, c - coff]
+        @cellNumbers[r][c][dirName] = currentNumber if @isWhite [r, c]
+        return
+    @_loopGrid cellNumberCallback('across', dir.ACROSS)
+    @_loopGrid cellNumberCallback('down', dir.DOWN), false, true
+
+    @firstWhiteCell = @_loopGrid @isWhite, false
+    @lastWhiteCell  = @_loopGrid @isWhite, true
 
   getNextClueNumber: (clueNumber, direction, offset) ->
     dirKey = if direction == dir.ACROSS then 'across' else 'down'
@@ -64,9 +76,10 @@ class @Puzzle
     return [nr, nc]
 
   getClueNumberForCell: ([r, c], direction) ->
-    [sr, sc] = @getFarthestValidCellInDirection [r, c], dir.reflect(direction), false
-    return @gridNumbers[sr][sc]
+    dirKey = if direction == dir.ACROSS then 'across' else 'down'
+    return @cellNumbers[r][c][dirKey]
 
+  # Careful! this may return an invalid cell
   getFarthestValidCellInDirection: ([r, c], [roff, coff], skipFirstBlackCells, f) ->
     allBlackSoFar = true
     loop
@@ -99,7 +112,7 @@ class @Puzzle
     return [sr, er, sc, ec]
 
 
-  _loopGrid: (callback, reverse) ->
+  _loopGrid: (callback, reverse, transpose) ->
     rows = [0...@height]
     cols = [0...@width]
 
@@ -107,10 +120,15 @@ class @Puzzle
       rows = rows.reverse()
       cols = cols.reverse()
 
+    if transpose
+      [rows, cols] = [cols, rows]
+
     for r in rows
       for c in cols
-        if callback.bind(@) [r, c]
-          return [r, c]
+        cell = unless transpose then [r, c] else [c, r]
+
+        if callback.bind(@) cell
+          return cell
 
   map: (fn) ->
     rows = [0...@height]
