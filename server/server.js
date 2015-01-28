@@ -47,7 +47,7 @@ require('./routes')(app, passport);
 var server = require('http').Server(app);
 require('./sockets')(app, server, sessionStore);
 
-var port = Number(process.env.PORT || 5000);
+var port = Number(process.env.PORT || 5001);
 server.listen(port, function() {
   console.log('Listening on ' + port);
 });
