@@ -186,7 +186,10 @@ class @PuzzleManager
     for r in [0...@p.height]
       for c in [0...@p.width]
         @g.numbers?[r]?[c]?.remove()
+        @g.letters?[r]?[c]?.remove()
         @g.blackSquares?[r]?[c]?.remove()
+        if @g.filledSquares
+          @_setSquareColor(null, [r, c])
 
     # clear highlights
     @g.highlights.user['user']?.remove()
