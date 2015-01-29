@@ -35,6 +35,9 @@ $ ->
         listOffset = $(@$el).scrollTop()
         activeCluePosition = $(@$el).find("li[value=#{clueNumber}]").position().top
         $(@$el).stop().animate(scrollTop: activeCluePosition + listOffset, 50)
+    methods:
+      onClick: (str, num) ->
+        puzzleManager.moveToClue num, dir[str]
 
   clueSymbols =
     down: '▼'
@@ -69,7 +72,7 @@ $ ->
   # after server acknowledges handshake, send room name to join
   socket.on 'user id', (id) ->
     uiState.id = id
-    socket.emit 'join room', 
+    socket.emit 'join room',
       roomName: roomName
       userId: 'foo'
 

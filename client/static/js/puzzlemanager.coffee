@@ -1,3 +1,6 @@
+isd = (a, b) ->
+  (a[0] == b[0]) and (a[1] == b[1])
+
 
 class @PuzzleManager
   constructor: (options, @ui) ->
@@ -107,7 +110,7 @@ class @PuzzleManager
     addGridline = Render.path 'gridlines'
 
     for offset in [0..@p.height]
-      pxoff = @g.grid.squareSize * offset + 0.5   
+      pxoff = @g.grid.squareSize * offset + 0.5
       @g.grid.lines.push \
         addGridline("M#{pxoff},0.5v#{@g.grid.height}"),
         addGridline("M0.5,#{pxoff}h#{@g.grid.width}")
@@ -194,7 +197,7 @@ class @PuzzleManager
       line.remove()
     @g.grid.lines = []
 
-  loadPuzzle: (@p) ->  
+  loadPuzzle: (@p) ->
     # load puzzle data into manager and render
     @resetGrid()
     @render()
@@ -224,7 +227,7 @@ class @PuzzleManager
     @p.getClueNumberForCell @currentCell(), direction
 
   currentClueObj: ->
-    direction: if @g.dir == dir.DOWN then 'down' else 'across'
+    direction: if isd(@g.dir, dir.DOWN) then 'down' else 'across'
     clueNumber:
       down: @currentClue dir.DOWN
       across: @currentClue dir.ACROSS
@@ -245,11 +248,11 @@ class @PuzzleManager
     @setSquare @currentCell(), value, moveForwards
 
   flipDir: it 'switches direction', 'misc', true, ->
-    @g.dir = if @g.dir == dir.ACROSS then dir.DOWN else dir.ACROSS
+    @g.dir = if isd(@g.dir, dir.ACROSS) then dir.DOWN else dir.ACROSS
     @_reHighlight()
 
   # move in direction
-  moveToCell: (cell) ->
+  moveToCell: (cell, d) ->
     @_setHighlight 'user', cell
 
 
@@ -259,9 +262,9 @@ class @PuzzleManager
   moveToFarthestValidCellInDirection: it 'moves to the boundary of the current clue in the given direction', 'clue', false, (direction, skipFirstBlackCells) ->
     @moveToCell @p.getFarthestValidCellInDirection @currentCell(), direction, skipFirstBlackCells
 
-  moveToClue: (clueNumber) ->
+  moveToClue: (clueNumber, d) ->
+    @g.dir = if d then d else @g.dir
     @moveToCell @p.gridNumbersRev[clueNumber]
-
 
   moveForwards: (remainOnThisClue) ->
     @moveInDirection @g.dir, remainOnThisClue
@@ -343,7 +346,7 @@ class @PuzzleManager
     @_reHighlight()
 
   _highlightClass: (direction) ->
-    if @g.dir == direction then 'highlight-parallel' else 'highlight-perpendicular'
+    if isd(@g.dir, direction) then 'highlight-parallel' else 'highlight-perpendicular'
 
   _reHighlight: ->
     # update clue text
@@ -363,5 +366,5 @@ class @PuzzleManager
       x: @g.grid.squareSize * sc + 3
       y: @g.grid.squareSize * @g.ci + 3
       width: @g.grid.squareSize * (ec - sc + 1) - 5
-      height: @g.grid.squareSize - 5 
+      height: @g.grid.squareSize - 5
     @g.highlights.across.className.baseVal = @_highlightClass dir.ACROSS

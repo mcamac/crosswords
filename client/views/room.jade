@@ -37,7 +37,7 @@ html
 
           h6 Players
           #players(v-component="members-box", v-with="users: users")
-            
+
 
           h6 Chat
           #chat_box
@@ -92,7 +92,7 @@ html
 
     script(type='x/template', id='clue-li').
       <li class="li-clue {{ (num === current.clueNumber[str]) ? ((current.direction === str) ? 'active' : 'inactive'): '' }}"
-           v-repeat="clues" value="{{ num }}"><div class="clue-num"><b>{{ num }}</b></div> {{ text }}</li>
+           v-repeat="clues" value="{{ num }}" v-on="click: onClick(str, num)"><div class="clue-num"><b>{{ num }}</b></div> {{ text }}</li>
 
     script(type='x/template', id='members-box').
       <ul><li v-repeat="users">
