@@ -89,6 +89,14 @@ io.sockets.on 'connection', (socket) ->
       user: socket.user.name,
       text: message
 
+  socket.on 'new puzzle', (params) ->
+    console.log 'new', params.id
+    Puzzle.findOne({_id: params.id}).exec (err, puzzle) ->
+      console.log puzzle
+      socket.room.newPuzzle puzzle
+      socket.room.emit 'existing puzzle', socket.room.serialize()
+      socket.room.serverChat "New puzzle! #{puzzle.title}"
+
   socket.on 'set square', ([[i, j], val]) ->
     socket.room.setSquare(socket.user, [i, j], val)
 

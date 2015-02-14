@@ -128,8 +128,9 @@ $ ->
   $('#browse_puzzles_modal').on 'click', '.load-puzzle-a', (e) ->
     $.getJSON(
       "/api/puzzles/#{$(this).data('puzzle-id')}",
-      (puzzle) ->
-        puzzleManager.loadPuzzle new Puzzle puzzle
+      (puzzle) =>
+        socket.emit 'new puzzle',
+          id: $(this).data('puzzle-id')
     )
 
   $(document).foundation()

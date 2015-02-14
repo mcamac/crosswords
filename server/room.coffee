@@ -20,11 +20,20 @@ class MultiplayerRoom
   emit: (name, data) ->
     @io.sockets.in(@name).emit name, data
 
+  serverChat: (msg) ->
+    @emit 'chat message',
+      name: 'server'
+      text: msg
 
 class MultiplayerCrosswordRoom extends MultiplayerRoom
   constructor: (@io, id) ->
     super id
-    @puzzle = new Puzzle(require './default-puzzle.json')
+    @userColors = {}
+    @assignedColors = 0
+    @newPuzzle (require './default-puzzle.json')
+
+  newPuzzle: (puzzle) ->
+    @puzzle = new Puzzle(puzzle)
     @startTime = new Date()
 
     @grid = @puzzle.map -> ''
@@ -32,9 +41,6 @@ class MultiplayerCrosswordRoom extends MultiplayerRoom
     @gridChanges = {}
     @gridCorrects = []
     @gridOwnerCounts = {}
-
-    @userColors = {}
-    @assignedColors = 0
 
   addUser: (user) ->
     if not @users[user.id]
