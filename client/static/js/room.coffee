@@ -6,6 +6,19 @@ $ ->
   socket = io.connect SOCKET_URL
   # Vue components
 
+  # Timing
+  startDate = new Date()
+
+  setInterval (() ->
+    seconds = Math.floor((new Date() - startDate) / 1000)
+    minutes = Math.floor(seconds / 60)
+    seconds = seconds % 60
+    if seconds < 10
+      seconds = '0' + seconds
+    $('#timer').html("#{minutes}:#{seconds}")
+  ), 500
+
+
   MembersBox = Vue.extend
     template: '#members-box'
     data:

@@ -34,6 +34,8 @@ html
         //- Left
         section.large-3.columns
           h5.puzzle-title NY Times, Monday, Jun 3
+          h5#timer 0:00
+
 
           h6 Players
           #players(v-component="members-box", v-with="users: users")
@@ -57,8 +59,6 @@ html
                   span.dir-number {{ currentClueDirection | dir-symbol }} {{ currentClueNumber }}
                   span.text {{ currentClueText }}
             .small-2.columns.timer
-              h5#timer 0:00
-                small.deciseconds .0
 
             #crossword-container
               svg#crossword(style="overflow: hidden; position: relative;")
@@ -87,6 +87,9 @@ html
 
       #browse_puzzles_modal.reveal-modal
         h3 Browse Puzzles (# puzzles)
+        form
+          button Upload Puzzle
+          input(type="file")
         ul.puzzle-list
         a.close-reveal-modal &#215;
 
