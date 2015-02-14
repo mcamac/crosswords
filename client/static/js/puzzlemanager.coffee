@@ -53,7 +53,7 @@ class @PuzzleManager
 
   setUpEvents: ->
     @socket.on 'square set', ([id, [i, j], val]) =>
-      @_setUserSquare (@ui.users.filter (user) => user.id == id)[0], [i, j], val
+      @_setUserSquare (@ui.users.filter (user) => user.id == id)[0], [i, j], val, true
 
     @socket.on 'users', (users) =>
       @ui.users = users
@@ -65,7 +65,7 @@ class @PuzzleManager
       @loadPuzzle new Puzzle room.puzzle
       @eachSquare ([r, c]) =>
         if room.grid[r][c]
-          @_setUserSquare (@ui.users.filter (user) => user.id == room.gridOwners[r][c])[0], [r, c], room.grid[r][c]
+          @_setUserSquare (@ui.users.filter (user) => user.id == room.gridOwners[r][c])[0], [r, c], room.grid[r][c], true
 
   eachSquare: (fn) ->
     for r in [0...@p.height]
@@ -224,10 +224,12 @@ class @PuzzleManager
     if moveForwards
       @moveForwards true
 
-  _setUserSquare: (user, [r, c], value) ->
+  _setUserSquare: (user, [r, c], value, server) ->
+    oldValue = @getSquare([r, c])
     @g.letters[r][c].firstChild.textContent = value
     color = if value then user.color else 'none'
-    @_setSquareColor color, [r, c]
+    if oldValue != value or server
+      @_setSquareColor color, [r, c]
 
   _setSquareColor: (color, [r, c]) ->
     @g.filledSquares[r][c].setAttribute 'fill', color
