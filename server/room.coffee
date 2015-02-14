@@ -12,7 +12,7 @@ class MultiplayerRoom
     @users = {}
     @clients_exited = {}
 
-    @start_time = null
+    @startTime = null
 
     @competitive = false
     @diagramless = false
@@ -25,6 +25,7 @@ class MultiplayerCrosswordRoom extends MultiplayerRoom
   constructor: (@io, id) ->
     super id
     @puzzle = new Puzzle(require './default-puzzle.json')
+    @startTime = new Date()
 
     @grid = @puzzle.map -> ''
     @gridOwners = @puzzle.map -> ''
@@ -54,6 +55,7 @@ class MultiplayerCrosswordRoom extends MultiplayerRoom
     puzzle: @puzzle.json
     grid: @grid
     gridOwners: @gridOwners
+    startTime: @startTime
 
 
 exports.MultiplayerRoom = MultiplayerRoom if exports?

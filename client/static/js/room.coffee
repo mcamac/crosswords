@@ -100,6 +100,10 @@ $ ->
     socket: socket
   }, uiState
 
+  socket.on 'existing puzzle', (room) =>
+    console.log 'existing', room
+    startDate = new Date(room.startTime)
+    puzzleManager.existingPuzzle room
 
   key 'shift+o', (e) ->
     $('#browse_puzzles_a').trigger 'click'

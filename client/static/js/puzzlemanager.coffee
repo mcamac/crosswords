@@ -60,12 +60,11 @@ class @PuzzleManager
       self = (users.filter (user) => user.id == @ui.id)[0]
       @user.color = self.color
 
-    @socket.on 'existing puzzle', (room) =>
-      console.log 'existing', room
-      @loadPuzzle new Puzzle room.puzzle
-      @eachSquare ([r, c]) =>
-        if room.grid[r][c]
-          @_setUserSquare (@ui.users.filter (user) => user.id == room.gridOwners[r][c])[0], [r, c], room.grid[r][c], true
+  existingPuzzle: (room) =>
+    @loadPuzzle new Puzzle room.puzzle
+    @eachSquare ([r, c]) =>
+      if room.grid[r][c]
+        @_setUserSquare (@ui.users.filter (user) => user.id == room.gridOwners[r][c])[0], [r, c], room.grid[r][c], true
 
   eachSquare: (fn) ->
     for r in [0...@p.height]
