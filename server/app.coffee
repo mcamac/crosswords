@@ -58,7 +58,7 @@ rooms = { foo: new MultiplayerCrosswordRoom(io, 'foo') }
 users = {}
 
 
-# Load a room 
+# Load a room
 
 cookie = require 'cookie'
 io.use (socket, next) ->
@@ -82,7 +82,7 @@ io.sockets.on 'connection', (socket) ->
   socket.on 'join room', ({roomName, userId}) ->
     console.log roomName, userId
     socket.room.sendUsers()
-    socket.emit 'existing puzzle', socket.room.puzzle.json
+    socket.emit 'existing puzzle', socket.room.serialize()
 
   socket.on 'chat message', (message) ->
     socket.room.emit 'chat message',

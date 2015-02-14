@@ -60,8 +60,17 @@ class @PuzzleManager
       self = (users.filter (user) => user.id == @ui.id)[0]
       @user.color = self.color
 
-    @socket.on 'existing puzzle', (puzzle) =>
-      @loadPuzzle new Puzzle puzzle
+    @socket.on 'existing puzzle', (room) =>
+      console.log 'existing', room
+      @loadPuzzle new Puzzle room.puzzle
+      @eachSquare ([r, c]) =>
+        if room.grid[r][c]
+          @_setUserSquare (@ui.users.filter (user) => user.id == room.gridOwners[r][c])[0], [r, c], room.grid[r][c]
+
+  eachSquare: (fn) ->
+    for r in [0...@p.height]
+      for c in [0...@p.width]
+        fn [r, c]
 
   render: ->
     # Draw and format puzzle numbers

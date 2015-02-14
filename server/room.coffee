@@ -13,7 +13,7 @@ class MultiplayerRoom
     @clients_exited = {}
 
     @start_time = null
-    
+
     @competitive = false
     @diagramless = false
 
@@ -49,6 +49,11 @@ class MultiplayerCrosswordRoom extends MultiplayerRoom
       @grid[i][j] = val
       @gridOwners[i][j] = user.id
       @emit 'square set', [user.id, [i, j], val]
+
+  serialize: ->
+    puzzle: @puzzle.json
+    grid: @grid
+    gridOwners: @gridOwners
 
 
 exports.MultiplayerRoom = MultiplayerRoom if exports?
