@@ -43,7 +43,7 @@ app.use session({
 ## Routes
 require('./routes') app, Puzzle
 
-server.listen 5557
+server.listen (process.env.PORT or 5557)
 
 ####
 class CrosswordUser
