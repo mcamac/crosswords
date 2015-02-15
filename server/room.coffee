@@ -22,7 +22,7 @@ class MultiplayerRoom
 
   serverChat: (msg) ->
     @emit 'chat message',
-      name: 'server'
+      user: '__server'
       text: msg
 
 class MultiplayerCrosswordRoom extends MultiplayerRoom
@@ -41,7 +41,6 @@ class MultiplayerCrosswordRoom extends MultiplayerRoom
     @grid = @puzzle.map ([r, c]) -> ''
       # x = me.puzzle.grid[r][c]
       # if x != '_' then x else ''
-    # console.log @grid
 
     @gridOwners = @puzzle.map -> ''
     @gridChanges = {}
@@ -57,9 +56,10 @@ class MultiplayerCrosswordRoom extends MultiplayerRoom
 
   disconnectUser: (user) ->
     delete @users[user.id]
-    @sendUsers
+    @sendUsers()
 
   sendUsers: ->
+    console.log 'sending users', ({ id: id, color: @userColors[id], username: @users[id].name } for id of @users)
     @emit 'users', ({ id: id, color: @userColors[id], username: @users[id].name } for id of @users)
 
   setSquare: (user, [i, j], val) ->
@@ -68,10 +68,12 @@ class MultiplayerCrosswordRoom extends MultiplayerRoom
       @gridOwners[i][j] = user.id
       @emit 'square set', [user.id, [i, j], val]
     # Check if done
-    if @checkDone()
+    if not @isDone and @checkDone()
       console.log 'puzzle done'
       @isDone = true
       @emit 'done', @serialize()
+      console.log @userColors
+      @serverChat 'Puzzle finished!'
 
   checkDone: ->
     for r in [0...@grid.length]

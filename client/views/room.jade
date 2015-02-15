@@ -44,10 +44,13 @@ html
           h6 Chat
           #chat_box
             #chat
-              p(v-repeat="messages")
-                span.username
-                  b {{ user }}:
-                {{ text }}
+              div(v-repeat="message : messages")
+                p(v-if="!message.isServer")
+                  span.username
+                    b {{ message.user }}:
+                  {{ message.text }}
+                p(v-if="message.isServer")
+                  i {{ message.text }}
             input#chat_input(type="text", v-model="text", v-on="keyup:onEnter | key enter", placeholder="Chat here.")
 
         //- Middle

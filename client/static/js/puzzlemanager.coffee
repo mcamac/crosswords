@@ -65,11 +65,16 @@ class @PuzzleManager
     @eachSquare ([r, c]) =>
       if room.grid[r][c]
         @_setUserSquare (@ui.users.filter (user) => user.id == room.gridOwners[r][c])[0], [r, c], room.grid[r][c], true
+    if room.isDone
+      @markDone()
 
   eachSquare: (fn) ->
     for r in [0...@p.height]
       for c in [0...@p.width]
         fn [r, c]
+
+  markDone: ->
+    $('#background').fadeTo(500, 0.3)
 
   render: ->
     # Draw and format puzzle numbers
@@ -191,6 +196,8 @@ class @PuzzleManager
     el.innerHTML = html
 
   resetGrid: ->
+    $('#background').fadeTo(100, 0);
+
     for r in [0...@p.height]
       for c in [0...@p.width]
         @g.numbers?[r]?[c]?.remove()

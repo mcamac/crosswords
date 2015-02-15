@@ -88,9 +88,16 @@ io.sockets.on 'connection', (socket) ->
     socket.emit 'existing puzzle', socket.room.serialize()
 
   socket.on 'chat message', (message) ->
-    socket.room.emit 'chat message',
-      user: socket.user.name,
-      text: message
+    if not message.indexOf('/u') == 0
+      socket.room.emit 'chat message',
+        user: socket.user.name,
+        text: message
+    else
+      console.log 'username change', socket.user.name, message[3..]
+      if message[3..] and message[3..] != '__server' # LOLOLOLOL
+        socket.user.name = message[3..18]
+        console.log 'sending username change,,,'
+        socket.room.sendUsers()
 
   socket.on 'new puzzle', (params) ->
     console.log 'new', params.id
@@ -104,4 +111,5 @@ io.sockets.on 'connection', (socket) ->
     socket.room.setSquare(socket.user, [i, j], val)
 
   socket.on 'disconnect', ->
+    console.log 'disconnect'
     socket.room.disconnectUser socket.user

@@ -9,14 +9,15 @@ $ ->
   # Timing
   startDate = new Date()
 
-  timer = setInterval (() ->
+  setTimer = () ->
     seconds = Math.floor((new Date() - startDate) / 1000)
     minutes = Math.floor(seconds / 60)
     seconds = seconds % 60
     if seconds < 10
       seconds = '0' + seconds
     $('#timer').html("#{minutes}:#{seconds}")
-  ), 500
+
+  timer = undefined
 
 
   MembersBox = Vue.extend
@@ -90,6 +91,7 @@ $ ->
       userId: 'foo'
 
   socket.on 'chat message', (message) ->
+    message.isServer = message.user == '__server'
     ChatBox.messages.push message
 
   puzzleManager = new PuzzleManager {
@@ -103,12 +105,16 @@ $ ->
   socket.on 'existing puzzle', (room) =>
     console.log 'existing', room
     startDate = new Date(room.startTime)
+    setTimer
     if room.isDone
       clearInterval timer
+    else
+      timer = setInterval setTimer, 500
     puzzleManager.existingPuzzle room
 
   socket.on 'done', (room) =>
     console.log 'done', room
+    puzzleManager.markDone()
     clearInterval timer
 
   key 'shift+o', (e) ->

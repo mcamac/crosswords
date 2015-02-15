@@ -488,7 +488,7 @@
 
     PuzzleManager.prototype.existingPuzzle = function(room) {
       this.loadPuzzle(new Puzzle(room.puzzle));
-      return this.eachSquare((function(_this) {
+      this.eachSquare((function(_this) {
         return function(_arg) {
           var c, r;
           r = _arg[0], c = _arg[1];
@@ -499,6 +499,9 @@
           }
         };
       })(this));
+      if (room.isDone) {
+        return this.markDone();
+      }
     };
 
     PuzzleManager.prototype.eachSquare = function(fn) {
@@ -515,6 +518,10 @@
         }).call(this));
       }
       return _results;
+    };
+
+    PuzzleManager.prototype.markDone = function() {
+      return $('#background').fadeTo(500, 0.3);
     };
 
     PuzzleManager.prototype.render = function() {
@@ -648,6 +655,7 @@
 
     PuzzleManager.prototype.resetGrid = function() {
       var c, line, r, _i, _j, _k, _len, _ref, _ref1, _ref10, _ref11, _ref12, _ref13, _ref14, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9;
+      $('#background').fadeTo(100, 0);
       for (r = _i = 0, _ref = this.p.height; 0 <= _ref ? _i < _ref : _i > _ref; r = 0 <= _ref ? ++_i : --_i) {
         for (c = _j = 0, _ref1 = this.p.width; 0 <= _ref1 ? _j < _ref1 : _j > _ref1; c = 0 <= _ref1 ? ++_j : --_j) {
           if ((_ref2 = this.g.numbers) != null) {
@@ -954,12 +962,12 @@
   })();
 
   $(function() {
-    var CROSSWORD_CANVAS_EL, ChatBox, ClueList, MembersBox, SOCKET_URL, clueSymbols, puzzleManager, roomName, socket, startDate, timer, uiState;
+    var CROSSWORD_CANVAS_EL, ChatBox, ClueList, MembersBox, SOCKET_URL, clueSymbols, puzzleManager, roomName, setTimer, socket, startDate, timer, uiState;
     SOCKET_URL = location.origin.replace(/^http/, 'ws');
     CROSSWORD_CANVAS_EL = '#crossword-container';
     socket = io.connect(SOCKET_URL);
     startDate = new Date();
-    timer = setInterval((function() {
+    setTimer = function() {
       var minutes, seconds;
       seconds = Math.floor((new Date() - startDate) / 1000);
       minutes = Math.floor(seconds / 60);
@@ -968,7 +976,8 @@
         seconds = '0' + seconds;
       }
       return $('#timer').html("" + minutes + ":" + seconds);
-    }), 500);
+    };
+    timer = void 0;
     MembersBox = Vue.extend({
       template: '#members-box',
       data: {
@@ -1060,6 +1069,7 @@
       });
     });
     socket.on('chat message', function(message) {
+      message.isServer = message.user === '__server';
       return ChatBox.messages.push(message);
     });
     puzzleManager = new PuzzleManager({
@@ -1075,8 +1085,11 @@
       return function(room) {
         console.log('existing', room);
         startDate = new Date(room.startTime);
+        setTimer;
         if (room.isDone) {
           clearInterval(timer);
+        } else {
+          timer = setInterval(setTimer, 500);
         }
         return puzzleManager.existingPuzzle(room);
       };
@@ -1084,6 +1097,7 @@
     socket.on('done', (function(_this) {
       return function(room) {
         console.log('done', room);
+        puzzleManager.markDone();
         return clearInterval(timer);
       };
     })(this));
