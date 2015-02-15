@@ -56,6 +56,15 @@ class MultiplayerCrosswordRoom extends MultiplayerRoom
       @grid[i][j] = val
       @gridOwners[i][j] = user.id
       @emit 'square set', [user.id, [i, j], val]
+    # Check if done
+    console.log 'puzzle is done', @isdone
+
+  isDone: ->
+    for r in [0...@grid.height]
+      for c in [0...@grid.col]
+        if @puzzle.grid[r][c] != '_' and @puzzle.grid[r][c] != @grid[r][c]
+          return false
+    return true
 
   serialize: ->
     puzzle: @puzzle.json
