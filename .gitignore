@@ -12,5 +12,3 @@ shared/room.js
 */player.js
 Gruntfile.js
 *.map
-
-client/static/css/room.css
