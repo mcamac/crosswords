@@ -6,10 +6,8 @@ static/js/oldroom.js
 scraper
 node_modules
 .sass-cache
-client/static/css/*.css
 
 */app.js
-client/static/js/*.js
 shared/room.js
 */player.js
 Gruntfile.js
