@@ -67,9 +67,9 @@ cookie = require 'cookie'
 io.use (socket, next) ->
   sid = cookie.parse(socket.request.headers.cookie)['crosswords.sid']
   id = cookieParser.signedCookie sid, 'keyboard cat'
-  console.log 'user', id
   if not users[id]
     users[id] = new CrosswordUser(id)
+    console.log 'new user', id
   socket.user = users[id]
   socket.user.socket = socket
   socket.room = rooms.foo
@@ -104,4 +104,4 @@ io.sockets.on 'connection', (socket) ->
     socket.room.setSquare(socket.user, [i, j], val)
 
   socket.on 'disconnect', ->
-    console.log 'disconn'
+    socket.room.disconnectUser socket.user

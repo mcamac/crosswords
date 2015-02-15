@@ -45,8 +45,13 @@ class MultiplayerCrosswordRoom extends MultiplayerRoom
   addUser: (user) ->
     if not @users[user.id]
       @users[user.id] = user
-      @userColors[user.id] = COLORS[@assignedColors++]
+      if not @userColors[user.id]
+        @userColors[user.id] = COLORS[@assignedColors++]
       @sendUsers()
+
+  disconnectUser: (user) ->
+    delete @users[user.id]
+    @sendUsers
 
   sendUsers: ->
     @emit 'users', ({ id: id, color: @userColors[id], username: @users[id].name } for id of @users)
@@ -56,15 +61,6 @@ class MultiplayerCrosswordRoom extends MultiplayerRoom
       @grid[i][j] = val
       @gridOwners[i][j] = user.id
       @emit 'square set', [user.id, [i, j], val]
-    # Check if done
-    console.log 'puzzle is done', @isdone
-
-  isDone: ->
-    for r in [0...@grid.height]
-      for c in [0...@grid.col]
-        if @puzzle.grid[r][c] != '_' and @puzzle.grid[r][c] != @grid[r][c]
-          return false
-    return true
 
   serialize: ->
     puzzle: @puzzle.json
