@@ -9,7 +9,7 @@ $ ->
   # Timing
   startDate = new Date()
 
-  setInterval (() ->
+  timer = setInterval (() ->
     seconds = Math.floor((new Date() - startDate) / 1000)
     minutes = Math.floor(seconds / 60)
     seconds = seconds % 60
@@ -103,7 +103,13 @@ $ ->
   socket.on 'existing puzzle', (room) =>
     console.log 'existing', room
     startDate = new Date(room.startTime)
+    if room.isDone
+      clearInterval timer
     puzzleManager.existingPuzzle room
+
+  socket.on 'done', (room) =>
+    console.log 'done', room
+    clearInterval timer
 
   key 'shift+o', (e) ->
     $('#browse_puzzles_a').trigger 'click'

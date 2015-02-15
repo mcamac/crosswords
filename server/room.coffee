@@ -35,8 +35,14 @@ class MultiplayerCrosswordRoom extends MultiplayerRoom
   newPuzzle: (puzzle) ->
     @puzzle = new Puzzle(puzzle)
     @startTime = new Date()
+    @isDone = false
 
-    @grid = @puzzle.map -> ''
+    me = @
+    @grid = @puzzle.map ([r, c]) -> ''
+      # x = me.puzzle.grid[r][c]
+      # if x != '_' then x else ''
+    # console.log @grid
+
     @gridOwners = @puzzle.map -> ''
     @gridChanges = {}
     @gridCorrects = []
@@ -61,12 +67,25 @@ class MultiplayerCrosswordRoom extends MultiplayerRoom
       @grid[i][j] = val
       @gridOwners[i][j] = user.id
       @emit 'square set', [user.id, [i, j], val]
+    # Check if done
+    if @checkDone()
+      console.log 'puzzle done'
+      @isDone = true
+      @emit 'done', @serialize()
+
+  checkDone: ->
+    for r in [0...@grid.length]
+      for c in [0...@grid[0].length]
+        if @puzzle.grid[r][c] != '_' and @puzzle.grid[r][c] != @grid[r][c]
+          return false
+    return true
 
   serialize: ->
     puzzle: @puzzle.json
     grid: @grid
     gridOwners: @gridOwners
     startTime: @startTime
+    isDone: @isDone
 
 
 exports.MultiplayerRoom = MultiplayerRoom if exports?

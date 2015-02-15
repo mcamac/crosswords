@@ -718,7 +718,7 @@
       r = _arg[0], c = _arg[1];
       oldValue = this.getSquare([r, c]);
       this.g.letters[r][c].firstChild.textContent = value;
-      color = value ? user.color : 'none';
+      color = value && ((user != null ? user.color : void 0) != null) ? user.color : 'none';
       if (oldValue !== value || server) {
         return this._setSquareColor(color, [r, c]);
       }
@@ -954,12 +954,12 @@
   })();
 
   $(function() {
-    var CROSSWORD_CANVAS_EL, ChatBox, ClueList, MembersBox, SOCKET_URL, clueSymbols, puzzleManager, roomName, socket, startDate, uiState;
+    var CROSSWORD_CANVAS_EL, ChatBox, ClueList, MembersBox, SOCKET_URL, clueSymbols, puzzleManager, roomName, socket, startDate, timer, uiState;
     SOCKET_URL = location.origin.replace(/^http/, 'ws');
     CROSSWORD_CANVAS_EL = '#crossword-container';
     socket = io.connect(SOCKET_URL);
     startDate = new Date();
-    setInterval((function() {
+    timer = setInterval((function() {
       var minutes, seconds;
       seconds = Math.floor((new Date() - startDate) / 1000);
       minutes = Math.floor(seconds / 60);
@@ -1075,7 +1075,16 @@
       return function(room) {
         console.log('existing', room);
         startDate = new Date(room.startTime);
+        if (room.isDone) {
+          clearInterval(timer);
+        }
         return puzzleManager.existingPuzzle(room);
+      };
+    })(this));
+    socket.on('done', (function(_this) {
+      return function(room) {
+        console.log('done', room);
+        return clearInterval(timer);
       };
     })(this));
     key('shift+o', function(e) {

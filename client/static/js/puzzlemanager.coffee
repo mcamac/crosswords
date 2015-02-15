@@ -226,7 +226,7 @@ class @PuzzleManager
   _setUserSquare: (user, [r, c], value, server) ->
     oldValue = @getSquare([r, c])
     @g.letters[r][c].firstChild.textContent = value
-    color = if value then user.color else 'none'
+    color = if value and user?.color? then user.color else 'none'
     if oldValue != value or server
       @_setSquareColor color, [r, c]
 
