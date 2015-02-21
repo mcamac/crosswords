@@ -56,12 +56,11 @@ html
         //- Middle
         section.large-6.columns.crossword-column
           .row
-            .small-10.columns
+            .small-12.columns
               h5
                 p#current-clue
                   span.dir-number {{ currentClueDirection | dir-symbol }} {{ currentClueNumber }}
                   span.text {{ currentClueText }}
-            .small-2.columns.timer
 
             #crossword-container
               svg#crossword(style="overflow: hidden; position: relative;")
