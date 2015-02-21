@@ -73,7 +73,7 @@ io.sockets.on 'connection', (socket) ->
     socket.emit 'existing puzzle', socket.room.serialize()
 
   socket.on 'chat message', (message) ->
-    if not message.indexOf('/u') == 0
+    if not (message.indexOf('/u') == 0)
       socket.room.emit 'chat message',
         user: socket.user.name,
         text: message
