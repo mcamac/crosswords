@@ -8,6 +8,8 @@ mongoose.connect mongo_url
 puzzleSchema = new mongoose.Schema
   title: String
   puzzle: Array
+  circled: mongoose.Schema.Types.Mixed
+  notes: String
   author: String
   clues: mongoose.Schema.Types.Mixed
   height: Number

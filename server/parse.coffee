@@ -3,12 +3,9 @@ iconv = require('iconv-lite')
 parse = (buf) ->
     width = buf[44]
     height = buf[45]
-    console.log width, height
     s = iconv.decode(buf, 'iso-8859-1')
-    console.log s
     puzzle = s[52...52 + width * height]
     puzzle = (puzzle[i * width...(i + 1) * width].replace(/\./g, '_') for i in [0...height])
-    console.log puzzle
     a = 52 + 2 * width * height
 
     clueArray = s[a..].split('\x00')
@@ -34,6 +31,19 @@ parse = (buf) ->
 
             clueNumber += if used then 1 else 0
 
+    notes = clueArray[clueArrayPos]
+    clueArrayPos += 1
+
+    for i in [0...s.length]
+        if s[i] == 'G' and s[i + 1] == 'E' and s[i + 2] == 'X' and s[i + 3] == 'T'
+            gext = i + 8
+    circled = {}
+    if gext
+        for r in [0...height]
+            circled[r] = {}
+            for c in [0...width]
+                circled[r][c] = buf[gext] & 0x80
+                gext += 1
 
     return {
         width: width
@@ -42,6 +52,8 @@ parse = (buf) ->
         author: author
         puzzle: puzzle
         clues: clues
+        notes: notes
+        circled: circled
     }
 
 fs = require 'fs'
@@ -49,10 +61,12 @@ parseFile = (filename) ->
     contents = fs.readFileSync filename
     return parse contents
 
-
 Puzzle = (require './db.coffee').Puzzle
 
+_ = require 'lodash'
+
 saveFile = (puzzle) ->
+    console.log puzzle
     Puzzle.findOne({title: puzzle.title}).exec((err, found) ->
         if not found
             console.log 'created', puzzle.title
@@ -60,7 +74,8 @@ saveFile = (puzzle) ->
             p.save()
         else
             console.log 'updated', puzzle.title
-            found.update puzzle
+            _.assign found, puzzle
+            found.save()
     )
 
 glob = require 'glob'
