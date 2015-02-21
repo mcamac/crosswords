@@ -93,6 +93,7 @@ $ ->
   socket.on 'chat message', (message) ->
     message.isServer = message.user == '__server'
     ChatBox.messages.push message
+    setTimeout (-> $('#chat').scrollTop($('#chat')[0].scrollHeight)), 20
 
   puzzleManager = new PuzzleManager {
     elements:

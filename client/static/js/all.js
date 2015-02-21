@@ -1094,7 +1094,10 @@
     });
     socket.on('chat message', function(message) {
       message.isServer = message.user === '__server';
-      return ChatBox.messages.push(message);
+      ChatBox.messages.push(message);
+      return setTimeout((function() {
+        return $('#chat').scrollTop($('#chat')[0].scrollHeight);
+      }), 20);
     });
     puzzleManager = new PuzzleManager({
       elements: {
