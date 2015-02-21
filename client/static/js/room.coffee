@@ -97,8 +97,7 @@ $ ->
   puzzleManager = new PuzzleManager {
     elements:
       gridEl: CROSSWORD_CANVAS_EL
-    puzzle:
-      size: 15
+    puzzle: {}
     socket: socket
   }, uiState
 

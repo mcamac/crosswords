@@ -1,24 +1,9 @@
 express = require 'express'
 http = require 'http'
-mongoose = require 'mongoose'
-mongo_url = 'mongodb://localhost/crosswords'
-if process.env.MONGO_URL
-  mongo_url = process.env.MONGO_URL
-mongoose.connect mongo_url
-
 MultiplayerCrosswordRoom = require('./room').MultiplayerCrosswordRoom
 Player = require '../shared/player'
 
-
-puzzleSchema = new mongoose.Schema
-  title: String
-  puzzle: Array
-  author: String
-  clues: mongoose.Schema.Types.Mixed
-  height: Number
-  width: Number
-
-Puzzle = mongoose.model 'Puzzle', puzzleSchema
+Puzzle = (require './db').Puzzle
 
 
 ## Application configuration

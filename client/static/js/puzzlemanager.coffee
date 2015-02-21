@@ -27,7 +27,7 @@ class @PuzzleManager
     @c = {}
 
     @user =
-      color: 'rgb(232,157, 52)'
+      color: 'rgb(232, 157, 52)'
 
     defaultSquareSize = 36
     defaultWidth = defaultSquareSize * 15
@@ -77,6 +77,16 @@ class @PuzzleManager
     $('#background').fadeTo(500, 0.3)
 
   render: ->
+    if @p.width >= 20 or @p.height >= 20
+      @g.grid.squareSize = 27
+    else
+      @g.grid.squareSize = 36
+
+    @g.grid.width = @p.width * @g.grid.squareSize
+    @g.grid.height = @p.height * @g.grid.squareSize
+    Render.setDims('crossword') \
+      @g.grid.width + @g.grid.margin, @g.grid.height + @g.grid.margin
+
     # Draw and format puzzle numbers
     @g.numbers = {}
     @g.blackSquares = {}
@@ -215,9 +225,10 @@ class @PuzzleManager
       line.remove()
     @g.grid.lines = []
 
-  loadPuzzle: (@p) ->
+  loadPuzzle: (p) ->
     # load puzzle data into manager and render
     @resetGrid()
+    @p = p
     @render()
 
   # FIXME don't store puzzle state in svg
@@ -238,7 +249,7 @@ class @PuzzleManager
       @_setSquareColor color, [r, c]
 
   _setSquareColor: (color, [r, c]) ->
-    @g.filledSquares[r][c].setAttribute 'fill', color
+    @g.filledSquares[r]?[c]?.setAttribute 'fill', color
 
   currentCell: ->
     [@g.ci, @g.cj]

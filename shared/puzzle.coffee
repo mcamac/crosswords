@@ -23,19 +23,18 @@ class @Puzzle
       @clueNumbers[d] = (parseInt(num) for num, clue of dClues)
 
     # compute where numbers are
-    @gridNumbers = (null for r in [0...@height] for c in [0...@width])
+    @gridNumbers = (null for c in [0...@width] for r in [0...@height])
     @gridNumbersRev = {}
 
     currentNumber = 1
     @_loopGrid ([r, c]) ->
       if @isWhite [r, c]
-        unless @isValidSquare([r - 1, c]) and
-               @isValidSquare([r, c - 1])
+        unless @isValidSquare([r - 1, c]) and @isValidSquare([r, c - 1])
           @gridNumbersRev[currentNumber] = [r, c]
           @gridNumbers[r][c] = currentNumber++
       return
 
-    @cellNumbers = ({ across: null, down: null } for r in [0...@height] for c in [0...@width])
+    @cellNumbers = ({ across: null, down: null } for c in [0...@width] for r in [0...@height])
     cellNumberCallback = (dirName, [roff, coff]) ->
       currentNumber = null
       ([r, c]) ->
@@ -56,7 +55,6 @@ class @Puzzle
     nextClueIndex = (currentClueIndex + offset + dirClueNumbers.length) % dirClueNumbers.length
 
     return dirClueNumbers[nextClueIndex]
-
 
   isValidSquare: (cell) ->
     @isInsideGrid(cell) and @isWhite(cell)

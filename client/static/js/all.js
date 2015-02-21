@@ -62,11 +62,11 @@
       this.gridNumbers = (function() {
         var _i, _ref1, _results;
         _results = [];
-        for (c = _i = 0, _ref1 = this.width; 0 <= _ref1 ? _i < _ref1 : _i > _ref1; c = 0 <= _ref1 ? ++_i : --_i) {
+        for (r = _i = 0, _ref1 = this.height; 0 <= _ref1 ? _i < _ref1 : _i > _ref1; r = 0 <= _ref1 ? ++_i : --_i) {
           _results.push((function() {
             var _j, _ref2, _results1;
             _results1 = [];
-            for (r = _j = 0, _ref2 = this.height; 0 <= _ref2 ? _j < _ref2 : _j > _ref2; r = 0 <= _ref2 ? ++_j : --_j) {
+            for (c = _j = 0, _ref2 = this.width; 0 <= _ref2 ? _j < _ref2 : _j > _ref2; c = 0 <= _ref2 ? ++_j : --_j) {
               _results1.push(null);
             }
             return _results1;
@@ -89,11 +89,11 @@
       this.cellNumbers = (function() {
         var _i, _ref1, _results;
         _results = [];
-        for (c = _i = 0, _ref1 = this.width; 0 <= _ref1 ? _i < _ref1 : _i > _ref1; c = 0 <= _ref1 ? ++_i : --_i) {
+        for (r = _i = 0, _ref1 = this.height; 0 <= _ref1 ? _i < _ref1 : _i > _ref1; r = 0 <= _ref1 ? ++_i : --_i) {
           _results.push((function() {
             var _j, _ref2, _results1;
             _results1 = [];
-            for (r = _j = 0, _ref2 = this.height; 0 <= _ref2 ? _j < _ref2 : _j > _ref2; r = 0 <= _ref2 ? ++_j : --_j) {
+            for (c = _j = 0, _ref2 = this.width; 0 <= _ref2 ? _j < _ref2 : _j > _ref2; c = 0 <= _ref2 ? ++_j : --_j) {
               _results1.push({
                 across: null,
                 down: null
@@ -443,7 +443,7 @@
       this.g = {};
       this.c = {};
       this.user = {
-        color: 'rgb(232,157, 52)'
+        color: 'rgb(232, 157, 52)'
       };
       defaultSquareSize = 36;
       defaultWidth = defaultSquareSize * 15;
@@ -526,6 +526,14 @@
 
     PuzzleManager.prototype.render = function() {
       var acrossClues, addBlackSquare, addCursor, addFilledSquare, addGridline, addLetter, addNumber, c, clue, downClues, num, offset, pxoff, r, _i, _j, _k, _ref, _ref1, _ref2;
+      if (this.p.width >= 20 || this.p.height >= 20) {
+        this.g.grid.squareSize = 27;
+      } else {
+        this.g.grid.squareSize = 36;
+      }
+      this.g.grid.width = this.p.width * this.g.grid.squareSize;
+      this.g.grid.height = this.p.height * this.g.grid.squareSize;
+      Render.setDims('crossword')(this.g.grid.width + this.g.grid.margin, this.g.grid.height + this.g.grid.margin);
       this.g.numbers = {};
       this.g.blackSquares = {};
       this.g.filledSquares = {};
@@ -702,8 +710,8 @@
     };
 
     PuzzleManager.prototype.loadPuzzle = function(p) {
-      this.p = p;
       this.resetGrid();
+      this.p = p;
       return this.render();
     };
 
@@ -733,9 +741,9 @@
     };
 
     PuzzleManager.prototype._setSquareColor = function(color, _arg) {
-      var c, r;
+      var c, r, _ref, _ref1;
       r = _arg[0], c = _arg[1];
-      return this.g.filledSquares[r][c].setAttribute('fill', color);
+      return (_ref = this.g.filledSquares[r]) != null ? (_ref1 = _ref[c]) != null ? _ref1.setAttribute('fill', color) : void 0 : void 0;
     };
 
     PuzzleManager.prototype.currentCell = function() {
@@ -1076,9 +1084,7 @@
       elements: {
         gridEl: CROSSWORD_CANVAS_EL
       },
-      puzzle: {
-        size: 15
-      },
+      puzzle: {},
       socket: socket
     }, uiState);
     socket.on('existing puzzle', (function(_this) {
