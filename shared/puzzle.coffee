@@ -17,6 +17,8 @@ class @Puzzle
     @width = puzzle.width
     @clues = puzzle.clues
     @json = puzzle
+    @notes = puzzle.notes
+    @circled = puzzle.circled
 
     @clueNumbers = {}
     for d, dClues of @clues

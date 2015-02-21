@@ -26,6 +26,13 @@ class @Render
 			el.setAttribute "d", d
 			parent.appendChild el
 
+		circle: (parent, cx, cy, r) ->
+			el = document.createElementNS(svgNS, "circle")
+			el.setAttribute 'cx', cx
+			el.setAttribute 'cy', cy
+			el.setAttribute 'r', r
+			parent.appendChild el
+
 		text: (parent, x, y, s, attrs) ->
 			el = document.createElementNS(svgNS, "text")
 			el.setAttribute "x", x

@@ -92,11 +92,13 @@ class @PuzzleManager
     @g.blackSquares = {}
     @g.filledSquares = {}
     @g.letters = {}
+    @g.circles = []
 
     addNumber = Render.text 'numbers'
     addBlackSquare = Render.rect 'black-squares'
     addFilledSquare = Render.rect 'filled-squares'
     addLetter = Render.text 'letters'
+    addCircle = Render.circle 'circles'
 
     for r in [0...@p.height]
       @g.numbers[r] = {}
@@ -128,6 +130,11 @@ class @PuzzleManager
           (c + 0.5) * @g.grid.squareSize,
           (r + 0.55) * @g.grid.squareSize,
           ''
+
+        if @p.circled?[r]?[c]
+          console.log r, c, @p.circled?[r]?[c]?
+          rad = @g.grid.squareSize / 2
+          @g.circles.push addCircle(2 * rad * c + rad + 0.5, 2 * rad * r + rad + 0.5, rad - 1)
 
     # add grid lines
     addGridline = Render.path 'gridlines'
@@ -220,6 +227,10 @@ class @PuzzleManager
     @g.highlights.user['user']?.remove()
     @g.highlights.across?.remove()
     @g.highlights.down?.remove()
+
+    if @g.circles
+      for circle in @g.circles
+        circle.remove()
 
     for line in @g.grid.lines
       line.remove()

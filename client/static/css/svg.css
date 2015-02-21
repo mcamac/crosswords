@@ -13,6 +13,10 @@
   stroke-width: 1px;
   stroke-linecap: square; }
 
+#circles {
+  stroke: #cccccc;
+  fill: none; }
+
 #numbers text, #letters text {
   dominant-baseline: central;
   font-family: "Source Sans"; }

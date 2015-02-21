@@ -45,6 +45,8 @@
       this.width = puzzle.width;
       this.clues = puzzle.clues;
       this.json = puzzle;
+      this.notes = puzzle.notes;
+      this.circled = puzzle.circled;
       this.clueNumbers = {};
       _ref = this.clues;
       for (d in _ref) {
@@ -525,7 +527,7 @@
     };
 
     PuzzleManager.prototype.render = function() {
-      var acrossClues, addBlackSquare, addCursor, addFilledSquare, addGridline, addLetter, addNumber, c, clue, downClues, num, offset, pxoff, r, _i, _j, _k, _ref, _ref1, _ref2;
+      var acrossClues, addBlackSquare, addCircle, addCursor, addFilledSquare, addGridline, addLetter, addNumber, c, clue, downClues, num, offset, pxoff, r, rad, _i, _j, _k, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6;
       if (this.p.width >= 20 || this.p.height >= 20) {
         this.g.grid.squareSize = 27;
       } else {
@@ -538,10 +540,12 @@
       this.g.blackSquares = {};
       this.g.filledSquares = {};
       this.g.letters = {};
+      this.g.circles = [];
       addNumber = Render.text('numbers');
       addBlackSquare = Render.rect('black-squares');
       addFilledSquare = Render.rect('filled-squares');
       addLetter = Render.text('letters');
+      addCircle = Render.circle('circles');
       for (r = _i = 0, _ref = this.p.height; 0 <= _ref ? _i < _ref : _i > _ref; r = 0 <= _ref ? ++_i : --_i) {
         this.g.numbers[r] = {};
         this.g.blackSquares[r] = {};
@@ -556,10 +560,15 @@
           }
           this.g.filledSquares[r][c] = addFilledSquare(this.g.grid.squareSize * c + 1, this.g.grid.squareSize * r + 1, this.g.grid.squareSize - 1, this.g.grid.squareSize - 1);
           this.g.letters[r][c] = addLetter((c + 0.5) * this.g.grid.squareSize, (r + 0.55) * this.g.grid.squareSize, '');
+          if ((_ref2 = this.p.circled) != null ? (_ref3 = _ref2[r]) != null ? _ref3[c] : void 0 : void 0) {
+            console.log(r, c, ((_ref4 = this.p.circled) != null ? (_ref5 = _ref4[r]) != null ? _ref5[c] : void 0 : void 0) != null);
+            rad = this.g.grid.squareSize / 2;
+            this.g.circles.push(addCircle(2 * rad * c + rad + 0.5, 2 * rad * r + rad + 0.5, rad - 1));
+          }
         }
       }
       addGridline = Render.path('gridlines');
-      for (offset = _k = 0, _ref2 = this.p.height; 0 <= _ref2 ? _k <= _ref2 : _k >= _ref2; offset = 0 <= _ref2 ? ++_k : --_k) {
+      for (offset = _k = 0, _ref6 = this.p.height; 0 <= _ref6 ? _k <= _ref6 : _k >= _ref6; offset = 0 <= _ref6 ? ++_k : --_k) {
         pxoff = this.g.grid.squareSize * offset + 0.5;
         this.g.grid.lines.push(addGridline("M" + pxoff + ",0.5v" + this.g.grid.height), addGridline("M0.5," + pxoff + "h" + this.g.grid.width));
       }
@@ -580,11 +589,11 @@
       this.g.dir = dir.ACROSS;
       $('.puzzle-title').html(this.p.title);
       acrossClues = (function() {
-        var _ref3, _results;
-        _ref3 = this.p.clues.across;
+        var _ref7, _results;
+        _ref7 = this.p.clues.across;
         _results = [];
-        for (num in _ref3) {
-          clue = _ref3[num];
+        for (num in _ref7) {
+          clue = _ref7[num];
           _results.push({
             num: parseInt(num),
             text: clue,
@@ -594,11 +603,11 @@
         return _results;
       }).call(this);
       downClues = (function() {
-        var _ref3, _results;
-        _ref3 = this.p.clues.down;
+        var _ref7, _results;
+        _ref7 = this.p.clues.down;
         _results = [];
-        for (num in _ref3) {
-          clue = _ref3[num];
+        for (num in _ref7) {
+          clue = _ref7[num];
           _results.push({
             num: parseInt(num),
             text: clue,
@@ -662,7 +671,7 @@
     };
 
     PuzzleManager.prototype.resetGrid = function() {
-      var c, line, r, _i, _j, _k, _len, _ref, _ref1, _ref10, _ref11, _ref12, _ref13, _ref14, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9;
+      var c, circle, line, r, _i, _j, _k, _l, _len, _len1, _ref, _ref1, _ref10, _ref11, _ref12, _ref13, _ref14, _ref15, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9;
       $('#background').fadeTo(100, 0);
       for (r = _i = 0, _ref = this.p.height; 0 <= _ref ? _i < _ref : _i > _ref; r = 0 <= _ref ? ++_i : --_i) {
         for (c = _j = 0, _ref1 = this.p.width; 0 <= _ref1 ? _j < _ref1 : _j > _ref1; c = 0 <= _ref1 ? ++_j : --_j) {
@@ -701,9 +710,16 @@
       if ((_ref13 = this.g.highlights.down) != null) {
         _ref13.remove();
       }
-      _ref14 = this.g.grid.lines;
-      for (_k = 0, _len = _ref14.length; _k < _len; _k++) {
-        line = _ref14[_k];
+      if (this.g.circles) {
+        _ref14 = this.g.circles;
+        for (_k = 0, _len = _ref14.length; _k < _len; _k++) {
+          circle = _ref14[_k];
+          circle.remove();
+        }
+      }
+      _ref15 = this.g.grid.lines;
+      for (_l = 0, _len1 = _ref15.length; _l < _len1; _l++) {
+        line = _ref15[_l];
         line.remove();
       }
       return this.g.grid.lines = [];
@@ -1165,6 +1181,14 @@
         var el;
         el = document.createElementNS(svgNS, "path");
         el.setAttribute("d", d);
+        return parent.appendChild(el);
+      },
+      circle: function(parent, cx, cy, r) {
+        var el;
+        el = document.createElementNS(svgNS, "circle");
+        el.setAttribute('cx', cx);
+        el.setAttribute('cy', cy);
+        el.setAttribute('r', r);
         return parent.appendChild(el);
       },
       text: function(parent, x, y, s, attrs) {
