@@ -79,7 +79,7 @@ saveFile = (puzzle) ->
     )
 
 glob = require 'glob'
-glob '/Users/martin/Documents/puz/*.puz', (er, files) ->
+glob '/Users/martin/Documents/puz2/*.puz', (er, files) ->
     for file in files
         saveFile (parseFile file)
     setTimeout (-> console.log files.length, 'puzzles'), 2000

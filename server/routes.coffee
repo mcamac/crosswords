@@ -10,7 +10,7 @@ module.exports = (app, Puzzle) ->
   #   res.render 'room.jade', {}
 
   app.get '/api/puzzles', (req, res) ->
-    Puzzle.find().select('title author _id').exec (err, puzzles) ->
+    Puzzle.find().select('title author _id').sort('title').exec (err, puzzles) ->
       res.json puzzles
 
   app.get '/api/puzzles/:id', (req, res) ->
