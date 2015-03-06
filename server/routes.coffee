@@ -17,6 +17,10 @@ module.exports = (app, Puzzle) ->
     Puzzle.find().exec (err, puzzles) ->
       res.json puzzles[Math.floor(Math.random() * puzzles.length)]
 
+  app.get '/api/puzzles/random/:day', (req, res) ->
+    Puzzle.find({ title: {$regex: req.params.day }}).exec (err, puzzles) ->
+      res.json puzzles[Math.floor(Math.random() * puzzles.length)]
+
   app.get '/api/puzzles/:id', (req, res) ->
     Puzzle.findOne({_id: req.params.id}).exec (err, puzzle) ->
       res.json puzzle

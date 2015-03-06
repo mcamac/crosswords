@@ -1147,6 +1147,17 @@
         };
       })(this));
     });
+    $('.random-day').on('click', function(e) {
+      var day;
+      day = $(this).html().trim();
+      return $.getJSON("/api/puzzles/random/" + day, (function(_this) {
+        return function(puzzle) {
+          return socket.emit('new puzzle', {
+            id: puzzle._id
+          });
+        };
+      })(this));
+    });
     $('#browse_puzzles_modal').on('click', '.load-puzzle-a', function(e) {
       return $.getJSON("/api/puzzles/" + ($(this).data('puzzle-id')), (function(_this) {
         return function(puzzle) {
