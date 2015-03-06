@@ -27,13 +27,16 @@ html
             li.divider
             li: a#browse_puzzles_a.reveal-link(href='#', data-reveal-id='browse_puzzles_modal') Browse Puzzles
             li: a#random_a.reveal-link(href='#') Random Puzzle
-            li: a.random-day.reveal-link(href='#') Monday
-            li: a.random-day.reveal-link(href='#') Tuesday
-            li: a.random-day.reveal-link(href='#') Wednesday
-            li: a.random-day.reveal-link(href='#') Thursday
-            li: a.random-day.reveal-link(href='#') Friday
-            li: a.random-day.reveal-link(href='#') Saturday
-            li: a.random-day.reveal-link(href='#') Sunday
+            li.has-dropdown
+              a(data-dropdown="drop") Random by Difficulty
+              ul.dropdown#drop.f-dropdown(data-dropdown-content, aria-hidden="true")
+                li: a.random-day(href='#') Monday
+                li: a.random-day(href='#') Tuesday
+                li: a.random-day(href='#') Wednesday
+                li: a.random-day(href='#') Thursday
+                li: a.random-day(href='#') Friday
+                li: a.random-day(href='#') Saturday
+                li: a.random-day(href='#') Sunday
             //- li: a(href='#') Room Options
             //- li: a(href='#') Help
             //- li: a(href='#') Constructor
