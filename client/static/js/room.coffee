@@ -137,6 +137,14 @@ $ ->
         )
   )
 
+  $('#random_a').on 'click', (e) ->
+    $.getJSON(
+      "/api/puzzles/random",
+      (puzzle) =>
+        socket.emit 'new puzzle',
+          id: puzzle._id
+    )
+
   $('#browse_puzzles_modal').on 'click', '.load-puzzle-a', (e) ->
     $.getJSON(
       "/api/puzzles/#{$(this).data('puzzle-id')}",
