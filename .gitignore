@@ -12,3 +12,6 @@ shared/room.js
 */player.js
 Gruntfile.js
 *.map
+
+parsers/*.json
+parsers/*.puz

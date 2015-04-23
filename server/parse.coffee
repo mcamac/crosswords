@@ -79,12 +79,15 @@ saveFile = (puzzle) ->
     )
 
 glob = require 'glob'
-glob '/Users/martin/Documents/puz2012/*.puz', (er, files) ->
+glob '/Users/martin/code/crosswords/parsers/*.puz', (er, files) ->
     for file in files
         saveFile (parseFile file)
     setTimeout (-> console.log files.length, 'puzzles'), 2000
 
 
+module.exports =
+    saveFile: saveFile
+    parseFile: parseFile
 
 
 # mongoose.disconnect()
