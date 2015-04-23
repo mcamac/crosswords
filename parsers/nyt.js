@@ -1,6 +1,6 @@
 var casper = require('casper').create();
 
-var date = casper.cli.args[0];
+var date = casper.cli.args.length > 0 ? casper.cli.args[0] : new Date().toISOString().slice(0, 10);
 var url = 'https://myaccount.nytimes.com/auth/login';
 var target = 'http://www.nytimes.com/svc/crosswords/v2/puzzle/daily-' + date + '.puz';
 
@@ -17,3 +17,4 @@ casper.wait(3000, function () {
 });
 
 casper.run();
+
