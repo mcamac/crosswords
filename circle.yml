@@ -1,5 +1,5 @@
 deployment:
   production:
-    branch: master
+    branch: release
     heroku:
       appname: crosswords-io
