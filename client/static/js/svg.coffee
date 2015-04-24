@@ -43,3 +43,5 @@ class @Render
 
 	for k, f of _Render
 		@[k] = do (f) => (id) -> f.bind @, document.getElementById id
+
+module.exports = Render

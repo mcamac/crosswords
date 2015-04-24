@@ -1,6 +1,9 @@
 isd = (a, b) ->
   (a[0] == b[0]) and (a[1] == b[1])
 
+KeyManager = require './keymanager'
+Render = require './svg'
+Puzzle = require '../../../shared/puzzle'
 
 class @PuzzleManager
   constructor: (options, @ui) ->
@@ -410,3 +413,5 @@ class @PuzzleManager
       width: @g.grid.squareSize * (ec - sc + 1) - 5
       height: @g.grid.squareSize - 5
     @g.highlights.across.className.baseVal = @_highlightClass dir.ACROSS
+
+module.exports = PuzzleManager

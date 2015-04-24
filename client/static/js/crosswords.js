@@ -325,7 +325,7 @@
 	  module.exports = this.Puzzle;
 	}
 	}.call(window));
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(13)(module)))
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(12)(module)))
 
 /***/ },
 /* 2 */
@@ -498,6 +498,8 @@
 	  return KeyManager;
 
 	})();
+
+	module.exports = KeyManager;
 	}.call(window));
 
 /***/ },
@@ -507,12 +509,18 @@
 	/*** IMPORTS FROM imports-loader ***/
 	(function() {
 
-	var isd,
+	var KeyManager, Puzzle, Render, isd,
 	  __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
 	isd = function(a, b) {
 	  return (a[0] === b[0]) && (a[1] === b[1]);
 	};
+
+	KeyManager = __webpack_require__(3);
+
+	Render = __webpack_require__(6);
+
+	Puzzle = __webpack_require__(1);
 
 	this.PuzzleManager = (function() {
 	  var Action, it;
@@ -1074,6 +1082,8 @@
 	  return PuzzleManager;
 
 	})();
+
+	module.exports = PuzzleManager;
 	}.call(window));
 
 /***/ },
@@ -1082,6 +1092,10 @@
 
 	/*** IMPORTS FROM imports-loader ***/
 	(function() {
+
+	var PuzzleManager;
+
+	PuzzleManager = __webpack_require__(4);
 
 	$(function() {
 	  var CROSSWORD_CANVAS_EL, ChatBox, ClueList, MembersBox, SOCKET_URL, clueSymbols, puzzleManager, roomName, setTimer, socket, startDate, timer, uiState;
@@ -1343,6 +1357,8 @@
 	  return Render;
 
 	})();
+
+	module.exports = Render;
 	}.call(window));
 
 /***/ },
@@ -1375,7 +1391,7 @@
 /* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(12)();
+	exports = module.exports = __webpack_require__(13)();
 	exports.push([module.id, "@font-face{src:url('/static/fonts/SourceSansPro-ExtraLight.ttf');font-family:'Source Sans';font-weight:200;}@font-face{src:url('/static/fonts/SourceSansPro-ExtraLightItalic.ttf');font-family:'Source Sans';font-weight:200;font-style:italic;}@font-face{src:url('/static/fonts/SourceSansPro-Light.ttf');font-family:'Source Sans';font-weight:300;}@font-face{src:url('/static/fonts/SourceSansPro-LightItalic.ttf');font-family:'Source Sans';font-weight:300;font-style:italic;}@font-face{src:url('/static/fonts/SourceSansPro-Regular.ttf');font-family:'Source Sans';font-weight:400;}@font-face{src:url('/static/fonts/SourceSansPro-Italic.ttf');font-family:'Source Sans';font-weight:400;font-style:italic;}@font-face{src:url('/static/fonts/SourceSansPro-Semibold.ttf');font-family:'Source Sans';font-weight:600;}@font-face{src:url('/static/fonts/SourceSansPro-SemiboldItalic.ttf');font-family:'Source Sans';font-weight:600;font-style:italic;}@font-face{src:url('/static/fonts/SourceSansPro-Bold.ttf');font-family:'Source Sans';font-weight:700;}@font-face{src:url('/static/fonts/SourceSansPro-BoldItalic.ttf');font-family:'Source Sans';font-weight:700;font-style:italic;}@font-face{src:url('/static/fonts/SourceSansPro-Black.ttf');font-family:'Source Sans';font-weight:900;}@font-face{src:url('/static/fonts/SourceSansPro-BlackItalic.ttf');font-family:'Source Sans';font-weight:900;font-style:italic;}body,h1,h2,h3,h4,h5,h6{font-family:\"Source Sans\", sans-serif}.game-area{margin-top:-20px;max-width:1240px}.clue-list{font-size:13px;height:250px;overflow-y:scroll;margin-left:0;padding-left:0.5em;position:relative;list-style:none}.clue-list li{padding:0 5px}.clue-list li:hover{background-color:#F0F0F0}.clue-list .active{background-color:rgba(61,104,184,0.55)}.clue-list .inactive{background-color:rgba(61,104,184,0.15)}.clue-list .clue-num{display:inline-block;margin-right:5px;font-style:bold;text-align:right;width:15px}#current-clue .dir-number{font-weight:700;display:inline-block;width:3.5em;padding-right:0em}#current-clue .text{font-size:0.9em}#players{height:65px}#players ul{list-style:none;margin:0;padding:0}#players ul li{display:inline-block}#players ul li:not(:last-of-type){margin-right:0.5em}#players ul li .member{border-bottom:3px solid transparent}#chat{background-color:#FAFAFA;height:360px;overflow-y:scroll;padding:10px}#chat p{font-size:0.9em;margin:0;word-wrap:break-word}#chat p .username{margin-right:3px}#crossword-container{margin:0px 10px 0}.timer{text-align:right}.timer .deciseconds{color:#aaa}svg{shape-rendering:geometricPrecision}ul.puzzle-list{height:400px;overflow:scroll}#key-bindings table{table-layout:fixed;border-radius:4px}#key-bindings table th{text-align:left}#key-bindings table .c1{width:11em}#key-bindings table .c3{width:37em}", ""]);
 
 /***/ },
@@ -1408,7 +1424,7 @@
 /* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(12)();
+	exports = module.exports = __webpack_require__(13)();
 	exports.push([module.id, "#background{stroke:none;fill:#62cb62;opacity:0}#background.green{opacity:0.2}#black-squares{fill:#333}#gridlines{stroke:#ddd;stroke-width:1px;stroke-linecap:square}#circles{stroke:#ccc;fill:none}#numbers text,#letters text{dominant-baseline:central;font-family:'Source Sans'}#numbers{font-size:11px;font-weight:300;color:#666;text-anchor:start}#letters{font-size:24px;font-weight:600;text-anchor:middle}#highlight-square,#highlight-across,#highlight-down{fill:none}#highlight-square{stroke:#3d68b8}.highlight-parallel{stroke:rgba(61,104,184,0.55)}.highlight-perpendicular{stroke:rgba(61,104,184,0.15)}#their-cursors{fill:none;opacity:0.7}#filled-squares{stroke:none;fill:none;opacity:0.4}", ""]);
 
 /***/ },
@@ -1639,6 +1655,22 @@
 /* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
+	module.exports = function(module) {
+		if(!module.webpackPolyfill) {
+			module.deprecate = function() {};
+			module.paths = [];
+			// module.parent = undefined by default
+			module.children = [];
+			module.webpackPolyfill = 1;
+		}
+		return module;
+	}
+
+
+/***/ },
+/* 13 */
+/***/ function(module, exports, __webpack_require__) {
+
 	/*
 		MIT License http://www.opensource.org/licenses/mit-license.php
 		Author Tobias Koppers @sokra
@@ -1689,22 +1721,6 @@
 		};
 		return list;
 	};
-
-
-/***/ },
-/* 13 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = function(module) {
-		if(!module.webpackPolyfill) {
-			module.deprecate = function() {};
-			module.paths = [];
-			// module.parent = undefined by default
-			module.children = [];
-			module.webpackPolyfill = 1;
-		}
-		return module;
-	}
 
 
 /***/ }

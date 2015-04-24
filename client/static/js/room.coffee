@@ -1,3 +1,5 @@
+PuzzleManager = require './puzzlemanager'
+
 $ ->
   SOCKET_URL = location.origin.replace(/^http/, 'ws')
 

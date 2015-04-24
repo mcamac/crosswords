@@ -101,3 +101,5 @@ class @KeyManager
     key k, (e) ->
       e.preventDefault()
       puzzleManager[puzzleManagerFunctionName] puzzleManagerFunctionArgs...
+
+module.exports = KeyManager
