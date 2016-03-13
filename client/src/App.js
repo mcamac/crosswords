@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {browserHistory, Router, Route, Link} from 'react-router'
 
 import Room from './Room'

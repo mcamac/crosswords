@@ -1,8 +1,8 @@
-import React, { Component } from 'react'
+import React, {Component} from 'react'
 import ReactDOM from 'react-dom'
 import key from 'keymaster'
 import R from 'ramda'
-import {set} from 'lodash/fp'
+import {isEqual, set} from 'lodash/fp'
 
 import StaticGrid from './StaticGrid'
 
@@ -34,7 +34,6 @@ class GridI extends Component {
       Math.floor((event.clientY - nodeTop) / squareSize),
       Math.floor((event.clientX - nodeLeft) / squareSize),
     ]
-    console.log(cursor)
     this.props.onClick(cursor)
   }
 
@@ -67,6 +66,8 @@ class GridI extends Component {
   }
 }
 
+const flipD = direction => direction === 'A' ? 'D' : 'A'
+
 const ARROWS = {
   Left: [0, -1],
   Right: [0, 1],
@@ -91,7 +92,7 @@ export default class Grid extends Component {
     key('space', event => {
       event.preventDefault()
       const {direction} = this.state
-      this.setState({direction: direction === 'A' ? 'D' : 'A'})
+      this.setState({direction: flipD(direction)})
     })
 
     key('tab', event => {
@@ -111,6 +112,14 @@ export default class Grid extends Component {
   }
 
   setCursor = cursor => this.setState({cursor})
+
+  onClick = ([nr, nc]) => {
+    const {direction, cursor: [r, c]} = this.state
+    this.setState({
+      direction: isEqual([r, c], [nr, nc]) ? flipD(direction) : direction,
+      cursor: [nr, nc],
+    })
+  }
 
   onLetterPress = letter => {
     console.log(letter)
@@ -138,7 +147,7 @@ export default class Grid extends Component {
           squareSize={squareSize}
           height={height}
           rows={rows}
-          puzzle={P.puzzle}
+          puzzle={P}
         />
         <g>
           {sqi.map(([r, c]) => (
@@ -153,7 +162,7 @@ export default class Grid extends Component {
             </text>
           ))}
         </g>
-        <GridI cursor={cursor} onClick={this.setCursor} />
+        <GridI cursor={cursor} onClick={this.onClick} />
       </svg>
     )
   }

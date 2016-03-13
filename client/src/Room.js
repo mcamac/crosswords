@@ -1,10 +1,11 @@
-import React, { Component } from 'react'
+import React, {Component} from 'react'
 import R from 'ramda'
 
 import Grid from './Grid'
 import P from './default-puzzle'
+import {processPuzzle} from './puzzle'
 
-function ClueList({clues, title}) {
+const ClueList = ({clues, title}) => {
   return (
     <div style={{minWidth: 200, margin: '0 5px'}}>
       <h4 style={{margin: '5px 0'}}>{title}</h4>
@@ -34,7 +35,10 @@ export default class Room extends Component {
             <ClueList title='Across' clues={P.clues.across}/>
             <ClueList title='Down' clues={P.clues.down}/>
           </div>
-          <Grid puzzle={P}/>
+          <div>
+            <p>Wood for a chest</p>
+            <Grid puzzle={processPuzzle(P)}/>
+          </div>
         </div>
 
       </div>

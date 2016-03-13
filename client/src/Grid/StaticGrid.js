@@ -5,9 +5,6 @@ let sqi = R.xprod(R.range(0, 15), R.range(0, 15))
 
 const StaticGrid = ({squareSize, height, rows, puzzle}) => {
   console.log('render StaticGrid')
-  const numbered = sqi.filter(([r, c]) => (
-    puzzle[r][c] !== '_' && (r === 0 || c === 0 || puzzle[r - 1][c] === '_' || puzzle[r][c - 1] === '_')
-  ))
   return (
     <g>
       <g>
@@ -19,7 +16,7 @@ const StaticGrid = ({squareSize, height, rows, puzzle}) => {
         ), rows + 1)}
       </g>
       <g>
-        {sqi.filter(([r, c]) => puzzle[r][c] === '_').map(([r, c]) => (
+        {sqi.filter(([r, c]) => puzzle.grid[r][c] === '_').map(([r, c]) => (
           <rect
             key={`${r}_${c}`}
             x={c * squareSize}
@@ -30,7 +27,7 @@ const StaticGrid = ({squareSize, height, rows, puzzle}) => {
         ))}
       </g>
       <g>
-        {numbered.map(([r, c], i) => (
+        {puzzle.numbered.map(([r, c], i) => (
           <text
             key={`${r}_${c}`}
             style={{fontSize: '10px', fontFamily: 'Inconsolata'}}
