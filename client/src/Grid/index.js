@@ -2,6 +2,9 @@ import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
 import key from 'keymaster'
 import R from 'ramda'
+import {set} from 'lodash/fp'
+
+import StaticGrid from './StaticGrid'
 
 let width = 600
 let height = 600
@@ -21,13 +24,9 @@ const Cursor = ({c, r, squareSize}) =>
     y={r * squareSize} width={squareSize} height={squareSize}
   />
 
-const LETTERS = 'a,b,c'
+const LETTERS = 'abcdefghijklmnopqrstuvwxyz'.split('').join(',')
 
 class GridI extends Component {
-  state = {
-    cursor: [0, 0]
-  }
-
   onClick = event => {
     let node = ReactDOM.findDOMNode(this).parentElement
     const {top: nodeTop, left: nodeLeft} = node.getBoundingClientRect()
@@ -36,11 +35,11 @@ class GridI extends Component {
       Math.floor((event.clientX - nodeLeft) / squareSize),
     ]
     console.log(cursor)
-    this.setState({cursor})
+    this.props.onClick(cursor)
   }
 
   render() {
-    let [r, c] = this.state.cursor
+    let [r, c] = this.props.cursor
     return (
       <g>
         <g>
@@ -68,15 +67,31 @@ class GridI extends Component {
   }
 }
 
+const ARROWS = {
+  Left: [0, -1],
+  Right: [0, 1],
+  Down: [1, 0],
+  Up: [-1, 0],
+}
+
+let sqi = R.xprod(R.range(0, 15), R.range(0, 15))
+
 export default class Grid extends Component {
+  state = {
+    cursor: [0, 0],
+    direction: 'A',
+    fill: this.props.puzzle.puzzle.map(row => row.split('')),
+  }
+
   componentDidMount() {
     key(LETTERS, event => {
       this.onLetterPress(String.fromCharCode(event.which))
     })
 
     key('space', event => {
-      console.log('space')
       event.preventDefault()
+      const {direction} = this.state
+      this.setState({direction: direction === 'A' ? 'D' : 'A'})
     })
 
     key('tab', event => {
@@ -90,44 +105,41 @@ export default class Grid extends Component {
     })
 
     key('left,right,up,down', event => {
-      console.log('arrow', event.code)
       event.preventDefault()
+      this.onArrowPress(event.code.slice(5))
     })
   }
 
+  setCursor = cursor => this.setState({cursor})
+
   onLetterPress = letter => {
     console.log(letter)
+    const {direction, cursor: [r, c]} = this.state
+    const [dr, dc] = direction === 'A' ? [0, 1] : [1, 0]
+    this.setState({
+      fill: set([r, c], letter, this.state.fill),
+      cursor: [r + dr, c + dc],
+    })
+  }
+
+  onArrowPress = direction => {
+    const [r, c] = this.state.cursor
+    const [dr, dc] = ARROWS[direction]
+    this.setCursor([r + dr, c + dc])
   }
 
   render() {
     let P = this.props.puzzle
+    const {cursor, fill} = this.state
     console.log(P)
-
-    let sqi = R.xprod(R.range(0, rows), R.range(0, rows))
-    let numbered = sqi.filter(([r, c]) => (
-      P.puzzle[r][c] !== '_' && (r === 0 || c === 0 || P.puzzle[r - 1][c] === '_' || P.puzzle[r][c - 1] === '_')
-    ))
     return (
       <svg width={width + 2} height={height + 2}>
-        <g>
-          {R.times(i => (
-            <line key={`r${i}`} stroke='#bbb' x1={i * squareSize + 0.5} x2={i * squareSize + 0.5} y1={0} y2={height}/>
-          ), rows + 1)}
-          {R.times(i => (
-            <line key={`c${i}`} stroke='#bbb' y1={i * squareSize + 0.5} y2={i * squareSize + 0.5} x1={0} x2={height}/>
-          ), rows + 1)}
-        </g>
-        <g>
-          {sqi.filter(([r, c]) => P.puzzle[r][c] === '_').map(([r, c]) => (
-            <rect
-              key={`${r}_${c}`}
-              x={c * squareSize}
-              y={r * squareSize}
-              width={squareSize}
-              height={squareSize}
-              fill='black'/>
-          ))}
-        </g>
+        <StaticGrid
+          squareSize={squareSize}
+          height={height}
+          rows={rows}
+          puzzle={P.puzzle}
+        />
         <g>
           {sqi.map(([r, c]) => (
             <text
@@ -137,29 +149,12 @@ export default class Grid extends Component {
               y={(r + 0.5) * squareSize + 8}
               textAnchor='middle'
               >
-              {P.puzzle[r][c]}
+              {fill[r][c]}
             </text>
           ))}
         </g>
-        <g>
-          {numbered.map(([r, c], i) => (
-            <text
-              key={`${r}_${c}`}
-              style={{fontSize: '10px', fontFamily: 'Inconsolata'}}
-              x={c * squareSize + 2}
-              y={(r + 0.1) * squareSize + 8}
-              textAnchor='start'
-              >
-              {i + 1}
-            </text>
-          ))}
-        </g>
-        <GridI/>
+        <GridI cursor={cursor} onClick={this.setCursor} />
       </svg>
     )
-  }
-
-  onKeyPress(event) {
-    console.log(event)
   }
 }

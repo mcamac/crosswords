@@ -37,10 +37,12 @@
   "dependencies": {
     "history": "2.0.1",
     "keymaster": "1.6.2",
+    "lodash": "4.6.1",
     "ramda": "0.19.1",
     "react": "^0.14.0",
     "react-dom": "0.14.7",
     "react-router": "2.0.1",
+    "recompose": "0.15.0",
     "redux": "3.3.1"
   }
 }
