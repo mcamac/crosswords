@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import {Router, Route, Link} from 'react-router'
-import createBrowserHistory from 'history/lib/createBrowserHistory'
+import {browserHistory, Router, Route, Link} from 'react-router'
 
 import Room from './Room'
 
@@ -16,7 +15,7 @@ class Homepage extends Component {
 
 function routes() {
   return (
-    <Router history={createBrowserHistory()}>
+    <Router history={browserHistory}>
       <Route path='/' component={Homepage}></Route>
       <Route path='/room/:id' component={Room}></Route>
     </Router>
