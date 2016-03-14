@@ -124,6 +124,8 @@ export default class Grid extends Component {
   setCursor = cursor => this.setState({cursor})
 
   onClick = ([nr, nc]) => {
+    let {puzzle} = this.props
+    if (!puzzle.valid([nr, nc])) return
     const {direction, cursor: [r, c]} = this.state
     this.setState({
       direction: isEqual([r, c], [nr, nc]) ? flipD(direction) : direction,
@@ -147,7 +149,7 @@ export default class Grid extends Component {
     const [dr, dc] = direction === 'A' ? [0, 1] : [1, 0]
     this.setState({
       fill: set([r, c], letter, this.state.fill),
-      cursor: puzzle.nextSquare([r, c], [dr, dc]),
+      cursor: puzzle.nextSquareSoft([r, c], [dr, dc]),
     })
   }
 

@@ -23,6 +23,12 @@ export const nextSquare = (grid, [r, c], [dr, dc]) => {
   return [nr, nc]
 }
 
+export const nextSquareSoft = (grid, [r, c], [dr, dc]) => {
+  let [nr, nc] = [r + dr, c + dc]
+  if (!inBounds(grid, [nr, nc]) || !valid(grid, [nr, nc])) return [r, c]
+  return [nr, nc]
+}
+
 const clueBoundsForSquare = (grid, [r, c]) => {
   if (!valid(grid, [r, c])) return {}
   const bounds = {}
@@ -60,8 +66,12 @@ export const processPuzzle = puzzle => {
     valid(puzzle.grid, [r, c])
       && (!valid(puzzle.grid, [r - 1, c]) || !valid(puzzle.grid, [r, c - 1]))
   )
+  puzzle.numbers = R.range(0, 15).map(() => [])
+  puzzle.numbered.forEach(([r, c], n) => puzzle.numbers[r][c] = n + 1)
   return {
     nextSquare: (sq, dir) => nextSquare(puzzle.grid, sq, dir),
+    nextSquareSoft: (sq, dir) => nextSquareSoft(puzzle.grid, sq, dir),
+    valid: sq => valid(puzzle.grid, sq),
     ...puzzle,
   }
 }
