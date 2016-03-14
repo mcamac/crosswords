@@ -13,17 +13,13 @@ class Homepage extends Component {
   }
 }
 
-function routes() {
-  return (
-    <Router history={browserHistory}>
-      <Route path='/' component={Homepage}></Route>
-      <Route path='/room/:id' component={Room}></Route>
-    </Router>
-  )
-}
-
 export class App extends Component {
   render() {
-    return routes()
+    return (
+      <Router history={browserHistory}>
+        <Route path='/' component={Homepage}></Route>
+        <Route path='/room/:id' component={Room}></Route>
+      </Router>
+    )
   }
 }

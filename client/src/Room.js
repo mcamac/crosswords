@@ -36,7 +36,7 @@ export default class Room extends Component {
             <ClueList title='Down' clues={P.clues.down}/>
           </div>
           <div>
-            <p>Wood for a chest</p>
+            <p><span>1</span> Wood for a chest</p>
             <Grid puzzle={processPuzzle(P)}/>
           </div>
         </div>

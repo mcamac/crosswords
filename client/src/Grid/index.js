@@ -38,26 +38,31 @@ class GridI extends Component {
   }
 
   render() {
-    let [r, c] = this.props.cursor
+    let {puzzle, direction, cursor: [r, c]} = this.props
+    const {A, D} = puzzle.clueBounds[r][c]
     return (
       <g>
         <g>
           <Cursor c={c} r={r} squareSize={squareSize} />
           <rect
-            stroke='blue'
+            stroke={direction === 'A' ? 'blue' : 'gray'}
             strokeWidth='6px'
             fill='none'
             opacity='0.2'
-            x={3} y={3}
-            width={squareSize * 5 - 4} height={squareSize - 4}
+            x={squareSize * A[0][1] + 3}
+            y={squareSize * A[0][0] + 3}
+            width={squareSize * (A[1][1] - A[0][1] + 1) - 4}
+            height={squareSize - 4}
           />
           <rect
-            stroke='gray'
+            stroke={direction === 'D' ? 'blue' : 'gray'}
             strokeWidth='6px'
             fill='none'
             opacity='0.2'
-            x={3} y={3}
-            height={squareSize * 5 - 4} width={squareSize - 4}
+            x={squareSize * D[0][1] + 3}
+            y={squareSize * D[0][0] + 3}
+            height={squareSize * (D[1][0] - D[0][0] + 1) - 4}
+            width={squareSize - 4}
           />
         </g>
         <ClickOverlay width={width} height={height} onClick={this.onClick} />
@@ -100,6 +105,11 @@ export default class Grid extends Component {
       event.preventDefault()
     })
 
+    key('backspace', event => {
+      event.preventDefault()
+      this.onBackspace()
+    })
+
     key('shift+tab', event => {
       console.log('shift tab')
       event.preventDefault()
@@ -121,25 +131,36 @@ export default class Grid extends Component {
     })
   }
 
+  onBackspace = () => {
+    let {puzzle} = this.props
+    const {direction, cursor: [r, c]} = this.state
+    const [dr, dc] = direction === 'A' ? [0, 1] : [1, 0]
+    this.setState({
+      fill: set([r, c], '', this.state.fill),
+      cursor: puzzle.nextSquare([r, c], [-dr, -dc]),
+    })
+  }
+
   onLetterPress = letter => {
-    console.log(letter)
+    let {puzzle} = this.props
     const {direction, cursor: [r, c]} = this.state
     const [dr, dc] = direction === 'A' ? [0, 1] : [1, 0]
     this.setState({
       fill: set([r, c], letter, this.state.fill),
-      cursor: [r + dr, c + dc],
+      cursor: puzzle.nextSquare([r, c], [dr, dc]),
     })
   }
 
   onArrowPress = direction => {
+    let {puzzle} = this.props
     const [r, c] = this.state.cursor
     const [dr, dc] = ARROWS[direction]
-    this.setCursor([r + dr, c + dc])
+    this.setCursor(puzzle.nextSquare([r, c], [dr, dc]))
   }
 
   render() {
     let P = this.props.puzzle
-    const {cursor, fill} = this.state
+    const {cursor, direction, fill} = this.state
     console.log(P)
     return (
       <svg width={width + 2} height={height + 2}>
@@ -162,7 +183,7 @@ export default class Grid extends Component {
             </text>
           ))}
         </g>
-        <GridI cursor={cursor} onClick={this.onClick} />
+        <GridI direction={direction} puzzle={P} cursor={cursor} onClick={this.onClick} />
       </svg>
     )
   }
