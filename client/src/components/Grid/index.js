@@ -26,7 +26,7 @@ const Cursor = ({c, r, squareSize}) =>
 
 const LETTERS = 'abcdefghijklmnopqrstuvwxyz'.split('').join(',')
 
-class GridI extends Component {
+class Cursors extends Component {
   onClick = event => {
     let node = ReactDOM.findDOMNode(this).parentElement
     const {top: nodeTop, left: nodeLeft} = node.getBoundingClientRect()
@@ -185,7 +185,7 @@ export default class Grid extends Component {
             </text>
           ))}
         </g>
-        <GridI direction={direction} puzzle={P} cursor={cursor} onClick={this.onClick} />
+        <Cursors direction={direction} puzzle={P} cursor={cursor} onClick={this.onClick} />
       </svg>
     )
   }

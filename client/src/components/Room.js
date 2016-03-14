@@ -1,8 +1,8 @@
 import React, {Component} from 'react'
 import R from 'ramda'
 
-import P from './default-puzzle'
-import {processPuzzle} from './utils/puzzle'
+import P from '../utils/default-puzzle'
+import {processPuzzle} from '../utils/puzzle'
 import Puzzle from './Puzzle'
 
 export default class Room extends Component {

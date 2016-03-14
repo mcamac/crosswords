@@ -1,7 +1,7 @@
-import React, {Component} from 'react';
+import React, {Component} from 'react'
 import {browserHistory, Router, Route, Link} from 'react-router'
 
-import Room from './Room'
+import Room from '../components/Room'
 
 class Homepage extends Component {
   render() {
