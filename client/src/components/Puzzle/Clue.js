@@ -1,9 +1,9 @@
-const Clue = ({n, clue, fixed}) =>
-  <div key={n}>
-    <div style={{fontFamily: 'Source Serif Pro', fontWeight: 600, display: 'inline-block', marginRight: 5, width: fixed ? 20 : null, textAlign: 'right'}}>
+const Clue = ({n, clue, fixed, style}) =>
+  <div key={n} style={{display: 'flex', flexFlow: 'row', ...(style || {})}}>
+    <div style={{fontFamily: 'Source Serif Pro', fontWeight: 600, display: 'inline-block', marginRight: 5, flexBasis: fixed ? 20 : null, textAlign: 'right'}}>
       {n}
     </div>
-    <span style={{fontFamily: 'Source Serif Pro'}}>{clue}</span>
+    <div style={{fontFamily: 'Source Serif Pro', flex: '1 1'}}>{clue}</div>
   </div>
 
 export default Clue
