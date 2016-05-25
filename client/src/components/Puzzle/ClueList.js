@@ -13,8 +13,8 @@ const ClueList = ({clues}) => {
         <Clue key={n} fixed n={n} clue={clues.across[n]} />
       ))}
       <h4 style={{...headingStyle('15px')}}>DOWN</h4>
-      {R.keys(clues.across).map(n => (
-        <Clue key={n} fixed n={n} clue={clues.across[n]} />
+      {R.keys(clues.down).map(n => (
+        <Clue key={n} fixed n={n} clue={clues.down[n]} />
       ))}
     </div>
   )

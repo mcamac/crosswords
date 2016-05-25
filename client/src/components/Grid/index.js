@@ -83,12 +83,6 @@ const ARROWS = {
 let sqi = R.xprod(R.range(0, 15), R.range(0, 15))
 
 export default class Grid extends Component {
-  state = {
-    cursor: [0, 0],
-    direction: 'A',
-    fill: this.props.puzzle.puzzle.map(row => row.split('')),
-  }
-
   componentDidMount() {
     key(LETTERS, event => {
       this.onLetterPress(String.fromCharCode(event.which))
@@ -96,8 +90,8 @@ export default class Grid extends Component {
 
     key('space', event => {
       event.preventDefault()
-      const {direction} = this.state
-      this.setState({direction: flipD(direction)})
+      const {direction} = this.props
+      this.props.onChange({direction: flipD(direction)})
     })
 
     key('tab', event => {
@@ -121,13 +115,13 @@ export default class Grid extends Component {
     })
   }
 
-  setCursor = cursor => this.setState({cursor})
+  setCursor = cursor => this.props.onChange({cursor})
 
   onClick = ([nr, nc]) => {
     let {puzzle} = this.props
     if (!puzzle.valid([nr, nc])) return
-    const {direction, cursor: [r, c]} = this.state
-    this.setState({
+    const {direction, cursor: [r, c]} = this.props
+    this.props.onChange({
       direction: isEqual([r, c], [nr, nc]) ? flipD(direction) : direction,
       cursor: [nr, nc],
     })
@@ -135,35 +129,35 @@ export default class Grid extends Component {
 
   onBackspace = () => {
     let {puzzle} = this.props
-    const {direction, cursor: [r, c]} = this.state
+    const {direction, cursor: [r, c]} = this.props
     const [dr, dc] = direction === 'A' ? [0, 1] : [1, 0]
-    this.setState({
-      fill: set([r, c], '', this.state.fill),
+    this.props.onChange({
+      fill: set([r, c], '', this.props.fill),
       cursor: puzzle.nextSquare([r, c], [-dr, -dc]),
     })
   }
 
   onLetterPress = letter => {
     let {puzzle} = this.props
-    const {direction, cursor: [r, c]} = this.state
+    const {direction, cursor: [r, c]} = this.props
     const [dr, dc] = direction === 'A' ? [0, 1] : [1, 0]
-    this.setState({
-      fill: set([r, c], letter, this.state.fill),
+    this.props.onChange({
+      fill: set([r, c], letter, this.props.fill),
       cursor: puzzle.nextSquareSoft([r, c], [dr, dc]),
     })
   }
 
   onArrowPress = direction => {
     let {puzzle} = this.props
-    const [r, c] = this.state.cursor
+    const [r, c] = this.props.cursor
     const [dr, dc] = ARROWS[direction]
     this.setCursor(puzzle.nextSquare([r, c], [dr, dc]))
   }
 
   render() {
     let P = this.props.puzzle
-    const {cursor, direction, fill} = this.state
-    console.log(P)
+    const {cursor, direction, fill} = this.props
+    console.log('Grid', P)
     return (
       <svg width={width + 2} height={height + 2}>
         <StaticGrid
@@ -180,7 +174,7 @@ export default class Grid extends Component {
               x={(c + 0.5) * squareSize}
               y={(r + 0.5) * squareSize + 8}
               textAnchor='middle'
-              >
+            >
               {fill[r][c]}
             </text>
           ))}

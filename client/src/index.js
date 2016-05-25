@@ -3,9 +3,20 @@ import {render} from 'react-dom'
 import {createStore} from 'redux'
 import {AppContainer} from 'react-hot-loader'
 import Root from './containers/Root'
-import DevTools from './containers/DevTools'
+import reducer from './reducers'
 
-let store = createStore(() => ({}), {}, DevTools.instrument())
+import {processPuzzle} from './utils/puzzle'
+import P from './utils/default-puzzle'
+const INITIAL_STATE = {
+  puzzle: processPuzzle(P),
+  grid: {
+    cursor: [0, 0],
+    direction: 'A',
+    fill: processPuzzle(P).puzzle.map(row => row.split('')),
+  },
+}
+
+let store = createStore(reducer, INITIAL_STATE)
 
 render(
   <AppContainer>
@@ -15,6 +26,11 @@ render(
 )
 
 if (module.hot) {
+  module.hot.accept('./reducers', () => {
+    const newReducer = require('./reducers').default
+    store.replaceReducer(newReducer)
+  })
+
   module.hot.accept('./containers/Root', () => {
     const Root = require('./containers/Root').default
     render(
