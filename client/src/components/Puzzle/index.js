@@ -8,10 +8,10 @@ export default class Puzzle extends Component {
     const {puzzle} = this.props
     return (
       <div style={{display: 'flex'}}>
-        <div style={{columnCount: 3, columnWidth: 250, columnGap: 10, marginTop: 20}}>
+        <div style={{columnCount: 3, columnWidth: 250, columnGap: 5, marginTop: 20}}>
           <ClueList clues={puzzle.clues}/>
         </div>
-        <div>
+        <div style={{marginLeft: 20}}>
           <Clue n={1} clue='Wood for a chest' style={{marginBottom: 5}} />
           <Grid puzzle={puzzle} />
         </div>

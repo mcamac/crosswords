@@ -10,7 +10,7 @@ export default class Room extends Component {
     return (
       <div style={{fontFamily: 'Source Sans Pro'}}>
         <div>
-          <h2>crosswords.io</h2>
+          <h2 style={{fontWeight: 600}}>crosswords</h2>
         </div>
         <Puzzle puzzle={processPuzzle(P)} />
       </div>
