@@ -71,7 +71,11 @@ export const processPuzzle = puzzle => {
       && (!valid(puzzle.grid, [r - 1, c]) || !valid(puzzle.grid, [r, c - 1]))
   )
   puzzle.numbers = R.range(0, 15).map(() => [])
-  puzzle.numbered.forEach(([r, c], n) => puzzle.numbers[r][c] = n + 1)
+  puzzle.clueStarts = {}
+  puzzle.numbered.forEach(([r, c], n) => {
+    puzzle.numbers[r][c] = n + 1
+    puzzle.clueStarts[n + 1] = [r, c]
+  })
   puzzle.clueNums = gridMap(15, ([r, c]) => {
     if (puzzle.grid[r][c] === '_') return {}
     const {A: [A], D: [D]} = clueBoundsForSquare(puzzle.grid, [r, c])

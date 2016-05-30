@@ -95,8 +95,8 @@ export default class Grid extends Component {
     })
 
     key('tab', event => {
-      console.log('tab')
       event.preventDefault()
+      this.onTab(1)
     })
 
     key('backspace', event => {
@@ -105,8 +105,8 @@ export default class Grid extends Component {
     })
 
     key('shift+tab', event => {
-      console.log('shift tab')
       event.preventDefault()
+      this.onTab(-1)
     })
 
     key('left,right,up,down', event => {
@@ -134,6 +134,16 @@ export default class Grid extends Component {
     this.props.onChange({
       fill: set([r, c], '', this.props.fill),
       cursor: puzzle.nextSquare([r, c], [-dr, -dc]),
+    })
+  }
+
+  onTab = offset => {
+    let {puzzle, direction, cursor: [r, c]} = this.props
+    const currentClue = puzzle.clueNums[r][c][direction]
+    const dirClueNums = R.keys(puzzle.clues[direction === 'A' ? 'across' : 'down'])
+    const nextClue = dirClueNums[(dirClueNums.length + offset + dirClueNums.indexOf("" + currentClue)) % dirClueNums.length]
+    this.props.onChange({
+      cursor: puzzle.clueStarts[nextClue],
     })
   }
 
