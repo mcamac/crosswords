@@ -20,11 +20,11 @@ const ClueList = ({clues, clue}) => {
     <div style={{width: 250, margin: '0 5px', fontSize: '1em'}}>
       <h4 style={{...headingStyle(0)}}>ACROSS</h4>
       {R.keys(clues.across).map(n => (
-        <Clue key={n} fixed n={n} clue={clues.across[n]} style={getStyle(n, 'A', clue)} />
+        <Clue key={n} fixed={20} n={n} clue={clues.across[n]} style={getStyle(n, 'A', clue)} />
       ))}
       <h4 style={{...headingStyle('15px')}}>DOWN</h4>
       {R.keys(clues.down).map(n => (
-        <Clue key={n} fixed n={n} clue={clues.down[n]} style={getStyle(n, 'D', clue)} />
+        <Clue key={n} fixed={20} n={n} clue={clues.down[n]} style={getStyle(n, 'D', clue)} />
       ))}
     </div>
   )

@@ -12,7 +12,7 @@ export default class Puzzle extends Component {
           <ClueList clues={puzzle.clues} clue={clue} />
         </div>
         <div style={{marginLeft: 20}}>
-          <Clue style={{marginBottom: 5}} {...clue.active} />
+          <Clue fixed={30} style={{marginBottom: 5}} {...clue.active} />
           <Grid puzzle={puzzle} {...grid} onChange={onChange} />
         </div>
       </div>
