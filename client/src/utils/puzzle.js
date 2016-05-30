@@ -58,6 +58,10 @@ const boundarySquares = grid => {
   return bounds
 }
 
+const gridMap = (N, fn) => {
+  return R.range(0, N).map(r => R.range(0, N).map(c => fn([r, c])))
+}
+
 export const processPuzzle = puzzle => {
   let sqi = R.xprod(R.range(0, 15), R.range(0, 15))
   puzzle.grid = puzzle.puzzle
@@ -68,6 +72,14 @@ export const processPuzzle = puzzle => {
   )
   puzzle.numbers = R.range(0, 15).map(() => [])
   puzzle.numbered.forEach(([r, c], n) => puzzle.numbers[r][c] = n + 1)
+  puzzle.clueNums = gridMap(15, ([r, c]) => {
+    if (puzzle.grid[r][c] === '_') return {}
+    const {A: [A], D: [D]} = clueBoundsForSquare(puzzle.grid, [r, c])
+    return {
+      A: puzzle.numbers[A[0]][A[1]],
+      D: puzzle.numbers[D[0]][D[1]],
+    }
+  })
   return {
     nextSquare: (sq, dir) => nextSquare(puzzle.grid, sq, dir),
     nextSquareSoft: (sq, dir) => nextSquareSoft(puzzle.grid, sq, dir),
