@@ -1,8 +1,15 @@
 var io = require('socket.io')()
 var ioJwt = require('socketio-jwt')
 var jwt = require('jsonwebtoken')
+const uuid = require('node-uuid')
+
+const Room = require('./room')
 
 const SECRET = 'nikhilisatomato'
+
+const ROOMS = {
+  foo: new Room()
+}
 
 io.on('connection', socket => {
   ioJwt.authorize({
@@ -10,15 +17,26 @@ io.on('connection', socket => {
     timeout: 15000,
   })(socket)
 
-  socket.on('GET_JWT', function (name) {
-    socket.emit('JWT', jwt.sign({name}, SECRET))
+  socket.on('GET_JWT', name => {
+    socket.emit('JWT', jwt.sign({name, id: name || uuid.v4()}, SECRET))
   })
-}).on('authenticated', function(socket) {
+}).on('authenticated', socket => {
   console.log('hello! ' + socket.decoded_token.name);
+  socket.on('JOIN_ROOM', room => {
+    ROOMS[room].onJoin(socket)
 
-  socket.on('ACTION', function (action) {
-    console.log(socket.decoded_token.name, action)
-    socket.broadcast.emit('USER', action)
+    socket.emit('INITIAL', ROOMS[room].toClient())
+    socket.broadcast.emit('INITIAL', ROOMS[room].toClient())
+
+    socket.on('ACTION', action => {
+      ROOMS[room].onAction(socket, action)
+      socket.broadcast.emit('INITIAL', ROOMS[room].toClient())
+    })
+
+    socket.on('disconnect', () => {
+      ROOMS[room].onLeave(socket)
+      socket.broadcast.emit('INITIAL', ROOMS[room].toClient())
+    })
   })
 })
 io.listen(3000)

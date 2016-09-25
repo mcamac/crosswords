@@ -9,28 +9,32 @@ class Room extends Component {
     return (
       <div style={{fontFamily: 'Source Sans Pro'}}>
         <div>
-          <h2 style={{fontWeight: 600}}>crosswords</h2>
+          <h2 style={{fontWeight: 600}}>crosswords ({R.keys(this.props.players).length})</h2>
         </div>
-        <Puzzle
-          puzzle={this.props.puzzle}
-          grid={this.props.grid}
-          clue={this.props.clue}
-          notify={this.props.notify}
-          onChange={this.props.onChange}
-        />
+        {this.props.puzzle &&
+          <Puzzle
+            puzzle={this.props.puzzle}
+            grid={this.props.grid}
+            clue={this.props.clue}
+            notify={this.props.notify}
+            onChange={this.props.onChange}
+          />
+        }
       </div>
     )
   }
 }
 
 const actions = {
-  onChange: p => ({type: 'ON_CHANGE', payload: p}),
-  notify: p => ({type: 'NOTIFY_SERVER', payload: p}),
+  onChange: payload => ({type: 'ON_CHANGE', payload}),
+  notify: payload => ({type: 'NOTIFY_SERVER', payload}),
 }
 
 const flip = direction => direction === 'A' ? 'D' : 'A'
 
 const mapStateToProps = state => {
+  if (!state.puzzle || !state.grid) return state
+
   const [r, c] = state.grid.cursor
   const {direction} = state.grid
   const activeClueNum = state.puzzle.clueNums[r][c][direction]

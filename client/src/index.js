@@ -7,19 +7,16 @@ import reducer from './reducers'
 import socket from './socket'
 
 import {processPuzzle} from './utils/puzzle'
-import P from './utils/default-puzzle'
 const INITIAL_STATE = {
-  puzzle: processPuzzle(P),
+  puzzle: null,
   grid: {
     cursor: [0, 0],
     direction: 'A',
-    fill: processPuzzle(P).puzzle.map(row => row.split('')),
   },
 }
 
 let store = createStore(reducer, INITIAL_STATE)
-
-socket.on('USER', action => console.log('user change', action))
+socket.attachStore(store)
 
 render(
   <AppContainer>

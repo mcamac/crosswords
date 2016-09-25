@@ -1,5 +1,6 @@
 import {combineReducers} from 'redux'
 import socket from '../socket'
+import {processPuzzle} from '../utils/puzzle'
 
 export default (state, action) => {
   console.log(action)
@@ -11,6 +12,17 @@ export default (state, action) => {
   } else if (action.type === 'NOTIFY_SERVER') {
     socket.emit('ACTION', action.payload)
     return state
+  } else if (action.type === 'FROM_SERVER') {
+    const puzzle = processPuzzle(action.payload.puzzle)
+    return {
+      ...state,
+      players: action.payload.players,
+      puzzle,
+      grid: {
+        ...state.grid,
+        fill: action.payload.fill,
+      },
+    }
   }
   return state
 }
