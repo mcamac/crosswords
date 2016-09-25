@@ -19,6 +19,8 @@ const INITIAL_STATE = {
 
 let store = createStore(reducer, INITIAL_STATE)
 
+socket.on('USER', action => console.log('user change', action))
+
 render(
   <AppContainer>
     <Root store={store} />

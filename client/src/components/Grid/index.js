@@ -157,9 +157,14 @@ export default class Grid extends Component {
   onLetterPress = letter => {
     const {puzzle, direction, cursor: [r, c]} = this.props
     const [dr, dc] = direction === 'A' ? [0, 1] : [1, 0]
+    const [nr, nc] = puzzle.nextSquareSoft([r, c], [dr, dc])
     this.props.onChange({
       fill: set([r, c], letter, this.props.fill),
-      cursor: puzzle.nextSquareSoft([r, c], [dr, dc]),
+      cursor: [nr, nc],
+    })
+    this.props.notify({
+      fillSquare: [r, c, letter],
+      cursor: [nr, nc],
     })
   }
 

@@ -18,6 +18,7 @@ io.on('connection', socket => {
 
   socket.on('ACTION', function (action) {
     console.log(socket.decoded_token.name, action)
+    socket.broadcast.emit('USER', action)
   })
 })
 io.listen(3000)
