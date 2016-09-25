@@ -15,6 +15,7 @@ class Room extends Component {
           puzzle={this.props.puzzle}
           grid={this.props.grid}
           clue={this.props.clue}
+          notify={this.props.notify}
           onChange={this.props.onChange}
         />
       </div>
@@ -24,13 +25,16 @@ class Room extends Component {
 
 const actions = {
   onChange: p => ({type: 'ON_CHANGE', payload: p}),
+  notify: p => ({type: 'NOTIFY_SERVER', payload: p}),
 }
+
+const flip = direction => direction === 'A' ? 'D' : 'A'
 
 const mapStateToProps = state => {
   const [r, c] = state.grid.cursor
   const {direction} = state.grid
   const activeClueNum = state.puzzle.clueNums[r][c][direction]
-  const inactiveClueNum = state.puzzle.clueNums[r][c][direction === 'A' ? 'D' : 'A']
+  const inactiveClueNum = state.puzzle.clueNums[r][c][flip(direction)]
   return {
     ...state,
     clue: {

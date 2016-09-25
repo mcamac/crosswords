@@ -4,6 +4,7 @@ import {createStore} from 'redux'
 import {AppContainer} from 'react-hot-loader'
 import Root from './containers/Root'
 import reducer from './reducers'
+import socket from './socket'
 
 import {processPuzzle} from './utils/puzzle'
 import P from './utils/default-puzzle'

@@ -115,7 +115,10 @@ export default class Grid extends Component {
     })
   }
 
-  setCursor = cursor => this.props.onChange({cursor})
+  setCursor = cursor => {
+    this.props.onChange({cursor})
+    this.props.notify({cursor})
+  }
 
   onClick = ([nr, nc]) => {
     let {puzzle} = this.props
@@ -125,15 +128,21 @@ export default class Grid extends Component {
       direction: isEqual([r, c], [nr, nc]) ? flipD(direction) : direction,
       cursor: [nr, nc],
     })
+    this.props.notify({cursor: [nr, nc]})
   }
 
   onBackspace = () => {
     let {puzzle} = this.props
     const {direction, cursor: [r, c]} = this.props
     const [dr, dc] = direction === 'A' ? [0, 1] : [1, 0]
+    const [nr, nc] = puzzle.nextSquare([r, c], [-dr, -dc])
     this.props.onChange({
       fill: set([r, c], '', this.props.fill),
-      cursor: puzzle.nextSquare([r, c], [-dr, -dc]),
+      cursor: [nr, nc],
+    })
+    this.props.notify({
+      fillSquare: [r, c, ''],
+      cursor: [nr, nc],
     })
   }
 
@@ -142,14 +151,11 @@ export default class Grid extends Component {
     const currentClue = puzzle.clueNums[r][c][direction]
     const dirClueNums = R.keys(puzzle.clues[direction === 'A' ? 'across' : 'down'])
     const nextClue = dirClueNums[(dirClueNums.length + offset + dirClueNums.indexOf("" + currentClue)) % dirClueNums.length]
-    this.props.onChange({
-      cursor: puzzle.clueStarts[nextClue],
-    })
+    this.setCursor(puzzle.clueStarts[nextClue])
   }
 
   onLetterPress = letter => {
-    let {puzzle} = this.props
-    const {direction, cursor: [r, c]} = this.props
+    const {puzzle, direction, cursor: [r, c]} = this.props
     const [dr, dc] = direction === 'A' ? [0, 1] : [1, 0]
     this.props.onChange({
       fill: set([r, c], letter, this.props.fill),
@@ -165,8 +171,7 @@ export default class Grid extends Component {
   }
 
   render() {
-    let P = this.props.puzzle
-    const {cursor, direction, fill} = this.props
+    const {puzzle: P, cursor, direction, fill} = this.props
     console.log('Grid', P)
     return (
       <svg width={width + 2} height={height + 2}>
